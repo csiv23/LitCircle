@@ -1,7 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config(); // To use environment variables from .env file
-const connectToMongoDB = require('./dbConnect'); // Require the database module
+const connectToMongoDB = require('./database/dbConnect'); // Require the database module
+const userRoutes = require('./routes/userRoutes');
+
 
 const server = express();
 
@@ -16,6 +18,9 @@ server.use(express.json()); // for parsing application/json
 server.get('/', (req, res) => {
   res.send('Hello, LitCircle API!');
 });
+
+// Use user routes
+server.use('/api/users', userRoutes);
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
