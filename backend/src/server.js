@@ -1,9 +1,12 @@
-// src/server.js
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config(); // To use environment variables from .env file
+const connectToMongoDB = require('./dbConnect'); // Require the database module
 
 const server = express();
+
+// Connect to MongoDB
+connectToMongoDB();
 
 // Middleware
 server.use(cors());
