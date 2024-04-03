@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt'); // If you're using bcrypt
+
 const User = require('../models/user');
 
 exports.getUsers = async (req, res) => {
@@ -13,6 +15,7 @@ exports.getUsers = async (req, res) => {
 };
 
 // Function to register a new user
+// TODO: Implement w/ FireBase
 exports.registerUser = async (req, res) => {
     const { Username, Password, Email, role } = req.body;
 
@@ -40,3 +43,29 @@ exports.registerUser = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+// TODO: implement using FireBase
+exports.loginUser = async (req, res) => {
+    const { Email, Password } = req.body;
+
+    try {
+        let user = await User.findOne({ Email });
+        if (!user) {
+            return res.status(400).json({ msg: 'User email does not exist' });
+        }
+
+        // Directly compare plaintext passwords
+        // TODO: Hash(?)
+        if (Password !== user.Password) {
+            return res.status(400).json({ msg: 'Invalid password' });
+        }
+
+        res.json({ userID: user.id });
+    } catch (error) {
+        console.error("Error logging in user:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+
+
