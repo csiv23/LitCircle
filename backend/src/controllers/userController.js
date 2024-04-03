@@ -11,3 +11,32 @@ exports.getUsers = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+// Function to register a new user
+exports.registerUser = async (req, res) => {
+    const { Username, Password, Email, role } = req.body;
+
+    try {
+        // Check if the user already exists
+        let user = await User.findOne({ Email });
+        if (user) {
+            return res.status(400).json({ msg: 'User already exists' });
+        }
+
+        // Create a new user
+        user = new User({
+            Username,
+            Password,
+            Email,
+            role
+        });
+
+        await user.save();
+
+        // Respond with the new user's ID
+        res.json({ userID: user.id });
+    } catch (error) {
+        console.error("Error registering user:", error);
+        res.status(500).send('Server error');
+    }
+};
