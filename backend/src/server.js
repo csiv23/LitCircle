@@ -4,7 +4,7 @@ require('dotenv').config(); // To use environment variables from .env file
 const connectToMongoDB = require('./database/dbConnect'); // Require the database module
 const userRoutes = require('./routes/userRoutes');
 const clubRoutes = require('./routes/clubRoutes');
-
+const bookRoutes = require('./routes/bookRoutes');
 
 const server = express();
 
@@ -25,6 +25,9 @@ server.use('/api/users', userRoutes);
 
 // Use club routes
 server.use('/api/clubs', clubRoutes);
+
+// Use book routes
+server.use('/api/books', bookRoutes);
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
