@@ -1,6 +1,6 @@
-const bcrypt = require('bcrypt'); // If you're using bcrypt
-
 const User = require('../models/user');
+const Book = require('../models/book');
+
 
 exports.getUsers = async (req, res) => {
     console.log("Fetching users...");
@@ -141,6 +141,49 @@ exports.getFollowers = async (req, res) => {
         console.error("Error getting followers:", error);
         
         // Send a 500 Internal Server Error status code and message if an error occurs.
+        res.status(500).send('Server error');
+    }
+};
+
+exports.getUserWishlist = async (req, res) => {
+    const { userId } = req.params; // Extract the userId from the URL parameter
+
+    try {
+        // Find the user by their ID
+        const user = await User.findById(userId).populate('Wishlist'); // Assuming 'Wishlist' is a reference to a collection of Book documents
+
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        // Respond with the user's wishlist
+        // This will be an array of book documents that are in the user's wishlist
+        res.json(user.Wishlist);
+    } catch (error) {
+        console.error("Error fetching user's wishlist:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+exports.addBookToWishlist = async (req, res) => {
+    const { userId } = req.params; // Extract userId from URL parameters
+    const { bookId } = req.body; // Extract bookId from request body
+
+    try {
+        // Find the user by ID and update their wishlist
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $addToSet: { Wishlist: bookId } }, // Use $addToSet to avoid duplicate entries
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedUser) {
+            return res.status(404).send('User not found');
+        }
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error("Error adding book to wishlist:", error);
         res.status(500).send('Server error');
     }
 };
