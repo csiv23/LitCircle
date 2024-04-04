@@ -14,6 +14,20 @@ exports.getUsers = async (req, res) => {
     }
 };
 
+exports.getUser = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+        res.json(user);
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        res.status(500).send('Server error');
+    }
+};
+
 // Function to register a new user
 // TODO: Implement w/ FireBase
 exports.registerUser = async (req, res) => {
@@ -67,5 +81,66 @@ exports.loginUser = async (req, res) => {
     }
 };
 
+// Update user profile
+exports.updateUserProfile = async (req, res) => {
+    const { userId } = req.params;
+    const { name, email } = req.body;
 
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $set: { Username: name, Email: email }},
+            { new: true }
+        );
+        res.json(updatedUser);
+    } catch (error) {
+        console.error("Error updating user profile:", error);
+        res.status(500).send('Server error');
+    }
+};
 
+// Follow another user
+exports.followUser = async (req, res) => {
+    const { userId } = req.params; // Follower
+    const { userIdToFollow } = req.body; // Followed
+
+    try {
+        // Add userIdToFollow to the Following array of the follower
+        await User.findByIdAndUpdate(
+            userId,
+            { $push: { Following: userIdToFollow }},
+            { new: true }
+        );
+        // Add userId to the Followers array of the followed user
+        await User.findByIdAndUpdate(
+            userIdToFollow,
+            { $push: { Followers: userId }},
+            { new: true }
+        );
+        res.status(204).send();
+    } catch (error) {
+        console.error("Error following user:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+// Handler for fetching the list of followers of a specific user.
+exports.getFollowers = async (req, res) => {
+    // Extract the userId from the request parameters.
+    const { userId } = req.params;
+
+    try {
+        // Use the findById method to locate the user by their ID and populate the Followers field.
+        // This effectively dereferences the user IDs in the Followers array to return full user documents.
+        const user = await User.findById(userId).populate('Followers');
+        
+        // If successful, send back the populated Followers array in the response.
+        res.json(user.Followers);
+    } catch (error) {
+        // Log any errors encountered during the operation.
+        console.error("Error getting followers:", error);
+        
+        // Send a 500 Internal Server Error status code and message if an error occurs.
+        res.status(500).send('Server error');
+    }
+};
