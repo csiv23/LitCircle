@@ -187,3 +187,70 @@ exports.addBookToWishlist = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+exports.getUserClubs = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Note the corrected path for populate to match the provided schema
+        const user = await User.findById(userId).populate({
+            path: 'BookClubs.ClubId',
+            model: 'Club' // Ensure this matches the model name used in your Club schema
+        });
+
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        // Extract the ClubId for each club the user is a part of
+        const clubs = user.BookClubs.map(bookClub => bookClub.ClubId);
+        res.json(clubs);
+    } catch (error) {
+        console.error("Error fetching user's clubs:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+exports.getUserBooksRead = async (req, res) => {
+    const { userId } = req.params; // Extract the userId from the URL parameter
+
+    try {
+        // Find the user by their ID
+        const user = await User.findById(userId).populate('BooksRead'); 
+
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        // Respond with the user's wishlist
+        // This will be an array of book documents that are in the user's wishlist
+        res.json(user.BooksRead);
+    } catch (error) {
+        console.error("Error fetching user's books read:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+exports.addBookToBooksRead = async (req, res) => {
+    const { userId } = req.params;
+    const { bookId } = req.body; // Assuming the ID of the book to add is sent in the request body
+
+    try {
+        // Find the user by ID and update their "BooksRead" array
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $addToSet: { BooksRead: bookId } }, // Use $addToSet to prevent duplicates
+            { new: true, runValidators: true } // Return the updated document and ensure validators run
+        );
+
+        if (!updatedUser) {
+            return res.status(404).send('User not found');
+        }
+
+        // Respond with the updated user information
+        res.json(updatedUser);
+    } catch (error) {
+        console.error("Error adding book to user's BooksRead:", error);
+        res.status(500).send('Server error');
+    }
+};
