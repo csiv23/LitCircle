@@ -29,11 +29,11 @@ const clubSchema = new Schema({
     NextMeeting: {
         Date: {
             type: Date,
-            required: true
+            required: false
         },
         Location: {
             type: String,
-            required: true
+            required: false
         }
     },
     Organizer: {
