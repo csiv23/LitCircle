@@ -31,7 +31,7 @@ exports.getUser = async (req, res) => {
 // Function to register a new user
 // TODO: Implement w/ FireBase
 exports.registerUser = async (req, res) => {
-    const { Username, Password, Email, role } = req.body;
+    const { Username, Password, Email, role, uid } = req.body;
 
     try {
         // Check if the user already exists
@@ -45,7 +45,8 @@ exports.registerUser = async (req, res) => {
             Username,
             Password,
             Email,
-            role
+            role,
+            uid
         });
 
         await user.save();
