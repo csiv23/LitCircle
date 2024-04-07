@@ -10,16 +10,17 @@ function Login() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     
     useEffect(() => {
+        // onAuthStateChanged is always listening for changes in authentication state
+        // SO, authUser will always be up to date and you can just access information
+        // about the current user via authUser
         const unsubscribe = onAuthStateChanged(firebaseAuth, user => {
             if (user) {
+                // Store the current user
                 setAuthUser(user);
                 setIsLoggedIn(true);
-                console.log("Signed in! uid: " + user.uid);
-                console.log(user);
             }
             else {
                 setIsLoggedIn(false);
-                console.log("Not signed in");
             }
         });
         // Cleanup function
@@ -27,35 +28,41 @@ function Login() {
     }, [])
 
     const signIn = async () => {
+        // Firebase's signIn function
         signInWithEmailAndPassword(firebaseAuth, email, password)
         .then((userCredentials) => {
-            console.log(userCredentials);
+            console.log(`Signed In! UserCredentials: ${JSON.stringify(authUser)}`);
         })
         .catch((error) => {
             console.log(error);
         });
 
+        // Sending GET request to MongoDB endpoint to retrieve user. Ideally, we'd like to use
+        // the user's firebase uid rather than hardcoding their MongoDB user id
         const response = await axios.get(`http://localhost:3001/api/users/6612e6d0f74acd763f3a7ccb`);
-        console.log(`Got the user from MongoDB via axios!: ${JSON.stringify(response.data)}`);
+        console.log(`Got the user from MongoDB via axios! Response:${JSON.stringify(authUser)}`);
     }
     const signUp = async () => {
+        // Firebase's register function
         createUserWithEmailAndPassword(firebaseAuth, email, password)
         .then((userCredentials) => {
-            console.log(userCredentials);
+            console.log(`Signed Up! UserCredentials: ${JSON.stringify(userCredentials.user)}`);
         })
         .catch((error) => {
             console.log(error);
         });
 
         const userData = {
-            Username: "Axios_Username4",
+            Username: "Axios_Username",
             Password: password,
             Email: email,
             role: 'axios_role',
             uid: authUser?.uid
         }
+
+        // Sending POST request to MongoDB endpoint to create new user
         const response = await axios.post(`http://localhost:3001/api/users/register`, userData);
-        console.log(`Sent axios post request to register user. Response: ${response.data}`);
+        console.log(`Sent axios post request to register user! Response: ${JSON.stringify(response.data)}`);
     }
 
     const logout = async () => {
