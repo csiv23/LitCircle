@@ -1,5 +1,6 @@
 const Club = require('../models/club');
 const User = require('../models/user');
+const Book = require('../models/book'); 
 
 /**
  * Validates the existence of a club and then executes a provided operation.
@@ -188,3 +189,102 @@ exports.fetchClubAttribute = (attributeName) => {
     };
 };
 
+/**
+ * Adds a recommended book to the club's wishlist.
+ * @param {Object} req - The request object, including the bookID to be added to the wishlist and the clubId as a URL parameter.
+ * @param {Object} res - The response object.
+ */
+exports.recommendBookForClub = async (req, res) => {
+    const { clubId } = req.params; // Extract the clubId from the URL parameter
+    const { bookId } = req.body; // Extract the bookId from the request body
+
+    try {
+        // Find the club by ID and update its Wishlist to include the recommended book
+        const updatedClub = await Club.findByIdAndUpdate(
+            clubId,
+            { $addToSet: { Wishlist: bookId } }, // Use $addToSet to avoid adding duplicate entries
+            { new: true, runValidators: true } // Return the updated document and run validators
+        ).populate('Wishlist'); // Optionally populate the Wishlist to return it in the response
+
+        if (!updatedClub) {
+            return res.status(404).json({ message: 'Club not found' });
+        }
+
+        res.status(200).json({ message: 'Book recommended successfully', Wishlist: updatedClub.Wishlist });
+    } catch (error) {
+        console.error("Error recommending book for the club:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+exports.setCurrentBook = async (req, res) => {
+    const { clubId } = req.params;
+    const { bookId } = req.body;
+
+    try {
+        const book = await Book.findById(bookId);
+        if (!book) {
+            return res.status(404).json({ message: 'Book not found' });
+        }
+
+        let club = await Club.findById(clubId);
+        if (!club) {
+            return res.status(404).json({ message: 'Club not found' });
+        }
+
+        // If the book is in the wishlist, remove it
+        if (club.Wishlist.some(book => book._id.toString() === bookId)) {
+            club.Wishlist = club.Wishlist.filter(book => book._id.toString() !== bookId);
+        }
+
+        // Set the book as the current book and add the club to the book's ClubsReading list if not already present
+        club.CurrentBook = bookId;
+        if (!book.ClubsReading.includes(clubId)) {
+            book.ClubsReading.push(clubId);
+            await book.save();
+        }
+
+        await club.save();
+        res.status(200).json({ message: 'Current book updated successfully', club });
+    } catch (error) {
+        console.error("Error setting current book:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+exports.markCurrentBookAsRead = async (req, res) => {
+    const { clubId } = req.params;
+
+    try {
+        const club = await Club.findById(clubId);
+        if (!club) {
+            return res.status(404).json({ message: 'Club not found' });
+        }
+
+        if (!club.CurrentBook) {
+            return res.status(400).json({ message: 'No current book to mark as read' });
+        }
+
+        const book = await Book.findById(club.CurrentBook);
+        if (!book) {
+            return res.status(404).json({ message: 'Current book not found in the database' });
+        }
+
+        // Add the current book to the club's BooksRead list if not already present
+        if (!club.BooksRead.includes(club.CurrentBook.toString())) {
+            club.BooksRead.push(club.CurrentBook);
+        }
+
+        // Remove the club from the book's ClubsReading list
+        book.ClubsReading = book.ClubsReading.filter(clubIdItem => clubIdItem.toString() !== clubId);
+        await book.save();
+
+        // Clear the CurrentBook field
+        club.CurrentBook = null;
+        await club.save();
+        res.status(200).json({ message: 'Current book marked as read and updated successfully', club });
+    } catch (error) {
+        console.error("Error marking current book as read:", error);
+        res.status(500).send('Server error');
+    }
+};
