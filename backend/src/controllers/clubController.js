@@ -313,3 +313,69 @@ exports.deleteClub = async (req, res) => {
 };
 
 
+exports.addBookToWishlist = async (req, res) => {
+    const { clubId } = req.params;
+    const { bookId } = req.body;
+
+    try {
+        const club = await validateClubExists(clubId, res);
+        if (!club) {
+            return;
+        }
+
+        const book = await validateBookExists(bookId, res);
+        if (!book) {
+            return;
+        }
+
+        // Check if the book is currently being read or has been read
+        const isCurrentlyReading = club.CurrentBook && club.CurrentBook.toString() === bookId;
+        const hasBeenRead = club.BooksRead.some(b => b.toString() === bookId);
+
+        if (isCurrentlyReading || hasBeenRead) {
+            return res.status(400).json({ message: 'Book cannot be added to the wishlist as it is currently being read or has already been read by the club.' });
+        }
+
+        // Check if the book is already in the wishlist
+        const isInWishlist = club.Wishlist.some(b => b.toString() === bookId);
+        if (isInWishlist) {
+            return res.status(400).json({ message: 'Book is already in the wishlist.' });
+        }
+
+        // Add the book to the wishlist
+        club.Wishlist.push(bookId);
+        await club.save();
+
+        res.status(200).json({ message: 'Book added to the wishlist successfully', club });
+    } catch (error) {
+        console.error('Error adding book to the club\'s wishlist:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+exports.deleteBookFromWishlist = async (req, res) => {
+    const { clubId } = req.params;
+    const { bookId } = req.body;
+    
+    const club = await validateClubExists(clubId, res);
+    if (!club) {
+        return;
+    }
+
+    const book = await validateBookExists(bookId, res);
+    if (!book) {
+        return;
+    }
+
+    // Check if the book is in the wishlist
+    const isInWishlist = club.Wishlist.some(b => b.toString() === bookId);
+    if (!isInWishlist) {
+        return res.status(400).json({ message: 'Book is not in the wishlist.' });
+    }
+
+    // Remove the book from the wishlist
+    club.Wishlist = club.Wishlist.filter(b => b.toString() !== bookId);
+    await club.save();
+
+    res.status(200).json({ message: 'Book removed from the wishlist successfully', club });
+}

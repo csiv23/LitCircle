@@ -6,7 +6,7 @@ const clubController = require('../controllers/clubController');
 const {
     getClubs, getClub, createClub, updateClubInfo, joinClub, 
     leaveClub, fetchClubMembers, fetchClubOrganizer, recommendBookForClub, 
-    setCurrentBook, markCurrentBookAsRead, deleteClub
+    setCurrentBook, markCurrentBookAsRead, deleteClub, addBookToWishlist, deleteBookFromWishlist
 } = require('../controllers/clubController');
 
 router.get('/', getClubs);
@@ -24,6 +24,8 @@ router.get('/:clubId/nextMeeting', clubController.fetchClubAttribute('NextMeetin
 router.post('/:clubId/recommendBook', recommendBookForClub);
 router.post('/:clubId/setCurrentBook', setCurrentBook);
 router.post('/:clubId/markCurrentBookAsRead', markCurrentBookAsRead);
-router.delete('/:clubId/delete', clubController.deleteClub);
+router.delete('/:clubId/delete', deleteClub);
+router.post('/:clubId/wishlist', addBookToWishlist);
+router.delete('/:clubId/wishlist', deleteBookFromWishlist);
 
 module.exports = router;
