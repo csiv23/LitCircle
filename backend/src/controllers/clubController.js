@@ -2,7 +2,7 @@ const Club = require('../models/club');
 const User = require('../models/user');
 const Book = require('../models/book');
 
-const { validateClubExists, validateUserExists } = require('../utilities/dataValidation');
+const { validateBookExists, validateClubExists, validateUserExists } = require('../utilities/dataValidation');
 
 // Fetches and returns all clubs
 exports.getClubs = async (req, res) => {
@@ -11,7 +11,7 @@ exports.getClubs = async (req, res) => {
         res.json(clubs);
     } catch (error) {
         console.error("Error fetching clubs:", error);
-        res.status(500).send('Server error');
+        res.status(500).send('Internal server error while creating a new club');
     }
 };
 
