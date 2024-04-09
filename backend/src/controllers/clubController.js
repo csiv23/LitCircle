@@ -356,7 +356,7 @@ exports.addBookToWishlist = async (req, res) => {
 exports.deleteBookFromWishlist = async (req, res) => {
     const { clubId } = req.params;
     const { bookId } = req.body;
-    
+
     const club = await validateClubExists(clubId, res);
     if (!club) {
         return;
@@ -378,4 +378,32 @@ exports.deleteBookFromWishlist = async (req, res) => {
     await club.save();
 
     res.status(200).json({ message: 'Book removed from the wishlist successfully', club });
+}
+
+
+exports.setNewMeeting = async (req, res) => {
+    const { clubId } = req.params;
+    const { meeting } = req.body;
+
+    // Validate the meeting object
+    if (!meeting || !meeting.Date || !meeting.Location) {
+        res.status(400).json({ message: 'Invalid meeting object' });
+        return;
+    }
+
+    try {
+        const club = await validateClubExists(clubId, res);
+        if (!club) {
+            return;
+        }
+
+        // Replace the meeting
+        club.NextMeeting = meeting;
+        await club.save();
+
+        res.status(200).json({ message: 'Meeting updated successfully', club });
+    } catch (error) {
+        console.error('Error updating a meeting:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 }
