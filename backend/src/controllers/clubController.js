@@ -31,7 +31,7 @@ exports.createClub = async (req, res) => {
     const { Name, Description, Organizer } = req.body;
 
     try {
-        const organizer = await User.findById(Organizer);
+        const organizer = await validateUserExists(Organizer, res);
         if (!organizer) {
             return res.status(404).json({ msg: 'Organizer not found' });
         }
@@ -217,15 +217,9 @@ exports.setCurrentBook = async (req, res) => {
     const { bookId } = req.body;
 
     try {
-        const book = await Book.findById(bookId);
-        if (!book) {
-            return res.status(404).json({ message: 'Book not found' });
-        }
+        const book = await validateBookExists(bookId, res);
 
-        let club = await Club.findById(clubId);
-        if (!club) {
-            return res.status(404).json({ message: 'Club not found' });
-        }
+        let club = await validateClubExists(clubId, res);
 
         // If the book is in the wishlist, remove it
         if (club.Wishlist.some(book => book._id.toString() === bookId)) {
@@ -251,19 +245,9 @@ exports.markCurrentBookAsRead = async (req, res) => {
     const { clubId } = req.params;
 
     try {
-        const club = await Club.findById(clubId);
-        if (!club) {
-            return res.status(404).json({ message: 'Club not found' });
-        }
+        const club = await validateClubExists(clubId, res);
 
-        if (!club.CurrentBook) {
-            return res.status(400).json({ message: 'No current book to mark as read' });
-        }
-
-        const book = await Book.findById(club.CurrentBook);
-        if (!book) {
-            return res.status(404).json({ message: 'Current book not found in the database' });
-        }
+        const book = await validateBookExists(club.currentBook, res);
 
         // Add the current book to the club's BooksRead list if not already present
         if (!club.BooksRead.includes(club.CurrentBook.toString())) {
