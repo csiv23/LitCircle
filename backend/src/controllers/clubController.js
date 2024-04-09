@@ -2,26 +2,7 @@ const Club = require('../models/club');
 const User = require('../models/user');
 const Book = require('../models/book'); 
 
-/**
- * Validates the existence of a club and then executes a provided operation.
- * @param {Object} req - The request object from Express.
- * @param {Object} res - The response object from Express.
- * @param {Function} operationCallback - The callback function to execute which includes the operation logic.
- */
-const validateClubExistsAndExecute = async (req, res, operationCallback) => {
-    const { clubId } = req.params;
-    try {
-        // Directly using the callback with the found club to avoid refetching
-        const club = await Club.findById(clubId).populate('Members', 'Username Email').populate('Organizer', 'Username Email');
-        if (!club) {
-            return res.status(404).json({ message: 'Club not found' });
-        }
-        await operationCallback(club, req, res);
-    } catch (error) {
-        console.error("Error in club operation:", error);
-        res.status(500).send('Server error');
-    }
-};
+const { validateClubExists, validateUserExists } = require('../utilities/dataValidation');
 
 // Fetches and returns all clubs
 exports.getClubs = async (req, res) => {
@@ -35,10 +16,11 @@ exports.getClubs = async (req, res) => {
 };
 
 // Fetches and returns a single club by its ID
-exports.getClub = (req, res) => {
-    validateClubExistsAndExecute(req, res, async (club) => {
+exports.getClub = async (req, res) => {
+    const club = await validateClubExists(req.params.clubId, res);
+    if (club) {
         res.json(club);
-    });
+    }
 };
 
 /**
@@ -78,114 +60,110 @@ exports.createClub = async (req, res) => {
 /**
  * Updates the specified club's information based on the data provided in the request body.
  */
-exports.updateClubInfo = (req, res) => {
+exports.updateClubInfo = async (req, res) => {
+    const club = await validateClubExists(req.params.clubId, res);
+    if (!club) return;
+
     const updateData = req.body;
+    if (updateData.Organizer) {
+        const organizer = await validateUserExists(updateData.Organizer, res);
+        if (!organizer) return;
+    }
 
-    validateClubExistsAndExecute(req, res, async (club) => {
-        if (updateData.Organizer) {
-            const organizer = await User.findById(updateData.Organizer);
-            if (!organizer) {
-                return res.status(404).json({ message: 'Organizer not found' });
-            }
-        }
-
-        // Apply updates without refetching
-        Object.assign(club, updateData);
-        await club.save();
-        res.json({ message: 'Club updated successfully', club });
-    });
+    // Apply updates without refetching
+    Object.assign(club, updateData);
+    await club.save();
+    res.json({ message: 'Club updated successfully', club });
 };
 
 /**
  * Adds a user to a club's member list based on the user ID provided in the request body.
  */
-exports.joinClub = (req, res) => {
-    const { userId } = req.body;
+exports.joinClub = async (req, res) => {
+    const club = await validateClubExists(req.params.clubId, res);
+    if (!club) return;
 
-    validateClubExistsAndExecute(req, res, async (club) => {
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+    const user = await validateUserExists(req.body.userId, res);
+    if (!user) return;
 
-        // Check and update without unnecessary refetching
-        if (club.Members.map(member => member._id.toString()).includes(userId)) {
-            return res.status(400).json({ message: 'User already a member of the club' });
-        }
+    // Check and update without unnecessary refetching
+    if (club.Members.map(member => member._id.toString()).includes(req.body.userId)) {
+        return res.status(400).json({ message: 'User already a member of the club' });
+    }
 
-        club.Members.push(userId);
-        await club.save();
+    club.Members.push(req.body.userId);
+    await club.save();
 
-        user.BookClubs.push({ ClubId: club._id, IsLeader: false, JoinDate: new Date() });
-        await user.save();
+    user.BookClubs.push({ ClubId: club._id, IsLeader: false, JoinDate: new Date() });
+    await user.save();
 
-        res.json({ message: 'User added to club successfully', club });
-    });
+    res.json({ message: 'User added to club successfully', club });
 };
 
 /**
  * Removes a user from a club's member list based on the user ID provided in the request body.
  */
-exports.leaveClub = (req, res) => {
-    const { userId } = req.body;
+exports.leaveClub = async (req, res) => {
+    const club = await validateClubExists(req.params.clubId, res);
+    if (!club) return;
 
-    validateClubExistsAndExecute(req, res, async (club) => {
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+    const user = await validateUserExists(req.body.userId, res);
+    if (!user) return;
 
-        // Remove the user without refetching the club
-        club.Members = club.Members.filter(member => member._id.toString() !== userId);
-        await club.save();
+    // Remove the user without refetching the club
+    club.Members = club.Members.filter(member => member._id.toString() !== req.body.userId);
+    await club.save();
 
-        user.BookClubs = user.BookClubs.filter(bookClub => bookClub.ClubId.toString() !== club._id.toString());
-        await user.save();
+    user.BookClubs = user.BookClubs.filter(bookClub => bookClub.ClubId.toString() !== club._id.toString());
+    await user.save();
 
-        res.json({ message: 'User removed from club successfully' });
-    });
+    res.json({ message: 'User removed from club successfully' });
 };
 
 /**
  * A specialized function for fetching members of a club with detailed user information.
  * This function is now simplified as refetching is handled in validateClubExistsAndExecute.
  */
-exports.fetchClubMembers = (req, res) => {
-    validateClubExistsAndExecute(req, res, async (club) => {
-        // Directly return the already populated Members
-        if (club.Members.length === 0) {
-            return res.status(404).json({ message: 'Members not found' });
-        }
-        res.json({ Members: club.Members });
-    });
+exports.fetchClubMembers = async (req, res) => {
+    const club = await validateClubExists(req.params.clubId, res);
+    if (!club) return;
+
+    if (club.Members.length === 0) {
+        return res.status(404).json({ message: 'Members not found' });
+    }
+    res.json({ Members: club.Members });
 };
 
 /**
  * Fetches the organizer of a club with detailed user information.
- * Eliminates the need for refetching by utilizing validateClubExistsAndExecute for population.
  */
-exports.fetchClubOrganizer = (req, res) => {
-    validateClubExistsAndExecute(req, res, async (club) => {
-        // Directly return the already populated Organizer
-        if (!club.Organizer) {
-            return res.status(404).json({ message: 'Organizer not found' });
-        }
-        res.json({ Organizer: club.Organizer });
-    });
+exports.fetchClubOrganizer = async (req, res) => {
+    const club = await validateClubExists(req.params.clubId, res);
+    if (!club) return;
+
+    if (!club.Organizer) {
+        return res.status(404).json({ message: 'Organizer not found' });
+    }
+    res.json({ Organizer: club.Organizer });
 };
 
 exports.fetchClubAttribute = (attributeName) => {
-    return (req, res) => {
-        validateClubExistsAndExecute(req, res, async (club) => {
-            // Populate the specified attributeName and directly await the result
-            club = await Club.findById(club._id).populate(attributeName);
-            if (!club[attributeName]) {
+    return async (req, res) => {
+        const club = await validateClubExists(req.params.clubId, res);
+        if (!club) return; // validateClubExists will handle the response if the club doesn't exist
+
+        try {
+            const populatedClub = await Club.findById(club._id).populate(attributeName);
+            if (!populatedClub || !populatedClub[attributeName]) {
                 return res.status(404).json({ message: `${attributeName} not found` });
             }
             // Since populate returns a promise, you can await it directly
             // and then use the populated club document
-            res.json({ [attributeName]: club[attributeName] });
-        });
+            res.json({ [attributeName]: populatedClub[attributeName] });
+        } catch (error) {
+            console.error(`Error fetching ${attributeName}:`, error);
+            res.status(500).send('Server error');
+        }
     };
 };
 
