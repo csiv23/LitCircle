@@ -1,6 +1,6 @@
 const Club = require('../models/club');
 const User = require('../models/user');
-const Book = require('../models/book'); 
+const Book = require('../models/book');
 
 const { validateClubExists, validateUserExists } = require('../utilities/dataValidation');
 
@@ -125,26 +125,43 @@ exports.leaveClub = async (req, res) => {
  * This function is now simplified as refetching is handled in validateClubExistsAndExecute.
  */
 exports.fetchClubMembers = async (req, res) => {
-    const club = await validateClubExists(req.params.clubId, res);
-    if (!club) return;
-
-    if (club.Members.length === 0) {
-        return res.status(404).json({ message: 'Members not found' });
+    const clubId = req.params.clubId;
+    try {
+        // Find the club by ID and populate the Members field
+        const clubWithMembers = await Club.findById(clubId).populate('Members');
+        if (!clubWithMembers) {
+            return res.status(404).json({ message: 'Club not found' });
+        }
+        if (!clubWithMembers.Members || clubWithMembers.Members.length === 0) {
+            return res.status(404).json({ message: 'Members not found' });
+        }
+        res.json({ Members: clubWithMembers.Members });
+    } catch (error) {
+        console.error("Error fetching club members:", error);
+        res.status(500).send('Server error');
     }
-    res.json({ Members: club.Members });
 };
 
 /**
  * Fetches the organizer of a club with detailed user information.
  */
 exports.fetchClubOrganizer = async (req, res) => {
-    const club = await validateClubExists(req.params.clubId, res);
-    if (!club) return;
-
-    if (!club.Organizer) {
-        return res.status(404).json({ message: 'Organizer not found' });
+    const clubId = req.params.clubId;
+    try {
+        // Find the club by ID and populate the Organizer field
+        const clubWithOrganizer = await Club.findById(clubId).populate('Organizer');
+        if (!clubWithOrganizer) {
+            return res.status(404).json({ message: 'Club not found' });
+        }
+        if (!clubWithOrganizer.Organizer) {
+            // This check might be redundant if Organizer is required, but it's good for safety
+            return res.status(404).json({ message: 'Organizer not found' });
+        }
+        res.json({ Organizer: clubWithOrganizer.Organizer });
+    } catch (error) {
+        console.error("Error fetching club organizer:", error);
+        res.status(500).send('Server error');
     }
-    res.json({ Organizer: club.Organizer });
 };
 
 exports.fetchClubAttribute = (attributeName) => {
