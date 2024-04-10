@@ -13,6 +13,9 @@ connectToMongoDB();
 
 // Middleware
 server.use(cors());
+server.use(cors({
+  origin: process.env.FRONTEND_ORIGIN // Adjust the port and protocol to match your frontend
+}));
 server.use(express.json()); // for parsing application/json
 
 // Test route
@@ -29,7 +32,7 @@ server.use('/api/clubs', clubRoutes);
 // Use book routes
 server.use('/api/books', bookRoutes);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

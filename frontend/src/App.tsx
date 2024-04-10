@@ -7,6 +7,7 @@ import PublicProfile from './components/PublicProfile';
 import BookClub from './components/BookClub';
 import Header from './components/Header';
 import Books from './components/Books';
+import Book from './components/Book';
 import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from './database';
 import { User, ObjectId } from './components/types';
 import Search from './components/Search';
@@ -23,8 +24,8 @@ function App() {
       <div>
         <Routes>
           <Route path="/" element={<Navigate to="profile"/>} />
-          <Route path="profile" element={<Profile firstName="John" lastName="Doe" />} />
-          <Route path="bookclub" element={<BookClub />} />
+          <Route path="profile" element={<PublicProfile/>} />
+          <Route path="bookclub" element={<BookClub bookclubs={bookclubs} />} />
           <Route path="search/*" element={<Search/>}/>
           <Route path="Book/:bookId" element={<Book/>}/>
         </Routes>

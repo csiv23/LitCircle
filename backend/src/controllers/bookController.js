@@ -1,7 +1,7 @@
 const Book = require('../models/book');
 
 exports.getBooks = async (req, res) => {
-    console.log("Fetching users...");
+    console.log("Fetching books...");
     try {
         const books = await Book.find(); // Example query
         console.log(books); // Log the query result to debug
