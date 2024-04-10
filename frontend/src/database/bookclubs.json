@@ -1,0 +1,28 @@
+{
+    "bookclubs": [
+      {
+        "clubId": "1",
+        "name": "Classic Book Club",
+        "description": "A book club dedicated to reading and discussing classic literature.",
+        "members": ["0", "2"],
+        "booksRead": ["1", "2", "3"],
+        "wishlist": ["4", "5"],
+        "currentBook": "3",
+        "nextMeeting": "2024-04-15T18:00:00.000Z",
+        "organizer": "0",
+        "clubImage": "friends.jpeg"
+      },
+      {
+        "clubId": "2",
+        "name": "Sci-Fi Book Club",
+        "description": "A book club focused on exploring the world of science fiction literature.",
+        "members": ["0", "1", "2"],
+        "booksRead": [],
+        "wishlist": [],
+        "currentBook": "2",
+        "nextMeeting": "2024-04-20T19:00:00.000Z",
+        "organizer": "1",
+        "clubImage": "friends.jpeg"
+      }
+    ]
+  }

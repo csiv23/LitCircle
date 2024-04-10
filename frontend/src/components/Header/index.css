@@ -1,0 +1,11 @@
+.header-row {
+    display: flex;
+    flex-direction: row;
+}
+.header-icon {
+    margin-right: 20px;
+    list-style-type: none;
+}
+.header-icon a{
+    text-decoration: none;
+}
