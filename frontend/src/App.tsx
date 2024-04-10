@@ -1,45 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {HashRouter} from "react-router-dom";
 import {Routes, Route, Navigate} from "react-router";
 import './App.css';
-import Profile from './components/Profile';
+import MyProfile from './components/MyProfile';
+import PublicProfile from './components/PublicProfile';
 import BookClub from './components/BookClub';
-import Book from './components/Book';
+import Header from './components/Header';
+import Books from './components/Books';
+import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from './database';
+import { User, ObjectId } from './components/types';
 
 function App() {
-  const bookData = {
-    title: "Sample Book Title",
-    author: "John Doe",
-    coverImageUrl: "sample_cover.jpg",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed accumsan leo eu lorem tincidunt, eget fringilla nulla tincidunt. Duis vel ex vel sem fermentum tincidunt nec nec dolor.",
-    reviews: ["Great book!", "Highly recommended."],
-    purchaseLinks: [
-        { name: "Amazon", url: "https://www.amazon.com/sample-book" },
-        { name: "Barnes & Noble", url: "https://www.barnesandnoble.com/sample-book" }
-    ],
-    currentClubs: ["Best Friends Reading"]
-  };
+  const [books, setBooks] = useState<any>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [bookclubs, setBookclubs] = useState<any[]>([]);
+
   return (
-    // <HashRouter>
-    //   <div>
-    //     <Routes>
-    //       <Route path="/" element={<Navigate to="profile"/>} />
-    //       <Route path="profile" element={<Profile firstName="John" lastName="Doe" />} />
-    //       <Route path="bookclub" element={<BookClub />} />
-    //     </Routes>
-    //   </div>
-    // </HashRouter>
-    <div>
-      <Book 
-                title={bookData.title}
-                author={bookData.author}
-                coverImageUrl={bookData.coverImageUrl}
-                description={bookData.description}
-                reviews={bookData.reviews}
-                purchaseLinks={bookData.purchaseLinks}
-                currentClubs={bookData.currentClubs}
-        />
-    </div>
+    <HashRouter>
+      <div>
+        <Routes>
+          <Route path="/" element={<Navigate to="profile"/>} />
+          <Route path="profile/:userId" element={<MyProfile />} />
+          <Route path="public-profile/:userId" element={<PublicProfile />} />
+          <Route path="bookclub/:clubId" element={<BookClub bookclubs={bookclubs}/>} />
+          {/* <Route path="book" element={<Books book={bookData} />} /> */}
+          <Route path="header" element={<Header />}/>
+        </Routes>
+      </div>
+    </HashRouter>
   );
 }
 

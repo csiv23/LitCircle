@@ -1,0 +1,69 @@
+{
+  "books": [
+    {
+      "bookId": "1",
+      "title": "Fifty Shades of Grey",
+      "author": "E.L. James",
+      "coverImage": "fifty_shades.jpg",
+      "description": "Fifty Shades of Grey is a novel by British author E. L. James. It is the first instalment in the Fifty Shades trilogy that traces the deepening relationship between a college graduate, Anastasia Steele, and a young business magnate, Christian Grey. It is notable for its explicitly erotic scenes featuring elements of sexual practices involving BDSM (bondage/discipline, dominance/submission, and sadism/masochism).",
+      "clubsReading": [],
+      "readers": [],
+      "purchaseLinks": [
+        { "name": "Amazon", "url": "https://www.amazon.com/Fifty-Shades-Grey-E-L-James" },
+        { "name": "Barnes & Noble", "url": "https://www.barnesandnoble.com/w/fifty-shades-of-grey-e-l-james" }
+      ]
+    },
+    {
+      "bookId": "2",
+      "title": "My Year of Rest and Relaxation",
+      "author": "Ottessa Moshfegh",
+      "coverImage": "rest_and_relaxation.jpg",
+      "description": "My Year of Rest and Relaxation is a darkly comic novel by Ottessa Moshfegh. It follows a young woman in New York City who decides to take a year off from life, spending most of her days in a medicated haze while trying to achieve a prolonged sleep. The novel explores themes of alienation, depression, and the search for meaning in contemporary society.",
+      "clubsReading": [],
+      "readers": [],
+      "purchaseLinks": [
+        { "name": "Amazon", "url": "https://www.amazon.com/My-Year-Rest-Relaxation-Novel" },
+        { "name": "Barnes & Noble", "url": "https://www.barnesandnoble.com/w/my-year-of-rest-and-relaxation-ottessa-moshfegh" }
+      ]
+    },
+    {
+      "bookId": "3",
+      "title": "Pride and Prejudice",
+      "author": "Jane Austen",
+      "coverImage": "pride_and_prejudice.jpg",
+      "description": "A classic novel that follows the romantic entanglements of the Bennett sisters in Georgian England.",
+      "clubsReading": [],
+      "readers": [],
+      "purchaseLinks": [
+        { "name": "Amazon", "url": "https://www.amazon.com/pride-and-prejudice" },
+        { "name": "Barnes & Noble", "url": "https://www.barnesandnoble.com/pride-and-prejudice" }
+      ]
+    },
+    {
+      "bookId": "4",
+      "title": "Jane Eyre",
+      "author": "Charlotte Brontë",
+      "coverImage": "jane_eyre.jpg",
+      "description": "The story of an orphaned governess who falls in love with her brooding employer, Mr. Rochester, and discovers secrets of his past.",
+      "clubsReading": [],
+      "readers": [],
+      "purchaseLinks": [
+        { "name": "Amazon", "url": "https://www.amazon.com/jane-eyre" },
+        { "name": "Barnes & Noble", "url": "https://www.barnesandnoble.com/jane-eyre" }
+      ]
+    },
+    {
+      "bookId": "5",
+      "title": "Wuthering Heights",
+      "author": "Emily Brontë",
+      "coverImage": "wuthering_heights.jpg",
+      "description": "A tale of passion, revenge, and the destructive power of love, set in the wild Yorkshire moors.",
+      "clubsReading": [],
+      "readers": [],
+      "purchaseLinks": [
+        { "name": "Amazon", "url": "https://www.amazon.com/wuthering-heights" },
+        { "name": "Barnes & Noble", "url": "https://www.barnesandnoble.com/wuthering-heights" }
+      ]
+    }
+  ]
+}
