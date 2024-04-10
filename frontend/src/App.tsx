@@ -5,6 +5,7 @@ import './App.css';
 import Profile from './components/Profile';
 import BookClub from './components/BookClub';
 import Book from './components/Book';
+import Search from './components/Search';
 
 function App() {
   const bookData = {
@@ -20,17 +21,21 @@ function App() {
     currentClubs: ["Best Friends Reading"]
   };
   return (
-    // <HashRouter>
-    //   <div>
-    //     <Routes>
-    //       <Route path="/" element={<Navigate to="profile"/>} />
-    //       <Route path="profile" element={<Profile firstName="John" lastName="Doe" />} />
-    //       <Route path="bookclub" element={<BookClub />} />
-    //     </Routes>
-    //   </div>
-    // </HashRouter>
+
     <div>
-      <Book 
+          <HashRouter>
+      <div>
+        <Routes>
+          <Route path="/" element={<Navigate to="profile"/>} />
+          <Route path="profile" element={<Profile firstName="John" lastName="Doe" />} />
+          <Route path="bookclub" element={<BookClub />} />
+          <Route path="search/*" element={<Search/>}/>
+          <Route path="Book/:bookId" element={<Book/>}/>
+        </Routes>
+      </div>
+    </HashRouter>
+      {/* <Search/> */}
+      {/* <Book 
                 title={bookData.title}
                 author={bookData.author}
                 coverImageUrl={bookData.coverImageUrl}
@@ -38,7 +43,7 @@ function App() {
                 reviews={bookData.reviews}
                 purchaseLinks={bookData.purchaseLinks}
                 currentClubs={bookData.currentClubs}
-        />
+        /> */}
     </div>
   );
 }
