@@ -9,11 +9,11 @@ function Login() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     
-    const currentUserId = useSelector((state: any) => state.users.currentUser);
-    console.log(currentUserId);
+    const currentUser = useSelector((state: any) => state.users.currentUser);
+    // console.log(`currentUser: ${JSON.stringify(currentUser["_id"])}`);
     return (
         <div>
-            {currentUserId ? (
+            {currentUser ? (
                 <>
                     <p>You are logged in!</p>
                     <button onClick={() => firebaseClient.logout(firebaseAuth)}>Logout</button>
