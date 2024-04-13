@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { Auth, getAuth } from "firebase/auth";
 import { User, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import axios from "axios";
+import { useState } from "react";
 
 // Your web app's Firebase configuration
 // TODO: Put the apiKey in ENV
@@ -35,14 +36,16 @@ export const signIn = async (email: string, password: string) => {
   // console.log(`Got the user from MongoDB via axios! Response:${JSON.stringify(authUser)}`);
 }
 
-export const signUp = async (email: string, password: string, authUser: User | null) => {
+export const signUp = async (email: string, password: string) => {
+  let authUserId = "";
   // Firebase's register function
   createUserWithEmailAndPassword(firebaseAuth, email, password)
   .then((userCredentials) => {
-      console.log(`Signed Up! UserCredentials: ${JSON.stringify(userCredentials.user)}`);
+    authUserId = userCredentials.user.uid;
+    console.log(`Signed Up! UserCredentials: ${JSON.stringify(userCredentials.user)}`);
   })
   .catch((error) => {
-      console.log(error);
+    console.log(error);
   });
 
   const userData = {
@@ -50,12 +53,12 @@ export const signUp = async (email: string, password: string, authUser: User | n
       Password: password,
       Email: email,
       role: 'axios_role',
-      uid: authUser?.uid
+      uid: authUserId
   }
 
   // Sending POST request to MongoDB endpoint to create new user
   const response = await axios.post(`http://localhost:4000/api/users/register`, userData);
-  console.log(`Sent axios post request to register user! Response: ${JSON.stringify(response.data)}`);
+  console.log(`Registered user via Axios POST request. MongoDB Response: ${JSON.stringify(response.data)}`);
 }
 
 export const logout = async (auth: Auth) => {

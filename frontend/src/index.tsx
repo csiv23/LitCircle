@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import Login from './components/Login';
 import store from './store';
 import { Provider } from "react-redux";
+import CurrentUser from './components/CurrentUser';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,8 +14,10 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Login />
-      <App />
+      <CurrentUser>
+        <Login />
+        <App />
+      </CurrentUser>
     </Provider>
   </React.StrictMode>
 );
