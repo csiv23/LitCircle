@@ -4,14 +4,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Login from './components/Login';
+import store from './store';
+import { Provider } from "react-redux";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <Login />
-    <App />
+    <Provider store={store}>
+      <Login />
+      <App />
+    </Provider>
   </React.StrictMode>
 );
 
