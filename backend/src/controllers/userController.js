@@ -147,6 +147,27 @@ exports.getFollowers = async (req, res) => {
     }
 };
 
+// Handler for fetching the list of followers of a specific user.
+exports.getFollowing = async (req, res) => {
+    // Extract the userId from the request parameters.
+    const { userId } = req.params;
+
+    try {
+        // Use the findById method to locate the user by their ID and populate the Followers field.
+        // This effectively dereferences the user IDs in the Followers array to return full user documents.
+        const user = await User.findById(userId).populate('Following');
+
+        // If successful, send back the populated Followers array in the response.
+        res.json(user.Following);
+    } catch (error) {
+        // Log any errors encountered during the operation.
+        console.error("Error getting followed users:", error);
+
+        // Send a 500 Internal Server Error status code and message if an error occurs.
+        res.status(500).send('Server error');
+    }
+};
+
 exports.getUserWishlist = async (req, res) => {
     const { userId } = req.params; // Extract the userId from the URL parameter
 
