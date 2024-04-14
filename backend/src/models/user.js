@@ -15,6 +15,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    uid: {
+        type: String,
+        required: true
+    },
     Following: [{
         type: Schema.Types.ObjectId,
         ref: 'User'
