@@ -254,3 +254,22 @@ exports.addBookToBooksRead = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+// Route to delete a user from the database
+exports.deleteUser = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Find the user by ID and remove them from the database
+        const deletedUser = await User.findByIdAndDelete(userId);
+
+        if (!deletedUser) {
+            return res.status(404).send('User not found');
+        }
+
+        res.status(200).send('User deleted successfully');
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        res.status(500).send('Server error');
+    }
+};
