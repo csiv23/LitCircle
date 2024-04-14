@@ -273,3 +273,33 @@ exports.deleteUser = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+// Route to return an array of the User's next meetings from all of their clubs
+exports.getUserNextMeetings = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Find the user by ID and deeply populate the BookClubs field with the associated club details
+        const user = await User.findById(userId).populate({
+            path: 'BookClubs.ClubId',  // Corrected the path to populate
+            populate: { path: 'NextMeeting' }  // Populate the NextMeeting field of the Club
+        });
+
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        // Map through the populated BookClubs to extract the next meeting details
+        const nextMeetings = user.BookClubs.map(bookClub => ({
+            ClubId: bookClub.ClubId._id,  // Extracting the Club ID
+            ClubName: bookClub.ClubId.Name,  // Optional: also provide the club name
+            NextMeetingDate: bookClub.ClubId.NextMeeting.Date,  // Extract the next meeting date
+            NextMeetingLocation: bookClub.ClubId.NextMeeting.Location  // Extract the meeting location
+        }));
+
+        res.json(nextMeetings);  // Send the next meetings info as a response
+    } catch (error) {
+        console.error("Error fetching user's next meetings:", error);
+        res.status(500).send('Server error');
+    }
+};

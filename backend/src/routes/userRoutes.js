@@ -3,7 +3,7 @@ const router = express.Router();
 const {
     getUsers, getUser, registerUser, loginUser, updateUserProfile,
     followUser, getFollowers, getUserWishlist, addBookToWishlist, getUserClubs, 
-    getUserBooksRead, addBookToBooksRead, deleteUser
+    getUserBooksRead, addBookToBooksRead, deleteUser, getUserNextMeetings
 } = require('../controllers/userController');
 
 router.get('/', getUsers);
@@ -19,5 +19,6 @@ router.get('/:userId/clubs', getUserClubs);
 router.get('/:userId/booksread', getUserBooksRead)
 router.patch('/:userId/booksread', addBookToBooksRead);
 router.delete('/:userId', deleteUser);
+router.get('/:userId/nextmeetings', getUserNextMeetings);
 
 module.exports = router;
