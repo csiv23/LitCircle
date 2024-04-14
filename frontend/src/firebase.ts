@@ -24,7 +24,7 @@ export const signIn = async (email: string, password: string) => {
   // Firebase's signIn function
   signInWithEmailAndPassword(firebaseAuth, email, password)
   .then((userCredentials) => {
-      // console.log(`Signed In! UserCredentials: ${JSON.stringify(authUser)}`);
+      console.log(`Signed In! UserCredentials: ${JSON.stringify(userCredentials.user)}`);
   })
   .catch((error) => {
       console.log(error);
@@ -39,10 +39,11 @@ export const signIn = async (email: string, password: string) => {
 export const signUp = async (email: string, password: string) => {
   let authUserId = "";
   // Firebase's register function
-  createUserWithEmailAndPassword(firebaseAuth, email, password)
+  await createUserWithEmailAndPassword(firebaseAuth, email, password)
   .then((userCredentials) => {
     authUserId = userCredentials.user.uid;
     console.log(`Signed Up! UserCredentials: ${JSON.stringify(userCredentials.user)}`);
+    // console.log(userCredentials.user);
   })
   .catch((error) => {
     console.log(error);

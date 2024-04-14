@@ -47,7 +47,8 @@ exports.registerUser = async (req, res) => {
             LastName,
             Password,
             Email,
-            role
+            role,
+            uid
         });
 
         await user.save();
