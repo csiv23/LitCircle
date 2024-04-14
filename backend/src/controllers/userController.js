@@ -31,7 +31,7 @@ exports.getUser = async (req, res) => {
 // Function to register a new user
 // TODO: Implement w/ FireBase
 exports.registerUser = async (req, res) => {
-    const { Username, Password, Email, role } = req.body;
+    const { Username, FirstName, LastName, Password, Email } = req.body;
 
     try {
         // Check if the user already exists
@@ -43,6 +43,8 @@ exports.registerUser = async (req, res) => {
         // Create a new user
         user = new User({
             Username,
+            FirstName,
+            LastName,
             Password,
             Email,
             role
@@ -84,12 +86,12 @@ exports.loginUser = async (req, res) => {
 // Update user profile
 exports.updateUserProfile = async (req, res) => {
     const { userId } = req.params;
-    const { name, email } = req.body;
+    const { Username, Email, FirstName, LastName } = req.body;
 
     try {
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            { $set: { Username: name, Email: email }},
+            { $set: { Username: Username, Email: Email, FirstName: FirstName, LastName: LastName } },
             { new: true }
         );
         res.json(updatedUser);
@@ -108,13 +110,13 @@ exports.followUser = async (req, res) => {
         // Add userIdToFollow to the Following array of the follower
         await User.findByIdAndUpdate(
             userId,
-            { $push: { Following: userIdToFollow }},
+            { $push: { Following: userIdToFollow } },
             { new: true }
         );
         // Add userId to the Followers array of the followed user
         await User.findByIdAndUpdate(
             userIdToFollow,
-            { $push: { Followers: userId }},
+            { $push: { Followers: userId } },
             { new: true }
         );
         res.status(204).send();
@@ -133,13 +135,13 @@ exports.getFollowers = async (req, res) => {
         // Use the findById method to locate the user by their ID and populate the Followers field.
         // This effectively dereferences the user IDs in the Followers array to return full user documents.
         const user = await User.findById(userId).populate('Followers');
-        
+
         // If successful, send back the populated Followers array in the response.
         res.json(user.Followers);
     } catch (error) {
         // Log any errors encountered during the operation.
         console.error("Error getting followers:", error);
-        
+
         // Send a 500 Internal Server Error status code and message if an error occurs.
         res.status(500).send('Server error');
     }
@@ -216,7 +218,7 @@ exports.getUserBooksRead = async (req, res) => {
 
     try {
         // Find the user by their ID
-        const user = await User.findById(userId).populate('BooksRead'); 
+        const user = await User.findById(userId).populate('BooksRead');
 
         if (!user) {
             return res.status(404).send('User not found');
