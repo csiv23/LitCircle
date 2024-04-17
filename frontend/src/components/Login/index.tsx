@@ -10,7 +10,7 @@ function Login() {
     const [password, setPassword] = useState("")
     
     const currentUser = useSelector((state: any) => state.users.currentUser);
-    // console.log(`currentUser: ${JSON.stringify(currentUser["_id"])}`);
+    console.log(`currentUser: ${JSON.stringify(currentUser)}`);
     return (
         <div>
             {currentUser ? (
