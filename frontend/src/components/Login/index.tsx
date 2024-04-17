@@ -4,6 +4,7 @@ import { User, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEma
 import axios from "axios";
 import * as firebaseClient from '../../firebase'
 import { useSelector } from "react-redux";
+import EditProfile from "../EditProfile";
 
 function Login() {
     const [email, setEmail] = useState("")
@@ -17,6 +18,7 @@ function Login() {
                 <>
                     <p>You are logged in!</p>
                     <button onClick={() => firebaseClient.logout(firebaseAuth)}>Logout</button>
+                    <EditProfile />
                 </>
             ) : (
                 <>

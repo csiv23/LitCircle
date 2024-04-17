@@ -1,5 +1,6 @@
 import axios from "axios";
 import { BookProps } from "./components/Book";
+import { User } from "./components/types";
 
 // TODO : MOVE THIS TO BACKEND ENV 
 // const API_KEY = process.env.BOOKS_API_KEY;
@@ -79,3 +80,23 @@ const axiosWithCredentials = axios.create({
     throw error;
   }
 };
+
+export const updateUserProfile = async (user: User | null) => {
+  try {
+    console.log("GOT the user: " + JSON.stringify(user));
+    const response = await axios.patch(`${MONGOOSE_URL}/users/${user?.userId}`);
+    console.log("updateUserProfile: " + response.data);
+    // TODO: Update the firebase database
+    return response.data;
+  }
+  catch (error) {
+    console.error("Failed to update user profile: ", error);
+    throw error;
+  }
+}; 
+
+// export const updateUserProfile = async (user: User) => {
+//   const response = await axios.patch(`${MONGOOSE_URL}/users/${user.userId}`);
+//   console.log("updateUserProfile: " + response.data);
+//   return response.data;
+// };  
