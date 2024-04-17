@@ -85,12 +85,12 @@ exports.loginUser = async (req, res) => {
 // Update user profile
 exports.updateUserProfile = async (req, res) => {
     const { userId } = req.params;
-    const { email, password } = req.body;
+    const { email, password, username } = req.body;
 
     try {
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            { $set: { Email: email, Password: password }},
+            { $set: { Email: email, Password: password, Username: username }},
             { new: true }
         );
         res.json(updatedUser);

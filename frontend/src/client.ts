@@ -82,12 +82,12 @@ const axiosWithCredentials = axios.create({
 };
 
 // Only updates the 
-export const updateUserProfile = async (mongoId: string, uid: string, email: string, password: string) => {
+export const updateUserProfile = async (mongoId: string, uid: string, email: string, password: string, username: string) => {
   try {
     console.log("GOT the _id: " + mongoId);
     console.log("GOT the uid: " + uid);
     // Update the user in mongoDB
-    const response = await axios.patch(`${MONGOOSE_URL}/users/${mongoId}`, {email, password}); // {email: email, password: password}
+    const response = await axios.patch(`${MONGOOSE_URL}/users/${mongoId}`, {email, password, username}); // {email: email, password: password}
     console.log("updateUserProfile: " + response.data);
     // TODO: Update the user in firebase. We only need to update the email and password
     // Call firebase.ts client functions to update email and password

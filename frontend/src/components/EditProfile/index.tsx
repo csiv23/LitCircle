@@ -11,7 +11,7 @@ export default function EditProfile() {
 
     const updateProfile = async () => {
         console.log("Updating profile: " + JSON.stringify(updatedUser));
-        await client.updateUserProfile(currentUser._id, currentUser.uid, updatedUser.Email, updatedUser.Password);
+        await client.updateUserProfile(currentUser._id, currentUser.uid, updatedUser.Email, updatedUser.Password, updatedUser.Username);
         console.log("Saved profile!");
     }
 
@@ -20,6 +20,9 @@ export default function EditProfile() {
             <h1>Edit Profile</h1>
             {currentUser && (
                 <div>
+                    Username:
+                    <input value={updatedUser.Username} onChange={(e) =>
+                        setUpdatedUser({ ...updatedUser, Username: e.target.value })} />
                     Email:
                     <input value={updatedUser.Email} onChange={(e) =>
                         setUpdatedUser({ ...updatedUser, Email: e.target.value })} />
