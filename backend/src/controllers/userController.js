@@ -31,7 +31,7 @@ exports.getUser = async (req, res) => {
 // Function to register a new user
 // TODO: Implement w/ FireBase
 exports.registerUser = async (req, res) => {
-    const { Username, Password, Email, role } = req.body;
+    const { Username, FirstName, LastName, Password, Email } = req.body;
 
     try {
         // Check if the user already exists
@@ -43,6 +43,8 @@ exports.registerUser = async (req, res) => {
         // Create a new user
         user = new User({
             Username,
+            FirstName,
+            LastName,
             Password,
             Email,
             role
@@ -84,12 +86,12 @@ exports.loginUser = async (req, res) => {
 // Update user profile
 exports.updateUserProfile = async (req, res) => {
     const { userId } = req.params;
-    const { name, email } = req.body;
+    const { Username, Email, FirstName, LastName } = req.body;
 
     try {
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            { $set: { Username: name, Email: email }},
+            { $set: { Username: Username, Email: Email, FirstName: FirstName, LastName: LastName } },
             { new: true }
         );
         res.json(updatedUser);
@@ -108,13 +110,13 @@ exports.followUser = async (req, res) => {
         // Add userIdToFollow to the Following array of the follower
         await User.findByIdAndUpdate(
             userId,
-            { $push: { Following: userIdToFollow }},
+            { $push: { Following: userIdToFollow } },
             { new: true }
         );
         // Add userId to the Followers array of the followed user
         await User.findByIdAndUpdate(
             userIdToFollow,
-            { $push: { Followers: userId }},
+            { $push: { Followers: userId } },
             { new: true }
         );
         res.status(204).send();
@@ -133,13 +135,34 @@ exports.getFollowers = async (req, res) => {
         // Use the findById method to locate the user by their ID and populate the Followers field.
         // This effectively dereferences the user IDs in the Followers array to return full user documents.
         const user = await User.findById(userId).populate('Followers');
-        
+
         // If successful, send back the populated Followers array in the response.
         res.json(user.Followers);
     } catch (error) {
         // Log any errors encountered during the operation.
         console.error("Error getting followers:", error);
-        
+
+        // Send a 500 Internal Server Error status code and message if an error occurs.
+        res.status(500).send('Server error');
+    }
+};
+
+// Handler for fetching the list of followers of a specific user.
+exports.getFollowing = async (req, res) => {
+    // Extract the userId from the request parameters.
+    const { userId } = req.params;
+
+    try {
+        // Use the findById method to locate the user by their ID and populate the Followers field.
+        // This effectively dereferences the user IDs in the Followers array to return full user documents.
+        const user = await User.findById(userId).populate('Following');
+
+        // If successful, send back the populated Followers array in the response.
+        res.json(user.Following);
+    } catch (error) {
+        // Log any errors encountered during the operation.
+        console.error("Error getting followed users:", error);
+
         // Send a 500 Internal Server Error status code and message if an error occurs.
         res.status(500).send('Server error');
     }
@@ -216,7 +239,7 @@ exports.getUserBooksRead = async (req, res) => {
 
     try {
         // Find the user by their ID
-        const user = await User.findById(userId).populate('BooksRead'); 
+        const user = await User.findById(userId).populate('BooksRead');
 
         if (!user) {
             return res.status(404).send('User not found');
@@ -251,6 +274,55 @@ exports.addBookToBooksRead = async (req, res) => {
         res.json(updatedUser);
     } catch (error) {
         console.error("Error adding book to user's BooksRead:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+// Route to delete a user from the database
+exports.deleteUser = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Find the user by ID and remove them from the database
+        const deletedUser = await User.findByIdAndDelete(userId);
+
+        if (!deletedUser) {
+            return res.status(404).send('User not found');
+        }
+
+        res.status(200).send('User deleted successfully');
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+// Route to return an array of the User's next meetings from all of their clubs
+exports.getUserNextMeetings = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Find the user by ID and deeply populate the BookClubs field with the associated club details
+        const user = await User.findById(userId).populate({
+            path: 'BookClubs.ClubId',  // Corrected the path to populate
+            populate: { path: 'NextMeeting' }  // Populate the NextMeeting field of the Club
+        });
+
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        // Map through the populated BookClubs to extract the next meeting details
+        const nextMeetings = user.BookClubs.map(bookClub => ({
+            ClubId: bookClub.ClubId._id,  // Extracting the Club ID
+            ClubName: bookClub.ClubId.Name,  // Optional: also provide the club name
+            NextMeetingDate: bookClub.ClubId.NextMeeting.Date,  // Extract the next meeting date
+            NextMeetingLocation: bookClub.ClubId.NextMeeting.Location  // Extract the meeting location
+        }));
+
+        res.json(nextMeetings);  // Send the next meetings info as a response
+    } catch (error) {
+        console.error("Error fetching user's next meetings:", error);
         res.status(500).send('Server error');
     }
 };

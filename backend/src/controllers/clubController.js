@@ -407,3 +407,20 @@ exports.setNewMeeting = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+// Route to search clubs by name or partial name
+exports.searchClubs = async (req, res) => {
+    const { name } = req.query;
+
+    if (!name) {
+        return res.status(400).json({ message: 'Name parameter is required' });
+    }
+
+    try {
+        const clubs = await Club.find({ Name: { $regex: name, $options: 'i' } });
+        res.json(clubs);
+    } catch (error) {
+        console.error('Error searching clubs:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
