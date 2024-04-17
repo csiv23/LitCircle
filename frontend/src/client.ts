@@ -6,7 +6,7 @@ import { User } from "./components/types";
 // const API_KEY = process.env.BOOKS_API_KEY;
 const API_KEY = "AIzaSyBcnaenOTl-FLXJc3vyE_LSR3mwKa_u3Us"
 const GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1"
-const MONGOOSE_URL = "https://localhost:4000/api"
+const MONGOOSE_URL = "http://localhost:4000/api"
 
 function cleanBookObj (bookData: any) : BookProps {
   let bookClean = {
@@ -81,12 +81,16 @@ const axiosWithCredentials = axios.create({
   }
 };
 
-export const updateUserProfile = async (user: User | null) => {
+// Only updates the 
+export const updateUserProfile = async (mongoId: string, uid: string, email: string, password: string) => {
   try {
-    console.log("GOT the user: " + JSON.stringify(user));
-    const response = await axios.patch(`${MONGOOSE_URL}/users/${user?.userId}`);
+    console.log("GOT the _id: " + mongoId);
+    console.log("GOT the uid: " + uid);
+    // Update the user in mongoDB
+    const response = await axios.patch(`${MONGOOSE_URL}/users/${mongoId}`, {email, password}); // {email: email, password: password}
     console.log("updateUserProfile: " + response.data);
-    // TODO: Update the firebase database
+    // TODO: Update the user in firebase. We only need to update the email and password
+    // Call firebase.ts client functions to update email and password
     return response.data;
   }
   catch (error) {
@@ -96,7 +100,15 @@ export const updateUserProfile = async (user: User | null) => {
 }; 
 
 // export const updateUserProfile = async (user: User) => {
-//   const response = await axios.patch(`${MONGOOSE_URL}/users/${user.userId}`);
-//   console.log("updateUserProfile: " + response.data);
-//   return response.data;
-// };  
+//   try {
+//     console.log("GOT the user: " + JSON.stringify(user));
+//     const response = await axios.patch(`${MONGOOSE_URL}/users/${user.userId}`);
+//     console.log("updateUserProfile: " + response.data);
+//     // TODO: Update the firebase database
+//     return response.data;
+//   }
+//   catch (error) {
+//     console.error("Failed to update user profile: ", error);
+//     throw error;
+//   }
+// }; 

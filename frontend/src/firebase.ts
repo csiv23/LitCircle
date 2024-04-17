@@ -32,7 +32,7 @@ export const signIn = async (email: string, password: string) => {
 
   // Sending GET request to MongoDB endpoint to retrieve user. Ideally, we'd like to use
   // the user's firebase uid rather than hardcoding their MongoDB user id
-  const response = await axios.get(`http://localhost:4000/api/users/6612e6d0f74acd763f3a7ccb`);
+  const response = await axios.get(`http://localhost:4000/api/users/661fdda08057d32f04114016`);
   // console.log(`Got the user from MongoDB via axios! Response:${JSON.stringify(authUser)}`);
 }
 
@@ -65,3 +65,5 @@ export const signUp = async (email: string, password: string) => {
 export const logout = async (auth: Auth) => {
   await signOut(auth);
 }
+
+// TODO: create firebase update email and password
