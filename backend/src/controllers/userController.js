@@ -61,21 +61,17 @@ exports.registerUser = async (req, res) => {
 
 // TODO: implement using FireBase
 exports.loginUser = async (req, res) => {
-    const { Email, Password } = req.body;
-
+    const { email, password } = req.body;
+    console.log("userController.js loginUser email: " + email);
+    console.log("userController.js loginUser password: " + password);
     try {
-        let user = await User.findOne({ Email });
+        // TODO: Hash password????
+        const user = await User.findOne({ Email: email, Password: password });
+        console.log("User.findOne(): " + user);
         if (!user) {
-            return res.status(400).json({ msg: 'User email does not exist' });
+            return res.status(400).json({ msg: 'User login does not exist' });
         }
-
-        // Directly compare plaintext passwords
-        // TODO: Hash(?)
-        if (Password !== user.Password) {
-            return res.status(400).json({ msg: 'Invalid password' });
-        }
-
-        res.json({ userID: user.id });
+        res.json(user);
     } catch (error) {
         console.error("Error logging in user:", error);
         res.status(500).send('Server error');

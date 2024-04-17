@@ -4,6 +4,7 @@ import { User, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEma
 import axios from "axios";
 import * as firebaseClient from '../../firebase'
 import { useSelector } from "react-redux";
+import Signin from "./Signin";
 
 function Login() {
     const [email, setEmail] = useState("")
@@ -20,16 +21,9 @@ function Login() {
                 </>
             ) : (
                 <>
-                    <input value={email} type="email" placeholder="email"
-                    onChange={(e) => {
-                        setEmail(e.target.value);
-                    }}/>
-                    <input value={password} type="password" placeholder="password"
-                        onChange={(e) => {
-                            setPassword(e.target.value);
-                        }}/>
-                    <button onClick={() => firebaseClient.signIn(email, password)}>Login</button>
-                    <button onClick={() => firebaseClient.signUp(email, password)}>Create Account</button>
+                    <div>
+                        <Signin />
+                    </div>
                 </>
             )}
         </div>

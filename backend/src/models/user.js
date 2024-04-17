@@ -17,7 +17,7 @@ const userSchema = new Schema({
     },
     uid: {
         type: String,
-        required: true
+        required: false
     },
     Following: [{
         type: Schema.Types.ObjectId,

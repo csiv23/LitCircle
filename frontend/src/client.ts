@@ -1,11 +1,13 @@
 import axios from "axios";
 import { BookProps } from "./components/Book";
+import { User } from "./components/types";
 
 // TODO : MOVE THIS TO BACKEND ENV 
 // const API_KEY = process.env.BOOKS_API_KEY;
 const API_KEY = "AIzaSyBcnaenOTl-FLXJc3vyE_LSR3mwKa_u3Us"
 const GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1"
-const MONGOOSE_URL = "https://localhost:4000/api"
+const MONGOOSE_URL = "http://localhost:4000/api"
+const USERS_API_URL = `${MONGOOSE_URL}/users`
 
 function cleanBookObj (bookData: any) : BookProps {
   let bookClean = {
@@ -62,7 +64,7 @@ const axiosWithCredentials = axios.create({
  });
  
 
- export const getUsers = async () => {
+export const getUsers = async () => {
   try {
     const url = `${MONGOOSE_URL}/users`;
     // const response = await fetch(url);
@@ -79,3 +81,9 @@ const axiosWithCredentials = axios.create({
     throw error;
   }
 };
+
+export const signin = async (credentials: User) => {
+  console.log("Client.ts signin credentials: " + JSON.stringify(credentials));
+  const response = await axios.post(`${USERS_API_URL}/login`, credentials);
+  return response.data;
+}
