@@ -7,10 +7,11 @@ const {
     getClubs, getClub, createClub, updateClubInfo, joinClub, 
     leaveClub, fetchClubMembers, fetchClubOrganizer, recommendBookForClub, 
     setCurrentBook, markCurrentBookAsRead, deleteClub, addBookToWishlist, deleteBookFromWishlist, 
-    setNewMeeting
+    setNewMeeting, searchClubs
 } = require('../controllers/clubController');
 
 router.get('/', getClubs);
+router.get('/search', searchClubs);
 router.get('/:clubId', getClub);
 router.patch('/:clubId', updateClubInfo);
 router.post('/', createClub)
