@@ -19,10 +19,8 @@ const axiosWithCredentials = axios.create({
  const fullTextSearch = async (text="") => {
    if (text !== "") {
     const results = await client.searchBooks(text);
-    // console.log("in search");
-    // console.log(results);
     setResults(results);
-    const users = await axiosWithCredentials.get(`${"https://localhost:4000/api"}/users`);
+    const users = await client.getUsers();
     console.log(users);
    }
  };

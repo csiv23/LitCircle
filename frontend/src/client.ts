@@ -5,7 +5,7 @@ import { BookProps } from "./components/Book";
 // const API_KEY = process.env.BOOKS_API_KEY;
 const API_KEY = "AIzaSyBcnaenOTl-FLXJc3vyE_LSR3mwKa_u3Us"
 const GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1"
-const MONGOOSE_URL = "https://localhost:4000/api"
+const MONGOOSE_URL = "http://localhost:4000/api"
 
 function cleanBookObj (bookData: any) : BookProps {
   let bookClean = {
@@ -65,17 +65,11 @@ const axiosWithCredentials = axios.create({
  export const getUsers = async () => {
   try {
     const url = `${MONGOOSE_URL}/users`;
-    // const response = await fetch(url);
-
-
     const response = await axiosWithCredentials.get(`${MONGOOSE_URL}/users`);
-    // console.log(response.json());
-    // return response.json();
     console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch users:", error);
-    // Consider throwing the error or handling it appropriately
     throw error;
   }
 };
