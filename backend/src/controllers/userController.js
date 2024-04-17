@@ -1,6 +1,6 @@
 const User = require('../models/user');
 const Book = require('../models/book');
-
+let currentUser = null;
 
 exports.getUsers = async (req, res) => {
     console.log("Fetching users...");
@@ -52,7 +52,7 @@ exports.registerUser = async (req, res) => {
         });
 
         await user.save();
-
+        currentUser = user;
         // Respond with the new user's ID
         res.json({ userID: user.id });
     } catch (error) {
@@ -64,8 +64,6 @@ exports.registerUser = async (req, res) => {
 // TODO: implement using FireBase
 exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
-    console.log("userController.js loginUser email: " + email);
-    console.log("userController.js loginUser password: " + password);
     try {
         // TODO: Hash password????
         const user = await User.findOne({ Email: email, Password: password });
@@ -73,6 +71,7 @@ exports.loginUser = async (req, res) => {
         if (!user) {
             return res.status(400).json({ msg: 'User login does not exist' });
         }
+        currentUser = user;
         res.json(user);
     } catch (error) {
         console.error("Error logging in user:", error);
@@ -271,6 +270,20 @@ exports.addBookToBooksRead = async (req, res) => {
         res.json(updatedUser);
     } catch (error) {
         console.error("Error adding book to user's BooksRead:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+exports.profile = async (req, res) => {
+    console.log("Fetching profile...");
+    try {
+        if (!currentUser) {
+            return res.status(404).send('No profile found');
+        }
+        console.log("Fetched profile: " + currentUser);
+        res.json(currentUser);
+    } catch (error) {
+        console.error("Error fetching profile:", error);
         res.status(500).send('Server error');
     }
 };

@@ -2,14 +2,15 @@ const express = require('express');
 const router = express.Router();
 const {
     getUsers, getUser, registerUser, loginUser, updateUserProfile,
-    followUser, getFollowers, getFollowing, getUserWishlist, addBookToWishlist, getUserClubs, 
-    getUserBooksRead, addBookToBooksRead, deleteUser, getUserNextMeetings
+    followUser, getFollowers, getUserWishlist, addBookToWishlist, getUserClubs, getUserBooksRead, addBookToBooksRead, profile
+    getFollowing, deleteUser, getUserNextMeetings
 } = require('../controllers/userController');
 
 router.get('/', getUsers);
 router.get('/:userId', getUser);
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+router.post("/profile", profile);
 router.patch('/:userId', updateUserProfile);
 router.patch('/:userId/follow', followUser);
 router.get('/:userId/followers', getFollowers);
