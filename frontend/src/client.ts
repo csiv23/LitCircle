@@ -83,11 +83,11 @@ export const getUsers = async () => {
 };
 
 export const signin = async (credentials: User) => {
-  console.log("Client.ts signin credentials: " + JSON.stringify(credentials));
   const response = await axios.post(`${USERS_API_URL}/login`, credentials);
   return response.data;
 }
 
 export const profile = async () => {
-  // const currentUser = await axios.
+  const response = await axios.post(`${USERS_API_URL}/profile`);
+  return response.data;
 }

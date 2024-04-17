@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { firebaseAuth } from "../../firebase";
 import axios from "axios";
+import * as client from "../../client";
 
 export default function CurrentUser({ children }: { children: any }) {
     // const dispatch = useDispatch();
@@ -27,16 +28,19 @@ export default function CurrentUser({ children }: { children: any }) {
     //     return () => unsubscribe();
     // }, [])
 
-    // const dispatch = useDispatch();
-    // const USERS_API = "http://localhost:4000/api/users";
-    // const fetchCurrentUser = async () => {
-    //     try {
-    //         const response = await axios.get(`${USERS_API}/${}`);
-    //     }
-    //     catch (error) {
-            
-    //     }
-    // }
+    const dispatch = useDispatch();
+    const fetchCurrentUser = async () => {
+        try {
+            const currentUser = await client.profile();
+            dispatch(setCurrentUser(currentUser));
+        }
+        catch (error) {
+            dispatch(setCurrentUser(null))
+        }
+    }
+    useEffect(() => {
+        fetchCurrentUser();
+    }, []);
 
     return children;
 }
