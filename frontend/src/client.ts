@@ -87,3 +87,7 @@ export const signin = async (credentials: User) => {
   const response = await axios.post(`${USERS_API_URL}/login`, credentials);
   return response.data;
 }
+
+export const profile = async () => {
+  // const currentUser = await axios.
+}
