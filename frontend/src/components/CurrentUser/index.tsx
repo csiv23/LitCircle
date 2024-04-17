@@ -6,6 +6,7 @@ import { firebaseAuth } from "../../firebase";
 import axios from "axios";
 
 export default function CurrentUser({ children }: { children: any }) {
+    const USERS_API = "http://localhost:4000/api/users";
     const dispatch = useDispatch();
     useEffect(() => {
         // onAuthStateChanged is always listening for changes in authentication state
@@ -13,8 +14,8 @@ export default function CurrentUser({ children }: { children: any }) {
         // about the current user via authUser
         const unsubscribe = onAuthStateChanged(firebaseAuth, async user => {
             if (user) {
-                // Set the current user
-                const response = await axios.get(`http://localhost:4000/api/users/6619fc391bdc52665322ec9c`);
+                // Set the current user from the MongoDB User table
+                const response = await axios.get(`${USERS_API}/6619fc391bdc52665322ec9c`);
                 console.log(`RESPONSE: ${JSON.stringify(response.data)}`);
                 dispatch(setCurrentUser(response.data));
             }
