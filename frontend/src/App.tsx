@@ -10,6 +10,7 @@ import Books from './components/Books';
 import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from './database';
 import { User, ObjectId } from './components/types';
 import Login from './components/Login';
+import EditProfile from './components/EditProfile';
 import GoogleAPI from './components/SearchBooks';
 import Home from './components/Home';
 
@@ -19,11 +20,13 @@ function App() {
     <div>
       <HashRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="profile"/>} />
-          <Route path="profile" element={<PublicProfile/>} />
+          <Route path="/" element={<Navigate to="login" />} />
+          <Route path='login' element={<Login />} />
+          <Route path="profile" element={<PublicProfile />} />
+          <Route path="myProfile/:userId" element={<MyProfile />} />
           <Route path="bookclub" element={<BookClubs />} />
-          <Route path="search/*" element={<GoogleAPI/>}/>
-          <Route path="Book/:bookId" element={<Books/>}/>
+          <Route path="search/*" element={<GoogleAPI />} />
+          <Route path="Book/:bookId" element={<Books />} />
         </Routes>
       </HashRouter>
     </div>

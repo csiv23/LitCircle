@@ -6,6 +6,7 @@ import Header from "../Header";
 import { useDispatch, useSelector } from "react-redux";
 import * as client from "../../client";
 import { useEffect, useState } from "react";
+import EditProfile from "../EditProfile";
 
 function getURL( book: Book  ) {
     return `/book/${book.title.replace(/\s+/g, '-').toLowerCase()}`
@@ -14,7 +15,8 @@ function getURL( book: Book  ) {
 function MyProfile() {
     const { userId } = useParams();
     const user = dbUsers.users.find((user) => user.userId === userId)
-    const [currentUser, setCurrentUser] = useState(null);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const currentUserRedux = useSelector((state: any) => state.users.currentUser);
     const navigate = useNavigate();
     useEffect(() => {
         const fetchUser = async () => {
@@ -42,6 +44,9 @@ function MyProfile() {
         navigate("/login");
     };
 
+    
+    console.log("CurrentUser MyProfile: " + JSON.stringify(currentUserRedux));
+
     return (
         <div>
             <Header />
@@ -55,10 +60,15 @@ function MyProfile() {
                     <div className="profile-name">
                         <h3>
                             {user.firstName} {user.lastName}
-                            <Link to={"/profile/:userId"}>
+                            <Link to={`/myProfile/${userId}/Edit`}>
                                 <button className="btn btn-secondary ml-2">Edit</button>
                             </Link>
                         </h3>
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <span className="mr-2">Username:</span> {currentUser?.username}
+                        </div>
                     </div>
                     <div className="row">
                         <div className="col-sm-6">

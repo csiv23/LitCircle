@@ -28,19 +28,20 @@ export default function CurrentUser({ children }: { children: any }) {
     //     return () => unsubscribe();
     // }, [])
 
+    useEffect(() => {
+        fetchCurrentUser();
+    }, []);
     const dispatch = useDispatch();
     const fetchCurrentUser = async () => {
         try {
             const currentUser = await client.profile();
+            console.log("CurrentUser before dispatch: " + JSON.stringify(currentUser));
             dispatch(setCurrentUser(currentUser));
         }
         catch (error) {
             dispatch(setCurrentUser(null));
         }
     }
-    useEffect(() => {
-        fetchCurrentUser();
-    }, []);
 
     return children;
 }
