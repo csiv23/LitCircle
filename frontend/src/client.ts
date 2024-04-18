@@ -81,16 +81,11 @@ const axiosWithCredentials = axios.create({
   }
 };
 
-// Only updates the 
-export const updateUserProfile = async (mongoId: string, uid: string, email: string, password: string, username: string) => {
+// Update the user in mongoDB
+export const updateUserProfile = async (mongoId: string, username: string, password: string) => {
   try {
-    console.log("GOT the _id: " + mongoId);
-    console.log("GOT the uid: " + uid);
-    // Update the user in mongoDB
-    const response = await axios.patch(`${MONGOOSE_URL}/users/${mongoId}`, {email, password, username}); // {email: email, password: password}
+    const response = await axios.patch(`${MONGOOSE_URL}/users/${mongoId}`, {username, password});
     console.log("updateUserProfile: " + response.data);
-    // TODO: Update the user in firebase. We only need to update the email and password
-    // Call firebase.ts client functions to update email and password
     return response.data;
   }
   catch (error) {
@@ -98,17 +93,3 @@ export const updateUserProfile = async (mongoId: string, uid: string, email: str
     throw error;
   }
 }; 
-
-// export const updateUserProfile = async (user: User) => {
-//   try {
-//     console.log("GOT the user: " + JSON.stringify(user));
-//     const response = await axios.patch(`${MONGOOSE_URL}/users/${user.userId}`);
-//     console.log("updateUserProfile: " + response.data);
-//     // TODO: Update the firebase database
-//     return response.data;
-//   }
-//   catch (error) {
-//     console.error("Failed to update user profile: ", error);
-//     throw error;
-//   }
-// }; 

@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { Auth, getAuth } from "firebase/auth";
+import { Auth, getAuth, updateEmail, updatePassword } from "firebase/auth";
 import { User, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import axios from "axios";
 import { useState } from "react";
@@ -67,3 +67,22 @@ export const logout = async (auth: Auth) => {
 }
 
 // TODO: create firebase update email and password
+export const updateUserEmail = async (email: string) => {
+  if (firebaseAuth.currentUser) {
+    updateEmail(firebaseAuth.currentUser, email).then(() => {
+      console.log("Updated email in Firebase!");
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+}
+
+export const updateUserPassword = async (password: string) => {
+  if (firebaseAuth.currentUser) {
+    updatePassword(firebaseAuth.currentUser, password).then(() => {
+      console.log("Updated password in Firebase!");
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+}

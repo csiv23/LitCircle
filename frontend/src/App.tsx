@@ -11,6 +11,7 @@ import Book from './components/Book';
 import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from './database';
 import { User, ObjectId } from './components/types';
 import Search from './components/Search';
+import Login from './components/Login';
 
 function App() {
   const [books, setBooks] = useState<any>([]);
@@ -23,7 +24,8 @@ function App() {
           <HashRouter>
       <div>
         <Routes>
-          <Route path="/" element={<Navigate to="profile"/>} />
+          <Route path="/" element={<Navigate to="login"/>} />
+          <Route path='login' element={<Login />}/>
           <Route path="profile" element={<PublicProfile/>} />
           <Route path="bookclub" element={<BookClub bookclubs={bookclubs} />} />
           <Route path="search/*" element={<Search/>}/>
