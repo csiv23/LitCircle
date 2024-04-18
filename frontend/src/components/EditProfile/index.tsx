@@ -1,9 +1,7 @@
 import { useSelector } from "react-redux";
-// import { User } from "../types";
 import { useState } from "react";
 import * as mongoClient from "../../client";
 import * as firebaseClient from "../../firebase";
-import { EmailAuthProvider, reauthenticateWithCredential, User } from "firebase/auth";
 
 export default function EditProfile() {
     const currentUser = useSelector((state: any) => state.users.currentUser);
