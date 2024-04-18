@@ -14,10 +14,9 @@ export default function CurrentUser({ children }: { children: any }) {
         // about the current user via authUser
         const unsubscribe = onAuthStateChanged(firebaseAuth, async user => {
             if (user) {
-                // Set the current user from the MongoDB User table
-                // TODO: Decide if we want to add another route to get user based on email instead of uid.
-                // - We have this user's uid (user.uid), but the current GET route requires the MongoDB id
-                const response = await axios.get(`${USERS_API}/661fdda08057d32f04114016`);
+                // Set the currentUser from MongoDB
+                console.log("CurrentUser.tsx email before axios.post: " + user.email);
+                const response = await axios.post(`${USERS_API}/getByEmail`, { Email: user.email });
                 console.log(`RESPONSE: ${JSON.stringify(response.data)}`);
                 dispatch(setCurrentUser(response.data));
             }

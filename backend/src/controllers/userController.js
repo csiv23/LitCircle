@@ -28,6 +28,21 @@ exports.getUser = async (req, res) => {
     }
 };
 
+exports.getUserByEmail = async (req, res) => {
+    const { Email } = req.body;
+    try {
+        const user = await User.findOne({ Email });
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+        console.log(user);
+        res.json(user);
+    } catch (error) {
+        console.error("Error fetching user by email:", error);
+        res.status(500).send('Server error');
+    }
+}
+
 // Function to register a new user
 // TODO: Implement w/ FireBase
 exports.registerUser = async (req, res) => {

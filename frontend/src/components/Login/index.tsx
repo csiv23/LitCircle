@@ -7,11 +7,21 @@ import { useSelector } from "react-redux";
 import EditProfile from "../EditProfile";
 
 function Login() {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    // const [isValidPassword, setIsValidPassword] = useState(true);
     const currentUser = useSelector((state: any) => state.users.currentUser);
     console.log(`currentUser: ${JSON.stringify(currentUser)}`);
+
+    // const signin = (email: string, password: string) => {
+    //     try {
+    //         firebaseClient.signIn(email, password);
+    //         setIsValidPassword(true);
+    //     }
+    //     catch (error) {
+    //         setIsValidPassword(false);
+    //     }
+    // }
     return (
         <div>
             {currentUser ? (
@@ -22,14 +32,16 @@ function Login() {
                 </>
             ) : (
                 <>
-                    <input value={email} type="email" placeholder="email"
-                    onChange={(e) => {
-                        setEmail(e.target.value);
-                    }}/>
-                    <input value={password} type="password" placeholder="password"
+                    <input value={email} type="email" placeholder="Email"
+                        onChange={(e) => {
+                            setEmail(e.target.value);
+                        }} />
+                    <input value={password} type="password" placeholder="Password"
                         onChange={(e) => {
                             setPassword(e.target.value);
-                        }}/>
+                        }} />
+                    {/* <button onClick={() => signin(email, password)}>Login</button> */}
+                    {/* {!isValidPassword && <span>Incorrect Password</span>} */}
                     <button onClick={() => firebaseClient.signIn(email, password)}>Login</button>
                     <button onClick={() => firebaseClient.signUp(email, password)}>Create Account</button>
                 </>

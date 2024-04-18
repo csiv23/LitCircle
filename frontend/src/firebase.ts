@@ -29,11 +29,6 @@ export const signIn = async (email: string, password: string) => {
   .catch((error) => {
       console.log(error);
   });
-
-  // Sending GET request to MongoDB endpoint to retrieve user. Ideally, we'd like to use
-  // the user's firebase uid rather than hardcoding their MongoDB user id
-  const response = await axios.get(`http://localhost:4000/api/users/661fdda08057d32f04114016`);
-  // console.log(`Got the user from MongoDB via axios! Response:${JSON.stringify(authUser)}`);
 }
 
 export const signUp = async (email: string, password: string) => {
@@ -66,16 +61,15 @@ export const logout = async (auth: Auth) => {
   await signOut(auth);
 }
 
-// TODO: create firebase update email and password
-export const updateUserEmail = async (email: string) => {
-  if (firebaseAuth.currentUser) {
-    updateEmail(firebaseAuth.currentUser, email).then(() => {
-      console.log("Updated email in Firebase!");
-    }).catch((error) => {
-      console.log(error);
-    });
-  }
-}
+// export const updateUserEmail = async (email: string) => {
+//   if (firebaseAuth.currentUser) {
+//     updateEmail(firebaseAuth.currentUser, email).then(() => {
+//       console.log("Updated email in Firebase!");
+//     }).catch((error) => {
+//       console.log(error);
+//     });
+//   }
+// }
 
 export const updateUserPassword = async (password: string) => {
   if (firebaseAuth.currentUser) {
