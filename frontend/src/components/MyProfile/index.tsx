@@ -1,8 +1,10 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "./index.css";
 import { User, Book, Club, ObjectId } from "../types";
 import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from '../../database';
 import Header from "../Header";
+import { useDispatch, useSelector } from "react-redux";
+import * as client from "../../client";
 
 function getURL( book: Book  ) {
     return `/book/${book.title.replace(/\s+/g, '-').toLowerCase()}`
@@ -11,6 +13,9 @@ function getURL( book: Book  ) {
 function MyProfile() {
     const { userId } = useParams();
     const user = dbUsers.users.find((user) => user.userId === userId)
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const currentUser = useSelector((state: any) => state.users.currentUser);
     if (!user) {
         return <div>User not found</div>;
     }
@@ -21,6 +26,10 @@ function MyProfile() {
 
     const findBookbyId = (bookId: ObjectId) => {
         return dbBooks.books.find(book => book.bookId === bookId);
+    };
+    const signout = async () => {
+        await client.signout();
+        navigate("/login");
     };
 
     return (
@@ -149,6 +158,7 @@ function MyProfile() {
                         </div>
                     </div>
                 </div>
+                <button onClick={signout}>Logout</button>
             </div>
         </div>
     );

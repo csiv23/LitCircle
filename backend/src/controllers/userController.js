@@ -61,11 +61,9 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-// TODO: implement using FireBase
 exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
-        // TODO: Hash password????
         const user = await User.findOne({ Email: email, Password: password });
         console.log("User.findOne(): " + user);
         if (!user) {
@@ -75,6 +73,16 @@ exports.loginUser = async (req, res) => {
         res.json(user);
     } catch (error) {
         console.error("Error logging in user:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+exports.signOut = async (req, res) => {
+    try {
+        currentUser = null;
+        res.sendStatus(200);
+    } catch (error) {
+        console.error("Error signing out user:", error);
         res.status(500).send('Server error');
     }
 };

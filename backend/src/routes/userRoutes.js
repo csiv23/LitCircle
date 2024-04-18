@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
     getUsers, getUser, registerUser, loginUser, updateUserProfile,
-    followUser, getFollowers, getUserWishlist, addBookToWishlist, getUserClubs, getUserBooksRead, addBookToBooksRead, profile
+    followUser, getFollowers, getUserWishlist, addBookToWishlist, getUserClubs, getUserBooksRead, addBookToBooksRead, profile, signOut
     getFollowing, deleteUser, getUserNextMeetings
 } = require('../controllers/userController');
 
@@ -10,6 +10,7 @@ router.get('/', getUsers);
 router.get('/:userId', getUser);
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+router.post('/signout', signOut)
 router.post("/profile", profile);
 router.patch('/:userId', updateUserProfile);
 router.patch('/:userId/follow', followUser);
