@@ -12,6 +12,7 @@ import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from './d
 import { User, ObjectId } from './components/types';
 import Search from './components/Search';
 import Login from './components/Login';
+import EditProfile from './components/EditProfile';
 
 function App() {
   const [books, setBooks] = useState<any>([]);
@@ -27,6 +28,7 @@ function App() {
           <Route path='login' element={<Login />} />
           <Route path="profile" element={<PublicProfile />} />
           <Route path="myProfile/:userId" element={<MyProfile />} />
+          <Route path="myProfile/:userId/Edit" element={<EditProfile/>} />
           <Route path="bookclub" element={<BookClub bookclubs={bookclubs} />} />
           <Route path="search/*" element={<Search />} />
           <Route path="Book/:bookId" element={<Book />} />

@@ -96,3 +96,20 @@ export const profile = async () => {
   const response = await axios.post(`${USERS_API_URL}/profile`);
   return response.data;
 }
+
+export const updateUserProfile = async (id: string | undefined, username: string, password: string) => {
+  try {
+    const response = await axios.patch(`${MONGOOSE_URL}/users/${id}`, {username, password});
+    console.log("updateUserProfile: " + response.data);
+    return response.data;
+  }
+  catch (error) {
+    console.error("Failed to update user profile: ", error);
+    throw error;
+  }
+};
+
+export const currentUser = async () => {
+  const response = await axios.post(`${USERS_API_URL}/profile`);
+  return response.data;
+}

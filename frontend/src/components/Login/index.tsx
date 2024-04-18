@@ -14,7 +14,7 @@ function Login() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [currentUser, setCurrentUser] = useState(null);
-    // const currentUser = useSelector((state: any) => state.users.currentUser);
+    const currentUserRedux = useSelector((state: any) => state.users.currentUser);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const logout = async () => {
