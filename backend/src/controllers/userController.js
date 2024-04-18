@@ -262,9 +262,9 @@ exports.addBookToBooksRead = async (req, res) => {
 exports.profile = async (req, res) => {
     console.log("Fetching profile...");
     try {
-        if (!currentUser) {
-            return res.status(404).send('No profile found');
-        }
+        // if (!currentUser) {
+        //     return res.status(404).send('No profile found');
+        // }
         console.log("Fetched profile: " + currentUser);
         res.json(currentUser);
     } catch (error) {

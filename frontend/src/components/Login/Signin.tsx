@@ -29,7 +29,6 @@ export default function Signin() {
             const user = await client.signin(credentials);
             console.log("Signed in! User: " + JSON.stringify(user));
             setError("");
-            dispatch(setCurrentUser(user));
             navigate(`/myProfile/${user._id}`);
         }
         catch (err: any) {

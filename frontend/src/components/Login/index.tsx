@@ -8,39 +8,41 @@ import Signin from "./Signin";
 import { setCurrentUser } from "../../reducers/usersReducer";
 import { useNavigate } from "react-router";
 import MyProfile from "../MyProfile";
+import * as client from "../../client";
 
 function Login() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const currentUser = useSelector((state: any) => state.users.currentUser);
+    const [currentUser, setCurrentUser] = useState(null);
+    // const currentUser = useSelector((state: any) => state.users.currentUser);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const logout = () => {
+    const logout = async () => {
         console.log("currentUser before logout: " + JSON.stringify(currentUser));
-        dispatch(setCurrentUser(null));
+        setCurrentUser(await client.profile());
         console.log("currentUser after logout: " + JSON.stringify(currentUser));
         navigate("/login");
     }
 
     return (
-        // <div>
-        //     {currentUser ? (
-        //         <>
-        //             <p>You are logged in!</p>
-        //             {/* <button onClick={logout}>Logout</button> */}
-                    
-        //         </>
-        //     ) : (
-        //         <>
-        //             <div>
-        //                 <Signin />
-        //             </div>
-        //         </>
-        //     )}
-        // </div>
         <div>
-            <Signin />
+            {currentUser ? (
+                <>
+                    <p>You are logged in!</p>
+                    {/* <button onClick={logout}>Logout</button> */}
+                    
+                </>
+            ) : (
+                <>
+                    <div>
+                        <Signin />
+                    </div>
+                </>
+            )}
         </div>
+        // <div>
+        //     <Signin />
+        // </div>
     )
 }
 export default Login;

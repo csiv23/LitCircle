@@ -5,6 +5,7 @@ import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from '../
 import Header from "../Header";
 import { useDispatch, useSelector } from "react-redux";
 import * as client from "../../client";
+import { useEffect, useState } from "react";
 
 function getURL( book: Book  ) {
     return `/book/${book.title.replace(/\s+/g, '-').toLowerCase()}`
@@ -13,9 +14,15 @@ function getURL( book: Book  ) {
 function MyProfile() {
     const { userId } = useParams();
     const user = dbUsers.users.find((user) => user.userId === userId)
-    const dispatch = useDispatch();
+    const [currentUser, setCurrentUser] = useState(null);
     const navigate = useNavigate();
-    const currentUser = useSelector((state: any) => state.users.currentUser);
+    useEffect(() => {
+        const fetchUser = async () => {
+            setCurrentUser(await client.profile());
+        }
+        fetchUser();
+    }, []);
+
     if (!user) {
         return <div>User not found</div>;
     }
@@ -27,8 +34,11 @@ function MyProfile() {
     const findBookbyId = (bookId: ObjectId) => {
         return dbBooks.books.find(book => book.bookId === bookId);
     };
+    
     const signout = async () => {
+        console.log("currentUser before signout: " + JSON.stringify(currentUser));
         await client.signout();
+        setCurrentUser(null);
         navigate("/login");
     };
 
