@@ -14,6 +14,9 @@ const bookSchema = new Schema({
         type: String,
         required: true
     },
+    CoverImageUrl: {
+        type: String,
+    },
     ClubsReading: [{
         type: Schema.Types.ObjectId,
         ref: 'Club' 

@@ -6,7 +6,7 @@ enum Role {
 type ObjectId = string;
 
 type User = {
-    userId: ObjectId;
+    _id: ObjectId;
     username: string;
     firstName: string;
     lastName: string;
@@ -26,7 +26,7 @@ type PurchaseLink = {
 }
 
 type Club = {
-    clubId: ObjectId;
+    _id: ObjectId;
     name: string;
     description: string;
     members: ObjectId[];
@@ -39,14 +39,12 @@ type Club = {
 }
 
 type Book = {
-    bookId: ObjectId;
+    _id: ObjectId;
     title: string;
     author: string;
-    coverImage: string;
+    coverImageUrl: string;
     description: string;
     clubsReading: ObjectId[];
-    readers: ObjectId[];
-    purchaseLinks: PurchaseLink[];
 }
 
 

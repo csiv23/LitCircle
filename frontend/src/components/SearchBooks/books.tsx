@@ -1,4 +1,4 @@
-import * as client from "../../client";
+import * as client from "../../mongooseClient";
 import { Link } from "react-router-dom";
 export default function GoogleBooks(
   { books }: { books: any[] }) {
@@ -11,7 +11,7 @@ export default function GoogleBooks(
          {books.map((book) => (
         <td className="book" key={book.id}>
             <Link
-                to={`/Book/${book.id}`}>
+                to={`/book/${book.id}`}>
                     {(book.coverImageUrl && book.coverImageUrl !== "") ? 
                      <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
                     : <img src={require("../../images/emptyBook.jpeg")} 

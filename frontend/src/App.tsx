@@ -4,13 +4,13 @@ import {Routes, Route, Navigate} from "react-router";
 import './App.css';
 import MyProfile from './components/MyProfile';
 import PublicProfile from './components/PublicProfile';
-import BookClub from './components/BookClub';
+import BookClubs from './components/BookClubs';
 import Header from './components/Header';
 import Books from './components/Books';
-import Book from './components/Book';
 import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from './database';
 import { User, ObjectId } from './components/types';
-import Search from './components/Search';
+import Search from './components/SearchBooks';
+import Home from './components/Home';
 
 function App() {
   const [books, setBooks] = useState<any>([]);
@@ -23,11 +23,12 @@ function App() {
           <HashRouter>
       <div>
         <Routes>
-          <Route path="/" element={<Navigate to="profile"/>} />
+          <Route path="/" element={<Navigate to="/Home"/>} />
+          <Route path="/home" element={<Home/>} />
           <Route path="profile" element={<PublicProfile/>} />
-          <Route path="bookclub" element={<BookClub bookclubs={bookclubs} />} />
-          <Route path="search/*" element={<Search/>}/>
-          <Route path="Book/:bookId" element={<Book/>}/>
+          <Route path="bookclub/:clubId" element={<BookClubs/>} />
+          <Route path="/search/*" element={<Search/>}/>
+          <Route path="book/:bookId" element={<Books/>}/>
         </Routes>
       </div>
     </HashRouter>

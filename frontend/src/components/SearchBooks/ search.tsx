@@ -1,9 +1,8 @@
-import * as client from "../../client";
+import * as client from "./client";
 import React, { useState, useEffect } from "react";
 import GoogleBooks from "./books";
 import { useParams, Link } from "react-router-dom";
-
-import axios from "axios";
+import { getUsers } from "../../mongooseClient";
 
 
 export default function GoogleBooksSearch() {
@@ -11,16 +10,11 @@ export default function GoogleBooksSearch() {
  const [search, setSearch] = useState(title);
  const [results, setResults] = useState<any>();
 
-
-const axiosWithCredentials = axios.create({
-  withCredentials: true,
- });
-
  const fullTextSearch = async (text="") => {
    if (text !== "") {
     const results = await client.searchBooks(text);
     setResults(results);
-    const users = await client.getUsers();
+    const users = await getUsers();
     console.log(users);
    }
  };
