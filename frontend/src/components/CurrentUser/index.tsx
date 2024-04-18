@@ -15,13 +15,13 @@ export default function CurrentUser({ children }: { children: any }) {
         const unsubscribe = onAuthStateChanged(firebaseAuth, async user => {
             if (user) {
                 // Set the currentUser from MongoDB
-                console.log("CurrentUser.tsx email before axios.post: " + user.email);
-                const response = await axios.post(`${USERS_API}/getByEmail`, { Email: user.email });
+                const response = await axios.post(`${USERS_API}/getByEmail`, { Email: user.email }); // const response = await axios.get(`${USERS_API}/661fdda08057d32f04114016`);
                 console.log(`RESPONSE: ${JSON.stringify(response.data)}`);
                 dispatch(setCurrentUser(response.data));
             }
             else {
                 // Set current user to null
+                console.log("CurrentUser onAuthStateChanged. No User found");
                 dispatch(setCurrentUser(null));
             }
         });

@@ -33,17 +33,18 @@ export const signIn = async (email: string, password: string) => {
 
 export const signUp = async (email: string, password: string) => {
   let authUserId = "";
-  // Firebase's register function
+  // Register user in Firebase
   await createUserWithEmailAndPassword(firebaseAuth, email, password)
-  .then((userCredentials) => {
+  .then(async (userCredentials) => {
     authUserId = userCredentials.user.uid;
-    console.log(`Signed Up! UserCredentials: ${JSON.stringify(userCredentials.user)}`);
-    // console.log(userCredentials.user);
+    console.log(`Firebase Signed Up! UserCredentials: ${JSON.stringify(userCredentials.user)}`);
   })
   .catch((error) => {
     console.log(error);
   });
 
+  // Register user in MongoDB
+  console.log("firebase.ts signUp authUserId: " + authUserId);
   const userData = {
       Username: "Axios_Username",
       Password: password,
