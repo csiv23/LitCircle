@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { User } from "../types";
 import { useNavigate } from "react-router";
-import { useDispatch } from "react-redux";
 import * as client from "../../client";
-import { setCurrentUser } from "../../reducers/usersReducer";
 
-export default function Signin() {
+export default function Signup() {
     const [credentials, setCredentials] = useState<User>({
         userId: "",
         username: "",
@@ -21,16 +19,15 @@ export default function Signin() {
         avatar: ""
     });
     const [error, setError] = useState("");
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const signin = async () => {
+    // const navigate = useNavigate();
+    const signup = async () => {
         try {
             console.log("credentials" + JSON.stringify(credentials));
-            const user = await client.signin(credentials);
-            console.log("Signed in! User: " + JSON.stringify(user));
+            // await client.signup(credentials);
+            console.log("Signed in!");
             setError("");
-            dispatch(setCurrentUser(user));
-            navigate(`/myProfile/${user._id}`);
+            // TODO:
+            // navigate("");
         }
         catch (err: any) {
             setError(err.response.data.message);
@@ -39,13 +36,13 @@ export default function Signin() {
 
     return (
         <div>
-            <h1>Sign In</h1>
+            <h1>Sign Up</h1>
             {error && <div>{error}</div>}
             <input value={credentials.email} placeholder="Email" type="email" onChange={(e) =>
                 setCredentials({ ...credentials, email: e.target.value })} />
             <input value={credentials.password} placeholder="Password" type="password" onChange={(e) =>
                 setCredentials({ ...credentials, password: e.target.value })} />
-            <button onClick={signin}> Sign In </button>
+            <button onClick={signup}> Sign Up </button>
         </div>
     )
 }

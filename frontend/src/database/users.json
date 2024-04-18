@@ -41,6 +41,34 @@
         "booksRead": [],
         "bookClubs": [],
         "avatar": "avatar.jpeg"
+      },
+      {
+        "userId": "661fdda08057d32f04114016",
+        "username": "test_username",
+        "firstName": "testFirst",
+        "lastName": "testLast",
+        "email": "test@test.com",
+        "password": "asdfasdf",
+        "followers": [],
+        "following": [],
+        "wishlist": [],
+        "booksRead": [],
+        "bookClubs": [],
+        "avatar": "avatar.jpeg"
+      },
+      {
+        "userId": "6620a257a36bcd6cd87a7995",
+        "username": "qwe",
+        "firstName": "qwe",
+        "lastName": "qwe",
+        "email": "qwe@qwe.com",
+        "password": "qweqwe",
+        "followers": [],
+        "following": [],
+        "wishlist": [],
+        "booksRead": [],
+        "bookClubs": [],
+        "avatar": "avatar.jpeg"
       }
     ]
   }

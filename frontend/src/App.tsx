@@ -11,6 +11,7 @@ import Book from './components/Book';
 import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from './database';
 import { User, ObjectId } from './components/types';
 import Search from './components/Search';
+import Login from './components/Login';
 
 function App() {
   const [books, setBooks] = useState<any>([]);
@@ -20,17 +21,29 @@ function App() {
   return (
 
     <div>
-          <HashRouter>
-      <div>
+      <HashRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="profile"/>} />
-          <Route path="profile" element={<PublicProfile/>} />
+          <Route path="/" element={<Navigate to="login" />} />
+          <Route path='login' element={<Login />} />
+          <Route path="profile" element={<PublicProfile />} />
+          <Route path="myProfile/:userId" element={<MyProfile />} />
           <Route path="bookclub" element={<BookClub bookclubs={bookclubs} />} />
-          <Route path="search/*" element={<Search/>}/>
-          <Route path="Book/:bookId" element={<Book/>}/>
+          <Route path="search/*" element={<Search />} />
+          <Route path="Book/:bookId" element={<Book />} />
         </Routes>
-      </div>
-    </HashRouter>
+      </HashRouter>
+      {/* <HashRouter>
+        <div>
+          <Routes>
+            <Route path="/" element={<Navigate to="login" />} />
+            <Route path='login' element={<Login />} />
+            <Route path="profile" element={<PublicProfile />} />
+            <Route path="bookclub" element={<BookClub bookclubs={bookclubs} />} />
+            <Route path="search/*" element={<Search />} />
+            <Route path="Book/:bookId" element={<Book />} />
+          </Routes>
+        </div>
+      </HashRouter> */}
       {/* <Search/> */}
       {/* <Book 
                 title={bookData.title}

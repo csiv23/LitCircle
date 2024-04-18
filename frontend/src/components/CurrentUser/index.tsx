@@ -35,7 +35,7 @@ export default function CurrentUser({ children }: { children: any }) {
             dispatch(setCurrentUser(currentUser));
         }
         catch (error) {
-            dispatch(setCurrentUser(null))
+            dispatch(setCurrentUser(null));
         }
     }
     useEffect(() => {
