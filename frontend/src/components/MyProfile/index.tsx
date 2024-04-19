@@ -15,13 +15,21 @@ function getURL( book: Book  ) {
 
 function MyProfile() {
     const { userId } = useParams();
+    console.log("userId" + userId)
     const user = dbUsers.users.find((user) => user.userId === userId)
     const currentUserRedux = useSelector((state: any) => state.users.currentUser);
+    console.log("currentUserRedux: " + JSON.stringify(currentUserRedux))
     const [currUser, setCurrUser] = useState(currentUserRedux);
+    console.log("currUser: " + JSON.stringify(currUser));
     const navigate = useNavigate();
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setCurrentUser(currUser));
+        const fetchUser = async () => {
+            console.log("useEffect CALLED");
+            dispatch(setCurrentUser(currUser));
+            // alert("useEffect CALLED")
+        }
+        fetchUser();
     }, [currUser]);
 
     if (!user) {

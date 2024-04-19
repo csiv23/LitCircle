@@ -14,9 +14,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <CurrentUser>
+      {/* <CurrentUser> */}
         <App />
-      </CurrentUser>
+      {/* </CurrentUser> */}
     </Provider>
   </React.StrictMode>
 );
