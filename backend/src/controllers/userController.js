@@ -103,6 +103,7 @@ exports.updateUserProfile = async (req, res) => {
             { $set: { Username: username, Password: password }},
             { new: true }
         );
+        currentUser = updatedUser;
         res.json(updatedUser);
     } catch (error) {
         console.error("Error updating user profile:", error);
