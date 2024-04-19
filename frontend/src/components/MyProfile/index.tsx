@@ -15,14 +15,11 @@ function getURL( book: Book  ) {
 function MyProfile() {
     const { userId } = useParams();
     const user = dbUsers.users.find((user) => user.userId === userId)
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
     const currentUserRedux = useSelector((state: any) => state.users.currentUser);
+    const [currentUser, setCurrentUser] = useState(currentUserRedux);
     const navigate = useNavigate();
     useEffect(() => {
-        const fetchUser = async () => {
-            setCurrentUser(await client.profile());
-        }
-        fetchUser();
+        
     }, []);
 
     if (!user) {
@@ -45,7 +42,7 @@ function MyProfile() {
     };
 
     
-    console.log("CurrentUser MyProfile: " + JSON.stringify(currentUserRedux));
+    console.log("MyProfile CurrentUser: " + JSON.stringify(currentUser));
 
     return (
         <div>
@@ -67,7 +64,7 @@ function MyProfile() {
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <span className="mr-2">Username:</span> {currentUser?.username}
+                            <span className="mr-2">Username:</span> {currentUser.Username}
                         </div>
                     </div>
                     <div className="row">
