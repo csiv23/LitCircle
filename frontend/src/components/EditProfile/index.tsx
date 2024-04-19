@@ -23,18 +23,16 @@ export default function EditProfile() {
         navigate(`/myProfile/${userId}`);
     }
 
-    const currUsername = updatedUser.Username;
-    const currPassword = updatedUser.Password;
     return (
         <div>
             <h1>Edit Profile</h1>
             {userId && (
                 <div>
                     Username:
-                    <input value={currUsername} onChange={(e) =>
+                    <input value={updatedUser.Username} onChange={(e) =>
                         setUpdatedUser({...updatedUser, Username: e.target.value})} />
                     Password:
-                    <input value={currPassword} onChange={(e) =>
+                    <input value={updatedUser.Password} onChange={(e) =>
                         setUpdatedUser({...updatedUser, Password: e.target.value})} />
                     <br />
                     <br />
