@@ -26,6 +26,10 @@ const userSchema = new Schema({
     AvatarUrl: {
         type: String,
     },
+    Role: {
+        type: String,
+        required: false
+    },
     Following: [{
         type: Schema.Types.ObjectId,
         ref: 'User'

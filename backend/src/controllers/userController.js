@@ -31,25 +31,30 @@ exports.getUser = async (req, res) => {
 // Function to register a new user
 // TODO: Implement w/ FireBase
 exports.registerUser = async (req, res) => {
-    const { Username, FirstName, LastName, Password, Email } = req.body;
+    const { Username, Password, Email } = req.body;
+    console.log("registerUser reached")
+    console.log(Username);
+    console.log(Password);
+    console.log(Email);
 
     try {
         // Check if the user already exists
-        let user = await User.findOne({ Email });
+        console.log("userController.js registerUser reached")
+        let user = await User.findOne({ Email: Email, Password: Password });
+        console.log("User.findOne(): " + JSON.stringify(user))
         if (user) {
             return res.status(400).json({ msg: 'User already exists' });
         }
 
         // Create a new user
         user = new User({
-            Username,
-            FirstName,
-            LastName,
-            Password,
-            Email,
-            role,
-            uid
+            Username: Username,
+            Password: Password,
+            Email: Email,
+            Role: "member"
         });
+
+        console.log(user);
 
         await user.save();
         currentUser = user;
@@ -62,9 +67,9 @@ exports.registerUser = async (req, res) => {
 };
 
 exports.loginUser = async (req, res) => {
-    const { email, password } = req.body;
+    const { Email, Password } = req.body;
     try {
-        const user = await User.findOne({ Email: email, Password: password });
+        const user = await User.findOne({ Email: Email, Password: Password });
         console.log("User.findOne(): " + user);
         if (!user) {
             return res.status(400).json({ msg: 'User login does not exist' });

@@ -9,6 +9,7 @@ import { setCurrentUser } from "../../reducers/usersReducer";
 import { useNavigate } from "react-router";
 import MyProfile from "../MyProfile";
 import * as client from "../../client";
+import Signup from "./Signup";
 
 function Login() {
     const [email, setEmail] = useState("")
@@ -36,13 +37,11 @@ function Login() {
                 <>
                     <div>
                         <Signin />
+                        <Signup />
                     </div>
                 </>
             )}
         </div>
-        // <div>
-        //     <Signin />
-        // </div>
     )
 }
 export default Login;
