@@ -5,6 +5,8 @@ import './index.css';
 import { Book, Club } from "../types";
 import * as mongooseClient from "../../mongooseClient";
 import ClubsReadingList from "./ClubsReading";
+import Header from "../Header";
+
 
 export default function MongooseBook({book} : {book : Book}) {
     const [clubsReading, setClubsReading] = useState([] as Club[]);
@@ -23,19 +25,19 @@ export default function MongooseBook({book} : {book : Book}) {
     }, [book._id]);
 
     return (
-        <div className="container">
+        <div className="book-font">
+            <Header />
             <div className="row">
-                <div className="col-md-4">
+                <div className="col-md-4 book-column book-cover-lg">
                     {(book.coverImageUrl && book.coverImageUrl !== "") ? 
-                     <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
+                    <img src={book.coverImageUrl} alt={book.title} /> 
                     : <img src={require("../../images/emptyBook.jpeg")} 
-                    alt={book.title} className="book-cover"/>}
+                    alt={book.title}/>}
                 </div>
-                <div className="col-md-8">
+                <div className="col-md-8 book-about-column">
                     <h2>{book.title}</h2>
-                    <h3>Author: {book.author}</h3>
-                    <p> Description: {book.description}</p>
-                    <h4>Current Clubs Reading this Book</h4>
+                    <h4 className="book-author">By {book.author}</h4>
+                    <p className="book-desc"> {book.description}</p>
                     <ClubsReadingList clubs={clubsReading} />
                 </div>
             </div>
