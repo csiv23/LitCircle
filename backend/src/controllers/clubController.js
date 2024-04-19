@@ -49,6 +49,7 @@ exports.createClub = async (req, res) => {
             Wishlist: [],
             CurrentBook: null,
             Organizer,
+            ImageUrl,
         });
 
         await newClub.save();
@@ -187,25 +188,6 @@ exports.fetchClubAttribute = (attributeName) => {
     };
 };
 
-
-// exports.fetchListofBooks = (attributeName) => {
-//     return async (req, res) => {
-//         const club = await validateClubExists(req.params.clubId, res);
-//         if (!club) return; // validateClubExists will handle the response if the club doesn't exist
-
-//         try {
-//             const populatedClub = await Club.findById(club._id).populate({path: attributeName, model: Book});
-//             if (!populatedClub || !populatedClub[attributeName]) {
-//                 return res.status(404).json({ message: `${attributeName} not found in club details` });
-//             }
-
-//             res.json({ [attributeName]: populatedClub[attributeName] });
-//         } catch (error) {
-//             console.error(`Error fetching ${attributeName}:`, error);
-//             res.status(500).send(error);
-//         }
-//     };
-// };
 
 /**
  * Adds a recommended book to the club's wishlist.

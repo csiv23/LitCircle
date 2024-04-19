@@ -36,6 +36,9 @@ const clubSchema = new Schema({
             required: false
         }
     },
+    ImageUrl: {
+        type: String
+    },
     Organizer: {
         type: Schema.Types.ObjectId,
         ref: 'User',
