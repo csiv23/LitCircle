@@ -13,7 +13,7 @@ function BooksList(
         if (book) {
             return (
                 <div key={book._id} className="book">
-                    <Link to={`/book/${book._id}`}>
+                    <Link to={`/book/${book.googleBooksId}`}>
                     <div>
                     {(book.coverImageUrl && book.coverImageUrl !== "") ? 
                      <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 

@@ -6,6 +6,11 @@ const bookSchema = new Schema({
         type: String,
         required: true
     },
+    GoogleBooksId : {
+        type: String,
+        required: true,
+        unique: true,
+    },
     Author: {
         type: String,
         required: true

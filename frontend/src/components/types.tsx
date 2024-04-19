@@ -1,3 +1,5 @@
+
+
 enum Role {
     Organizer = "Organizer",
     Member = "Member",
@@ -25,6 +27,11 @@ type PurchaseLink = {
     url: string;
 }
 
+type ClubMeeting = {
+    meetingDate: Date,
+    location: string
+}
+
 type Club = {
     _id: ObjectId;
     name: string;
@@ -33,13 +40,16 @@ type Club = {
     booksRead: ObjectId[];
     wishlist: ObjectId[];
     currentBook: ObjectId;
-    nextMeeting: Date;
-    organzier: ObjectId;
+    nextMeeting: ClubMeeting;
+    organizer: ObjectId;
     clubImage: string;
 }
 
+
+
 type Book = {
     _id: ObjectId;
+    googleBooksId: string;
     title: string;
     author: string;
     coverImageUrl: string;

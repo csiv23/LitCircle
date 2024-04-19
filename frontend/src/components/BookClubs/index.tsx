@@ -12,7 +12,14 @@ function BookClubs() {
     const { clubId } = useParams();
     const [club, setClub] = useState<any>({ _id: "" });
     const [clubOrganizer, setClubOrganizer] = useState<any>({ _id: "" });
-    const [currBook, setCurrBook] = useState<any>({ _id: "" });
+    const [currBook, setCurrBook] = useState<Book>({  _id: "",
+        googleBooksId: "",
+        title: "Untitled",
+        author: "N/A",
+        coverImageUrl: "",
+        description: "N/A",
+        clubsReading: [],
+     });
     const [booksRead, setBooksRead] = useState([] as Book[]);
     const [wishlist, setWishlist] = useState([] as Book[]);
     const [clubMembers, setClubMembers] = useState([] as User[]);
@@ -30,9 +37,9 @@ function BookClubs() {
   }
 
   const findCurrBook = async () => {
-    if (!club.currBook)
+    if (!clubId)
         return;
-    const response = await mongooseClient.getBookById(club.currBook);
+    const response = await mongooseClient.getClubCurrentBook(clubId);
     setCurrBook(response);
   }
 

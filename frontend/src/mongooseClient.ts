@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Book, ObjectId, User } from "./components/types";
+import { Book, Club, ObjectId, User } from "./components/types";
 // TODO : MOVE THIS TO BACKEND ENV 
 const MONGOOSE_URL = "http://localhost:4000/api"
 
@@ -10,15 +10,20 @@ const axiosWithCredentials = axios.create({
 function cleanBookObj (bookData: any) : Book {
   let bookClean = {
     _id: "",
-    title: "",
-    author: "",
+    googleBooksId: "",
+    title: "Untitled",
+    author: "N/A",
     coverImageUrl: "",
-    description: "",
+    description: "N/A",
     clubsReading: [],
   }
 
   if (bookData._id) {
-    bookClean._id = bookData.id;
+    bookClean._id = bookData._id;
+  }
+
+  if (bookData.GoogleBooksId) {
+    bookClean.googleBooksId = bookData.GoogleBooksId;
   }
 
   if (bookData.Title) {
@@ -39,7 +44,7 @@ function cleanBookObj (bookData: any) : Book {
   }
 
   if (bookData.ClubsReading) {
-    bookClean.clubsReading = bookData.CoverImageUrl;
+    bookClean.clubsReading = bookData.ClubsReading;
   }
 
   return bookClean;
@@ -112,6 +117,71 @@ function cleanUser (userData: any) : User {
   return userClean;
 }
 
+function cleanClub (clubData : any) : Club {
+  let clubClean = {
+    _id: "",
+    name: "",
+    description: "",
+    members: [],
+    booksRead: [],
+    wishlist: [],
+    currentBook: "",
+    nextMeeting: {
+      meetingDate: new Date(),
+      location: ""
+    },
+    organizer: "",
+    clubImage: ""
+  }
+
+  if (clubData._id) {
+    clubClean._id = clubData.id;
+  }
+
+  if (clubData.Name) {
+    clubClean.name = clubData.Name;
+  }
+
+  // TODO: EMBED HTML FROM DESCRIPTION? 
+  if (clubData.Description) {
+    clubClean.description = clubData.Description;
+  }
+
+  if (clubData.Members) {
+    clubClean.members = clubData.Members;
+  }
+
+  if (clubData.BooksRead) {
+    clubClean.booksRead = clubData.Wishlist;
+  }
+
+  if (clubData.Wishlist) {
+    clubClean.wishlist = clubData.Wishlist;
+  }
+
+
+  if (clubData.CurrentBook) {
+    clubClean.currentBook = clubData.CurrentBook;
+  }
+
+
+  if (clubData.NextMeeting 
+    && clubData.NextMeeting.meetingDate
+    && clubData.NextMeeting.location ) {
+    clubClean.nextMeeting = clubData.NextMeeting;
+  }
+
+  if (clubData.Organizer) {
+    clubClean.organizer = clubData.Organizer;
+  }
+
+  if (clubData.ClubImage) {
+    clubClean.clubImage = clubData.ClubImage;
+  }
+
+  return clubClean;
+}
+
 export async function mongooseGet(uri : string) {
   const url = `${MONGOOSE_URL}/${uri}`;
   try {
@@ -120,6 +190,37 @@ export async function mongooseGet(uri : string) {
       return response.data;
     } catch (error) {
       console.error(`Mongoose request failed at ${url}`, error);
+      throw error;
+  }
+}
+
+/**
+ * Posts data to a specified MongoDB endpoint using Axios.
+ * @param {string} uri - The URI endpoint to post data to.
+ * @param {any} params - The payload to send in the POST request.
+ * @returns {Promise<any>} The response data from the server.
+ */
+export async function mongoosePost(uri : string, params : any) {
+  const url = `${MONGOOSE_URL}/${uri}`;
+  try {
+      // Attempt to send a POST request using Axios
+      const response = await axios.post(url, params);
+      console.log("Response received:", response.data);
+      return response.data;
+  } catch (error : any) {
+      // Log detailed error information
+      if (error.response) {
+          // The server responded with a status code that is not in the range of 2xx
+          console.error(`Server responded with non-2xx status: ${error.response.status}`, { detail: error.response.data });
+      } else if (error.request) {
+          // The request was made but no response was received
+          console.error("No response received from server.", { detail: error.request });
+      } else {
+          // Something happened in setting up the request that triggered an error
+          console.error("Error setting up the request:", error.message);
+      }
+
+      // Re-throw the error to handle it further up the call stack
       throw error;
   }
 }
@@ -140,10 +241,10 @@ export async function notImplemented() {
   console.log("not implemented yet")
 }
 
-// export const getUsers = mongooseCallCredentials(`${MONGOOSE_URL}/users`);
  export const getUsers = async () => {
-  const response = await mongooseGetCredentials('/users');
-  return response.Users};
+  const response = await mongooseGetCredentials('users');
+  return response
+};
 
  // implement this 
  export const getUserById = async (userId : ObjectId) => {return await notImplemented()}
@@ -164,6 +265,10 @@ export async function notImplemented() {
     return response.Wishlist.map(cleanBookObj);
   }
 
+  export const getClubCurrentBook = async (clubId : ObjectId) => {
+    const response = await mongooseGet(`clubs/${clubId}/currentBook`);
+    return cleanBookObj(response.CurrentBook);
+  }
 
   export const getMembersByClub = async (clubId : ObjectId) => {
     const response = await mongooseGet(`clubs/${clubId}/members`);
@@ -172,10 +277,16 @@ export async function notImplemented() {
 
  export const getBookClubById = async (clubId : ObjectId) => {
   const response = await mongooseGet(`clubs/${clubId}`);
-  return cleanBookObj(response);
+  return cleanClub(response);
 }
 
 export const getClubOrganizer = async (clubId : ObjectId) => {
   const response = await mongooseGet(`clubs/${clubId}/organizer`);
-  return cleanUser(response);
+  return cleanUser(response.Organizer);
 }
+
+export const createBook = async (book : Book) => {
+  const response = await mongoosePost(`books/`, book);
+  return response.bookId;
+}
+

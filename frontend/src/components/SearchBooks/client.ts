@@ -1,23 +1,24 @@
 import axios from "axios";
-import { BookProps } from "../Books";
+import { Book } from "../types";
 
 // TODO : MOVE THIS TO BACKEND ENV 
 // const API_KEY = process.env.BOOKS_API_KEY;
 const API_KEY = "AIzaSyBcnaenOTl-FLXJc3vyE_LSR3mwKa_u3Us"
 const GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1"
 
-function cleanBookObj (bookData: any) : BookProps {
+function cleanBookObj (bookData: any) : Book {
   let bookClean = {
-      id: "",
-      title: "",
-      author: "",
+      _id: "",
+      googleBooksId: "",
+      title: "Untitled",
+      author: "N/A",
       description: "N/A",
       coverImageUrl: "",
-      currentClubs: [],
+      clubsReading: [],
   }
 
   if (bookData.id) {
-    bookClean.id = bookData.id;
+    bookClean.googleBooksId = bookData.id;
   }
 
   if (bookData.volumeInfo.title) {
@@ -25,7 +26,7 @@ function cleanBookObj (bookData: any) : BookProps {
   }
 
   // TODO: EMBED HTML FROM DESCRIPTION? 
-  if (bookData.volumeInfo.description) {
+  if (bookData.volumeInfo.subtitle) {
     bookClean.description = bookData.volumeInfo.subtitle;
   }
 

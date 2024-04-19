@@ -9,9 +9,9 @@ export default function GoogleBooks(
        <tbody>
          <tr>
          {books.map((book) => (
-        <td className="book" key={book.id}>
+        <td className="book" key={book._id}>
             <Link
-                to={`/book/${book.id}`}>
+                to={`/book/${book.googleBooksId}`}>
                     {(book.coverImageUrl && book.coverImageUrl !== "") ? 
                      <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
                     : <img src={require("../../images/emptyBook.jpeg")} 

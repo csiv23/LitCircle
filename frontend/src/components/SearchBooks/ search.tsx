@@ -14,6 +14,8 @@ export default function GoogleBooksSearch() {
    if (text !== "") {
     const results = await client.searchBooks(text);
     setResults(results);
+
+    // TODO REMOVE THIS WHEN WERE DOBE
     const users = await getUsers();
     console.log(users);
    }
@@ -31,7 +33,7 @@ export default function GoogleBooksSearch() {
       <input type="text" value={search}
         onChange={(e) =>
             setSearch(e.target.value)}/>
-      <Link to={`/search/${search}`}>
+      <Link to={`/search-books/${search}`}>
       <button
         onClick={() => fullTextSearch(search)}>
         Search

@@ -176,10 +176,9 @@ exports.fetchClubAttribute = (attributeName) => {
         try {
             const populatedClub = await Club.findById(club._id).populate(attributeName);
             if (!populatedClub || !populatedClub[attributeName]) {
-                return res.status(404).json({ message: `${attributeName} not found` });
+                return res.status(404).json({ message: `${attributeName} not found in club details` });
             }
-            // Since populate returns a promise, you can await it directly
-            // and then use the populated club document
+
             res.json({ [attributeName]: populatedClub[attributeName] });
         } catch (error) {
             console.error(`Error fetching ${attributeName}:`, error);
@@ -187,6 +186,26 @@ exports.fetchClubAttribute = (attributeName) => {
         }
     };
 };
+
+
+// exports.fetchListofBooks = (attributeName) => {
+//     return async (req, res) => {
+//         const club = await validateClubExists(req.params.clubId, res);
+//         if (!club) return; // validateClubExists will handle the response if the club doesn't exist
+
+//         try {
+//             const populatedClub = await Club.findById(club._id).populate({path: attributeName, model: Book});
+//             if (!populatedClub || !populatedClub[attributeName]) {
+//                 return res.status(404).json({ message: `${attributeName} not found in club details` });
+//             }
+
+//             res.json({ [attributeName]: populatedClub[attributeName] });
+//         } catch (error) {
+//             console.error(`Error fetching ${attributeName}:`, error);
+//             res.status(500).send(error);
+//         }
+//     };
+// };
 
 /**
  * Adds a recommended book to the club's wishlist.
@@ -260,7 +279,7 @@ exports.markCurrentBookAsRead = async (req, res) => {
 
     try {
         const club = await validateClubExists(clubId, res);
-        const book = await validateUserExists(club.currentBook, res);
+        const book = await validateBookExists(club.CurrentBook, res);
         if (!club || !book) return; // Already handled in validate*
 
 

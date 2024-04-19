@@ -2,24 +2,21 @@ import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import * as client from '../SearchBooks/client';
 import './index.css';
-
-export type BookProps = {
-    id: string,
-    title: string;
-    author: string;
-    coverImageUrl: string;
-    description: string;
-    currentClubs: string[];
-}
+import { Book } from "../types";
+import * as mongooseClient from "../../mongooseClient";
 
 export default function Books() {
     const { bookId } = useParams<string>();
     const [book, setBook] = useState<any>({});
     const findBook = async (id: string) => {
-      const book = await client.getBookDetails(id);
-      console.log("book url here: ");
-      console.log(book.coverImageUrl);
-      setBook(book as BookProps);
+      const googleBookData = await client.getBookDetails(id);
+      console.log(googleBookData);
+      const bookId = await mongooseClient.createBook(googleBookData);
+      console.log(bookId);
+
+      const mongooseBookData = await mongooseClient.getBookById(bookId);
+      setBook(mongooseBookData as Book);
+      console.log(mongooseBookData);
     };
     useEffect(() => {
       if (bookId) {
