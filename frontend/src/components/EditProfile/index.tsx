@@ -19,20 +19,21 @@ export default function EditProfile() {
     const updateProfile = async () => {
         await client.updateUserProfile(userId, updatedUser.Username, updatedUser.Password);
         console.log("Updated profile in MongoDB!");
-        dispatch(setCurrentUser(updatedUser));
+        // dispatch(setCurrentUser(updatedUser));
         navigate(`/myProfile/${userId}`);
     }
 
+    console.log("EditProfile currentUser: " + JSON.stringify(currentUser));
     return (
         <div>
             <h1>Edit Profile</h1>
             {userId && (
                 <div>
                     Username:
-                    <input value={updatedUser.Username} onChange={(e) =>
+                    <input value={updatedUser?.Username} onChange={(e) =>
                         setUpdatedUser({...updatedUser, Username: e.target.value})} />
                     Password:
-                    <input value={updatedUser.Password} onChange={(e) =>
+                    <input value={updatedUser?.Password} onChange={(e) =>
                         setUpdatedUser({...updatedUser, Password: e.target.value})} />
                     <br />
                     <br />
