@@ -6,20 +6,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "../../reducers/usersReducer";
 
 export default function EditProfile() {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const { userId } = useParams();
     const currentUser = useSelector((state: any) => state.users.currentUser);
     const [updatedUser, setUpdatedUser] = useState(currentUser);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(setCurrentUser(updatedUser));
-    }, [updatedUser]);
 
-    const navigate = useNavigate();
     // Updates the user's username and password
     const updateProfile = async () => {
         await client.updateUserProfile(userId, updatedUser.Username, updatedUser.Password);
-        console.log("Updated profile in MongoDB!");
-        // dispatch(setCurrentUser(updatedUser));
+        dispatch(setCurrentUser(updatedUser));
+        console.log("updatedProfile executed");
         navigate(`/myProfile/${userId}`);
     }
 
