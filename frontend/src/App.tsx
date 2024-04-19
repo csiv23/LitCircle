@@ -13,10 +13,6 @@ import GoogleAPI from './components/SearchBooks';
 import Home from './components/Home';
 
 function App() {
-  const [books, setBooks] = useState<any>([]);
-  const [users, setUsers] = useState<any[]>([]);
-  const [bookclubs, setBookclubs] = useState<any[]>([]);
-
   return (
 
     <div>

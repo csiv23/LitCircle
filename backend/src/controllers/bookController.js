@@ -70,3 +70,23 @@ exports.createBook = async (req, res) => {
         res.status(500).json({ error: "Internal server error while creating a new book." });
     }
 };
+
+exports.fetchBookAttribute = (attributeName) => {
+    return async (req, res) => {
+        const book = await validateBookbyId(req.params.bookId, res);
+        if (!book) return; // validateBookbyId will handle the response if the book doesn't exist
+
+        try {
+            const populatedBook = await Book.findById(book._id).populate(attributeName);
+            if (!populatedBook || !populatedBook[attributeName]) {
+                return res.status(404).json({ message: `${attributeName} not found in book details` });
+            }
+
+            console.log(populatedBook);
+            res.json({ [attributeName]: populatedBook[attributeName] });
+        } catch (error) {
+            console.error(`Error fetching ${attributeName}:`, error);
+            res.status(500).send('Server error');
+        }
+    };
+};

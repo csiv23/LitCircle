@@ -135,7 +135,7 @@ function cleanClub (clubData : any) : Club {
   }
 
   if (clubData._id) {
-    clubClean._id = clubData.id;
+    clubClean._id = clubData._id;
   }
 
   if (clubData.Name) {
@@ -288,5 +288,10 @@ export const getClubOrganizer = async (clubId : ObjectId) => {
 export const createBook = async (book : Book) => {
   const response = await mongoosePost(`books/`, book);
   return response.bookId;
+}
+
+export const getClubsReadingPerBook = async (bookId : ObjectId) => {
+  const response = await mongooseGet(`books/${bookId}/clubsReading`);
+  return response.ClubsReading.map(cleanClub);
 }
 
