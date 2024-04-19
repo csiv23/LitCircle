@@ -131,7 +131,7 @@ function cleanClub (clubData : any) : Club {
       location: ""
     },
     organizer: "",
-    clubImage: ""
+    imageUrl: ""
   }
 
   if (clubData._id) {
@@ -164,6 +164,10 @@ function cleanClub (clubData : any) : Club {
     clubClean.currentBook = clubData.CurrentBook;
   }
 
+  if (clubData.ImageUrl) {
+    clubClean.imageUrl = clubData.ImageUrl;
+  }
+
 
   if (clubData.NextMeeting 
     && clubData.NextMeeting.meetingDate
@@ -173,10 +177,6 @@ function cleanClub (clubData : any) : Club {
 
   if (clubData.Organizer) {
     clubClean.organizer = clubData.Organizer;
-  }
-
-  if (clubData.ClubImage) {
-    clubClean.clubImage = clubData.ClubImage;
   }
 
   return clubClean;

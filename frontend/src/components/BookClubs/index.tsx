@@ -82,8 +82,9 @@ function BookClubs() {
                     <h2>BookClub</h2>
                     <br/>
                     <div>
-                        {/* <img className="club-profile-picture"
-                            src={require(`../images/${club.clubImage}`)} alt={club.name} /> */}
+                    {(club.imageUrl && club.imageUrl !== "") ? 
+                     <img src={club.imageUrl} alt={club.name} className="book-cover" /> 
+                    : <img src={require("../../images/BookclubDefault.jpeg")} alt={club.name} />}
                     </div>
                     <div >
                         <h3>{club.name}</h3>

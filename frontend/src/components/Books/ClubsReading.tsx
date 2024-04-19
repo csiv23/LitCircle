@@ -15,9 +15,9 @@ function ClubsReadingList(
                 <div key={club._id} className="">
                     <Link to={`/bookclub/${club._id}`}>
                     <div>
-                    {/* {(club.imageUrl && club.imageUrl !== "") ? 
-                     <img src={club.coverImageUrl} alt={club.name} className="book-cover" /> 
-                    : <img src={require("../../images/emptyBook.jpeg")} alt={club.name} />} */}
+                    {(club.imageUrl && club.imageUrl !== "") ? 
+                     <img src={club.imageUrl} alt={club.name} className="book-cover" /> 
+                    : <img src={require("../../images/BookclubDefault.jpeg")} alt={club.name} />}
                     </div>
                     <h5 >{club.name}</h5>
                     <p>{club.description}</p>

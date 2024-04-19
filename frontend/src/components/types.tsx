@@ -35,6 +35,7 @@ type ClubMeeting = {
 type Club = {
     _id: ObjectId;
     name: string;
+    imageUrl: string,
     description: string;
     members: ObjectId[];
     booksRead: ObjectId[];
@@ -42,7 +43,6 @@ type Club = {
     currentBook: ObjectId;
     nextMeeting: ClubMeeting;
     organizer: ObjectId;
-    clubImage: string;
 }
 
 
