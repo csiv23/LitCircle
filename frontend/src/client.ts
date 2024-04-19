@@ -82,13 +82,13 @@ export const getUsers = async () => {
   }
 };
 
-export const signin = async (credentials: User) => {
+// signin only requires email and password
+export const signin = async (credentials: any) => {
   const response = await axios.post(`${USERS_API_URL}/login`, credentials);
   return response.data;
 }
 
 export const signup = async (credentials: User) => {
-  console.log("client.ts signup reached")
   const response = await axios.post(`${USERS_API_URL}/register`, credentials);
   return response.data;
 }
