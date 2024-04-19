@@ -30,6 +30,7 @@ export default function Books() {
 
     return (
         <div>
+            <Header/>
             <MongooseBook book={book}/>
         </div>
 

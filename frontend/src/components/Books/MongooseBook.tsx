@@ -26,19 +26,25 @@ export default function MongooseBook({book} : {book : Book}) {
 
     return (
         <div className="book-font">
-            <Header />
             <div className="row">
                 <div className="col-md-4 book-column book-cover-lg">
-                    {(book.coverImageUrl && book.coverImageUrl !== "") ? 
-                    <img src={book.coverImageUrl} alt={book.title} /> 
-                    : <img src={require("../../images/emptyBook.jpeg")} 
-                    alt={book.title}/>}
+                        {(book.coverImageUrl && book.coverImageUrl !== "") ? 
+                        <img src={book.coverImageUrl} alt={book.title} /> 
+                        : <img src={require("../../images/emptyBook.jpeg")} 
+                        alt={book.title}/>}
                 </div>
-                <div className="col-md-8 book-about-column">
-                    <h2>{book.title}</h2>
-                    <h4 className="book-author">By {book.author}</h4>
-                    <p className="book-desc"> {book.description}</p>
-                    <ClubsReadingList clubs={clubsReading} />
+                <div className="col-md-8 club-bg">
+                    <div className="row align-items-center ">
+                        <div className="col-md-11 club-container">
+                            <h2>{book.title}</h2>
+                            <h4 className="book-author">By {book.author}</h4>
+                            <p className="book-desc"> {book.description}</p>
+                        </div>
+                        <div className="col-md-11 club-container">
+                            <h4>Clubs That Have Recently Read This Book...</h4>
+                            <ClubsReadingList clubs={clubsReading} />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -28,6 +28,11 @@
     padding-top: 50px;
 }
 
-.book-desc {
-    font-weight: lighter;
+.club {
+    margin: 5px;
+}
+
+.club a{
+    text-decoration: none;
+    color: black;
 }

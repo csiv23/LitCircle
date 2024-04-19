@@ -12,15 +12,14 @@ function ClubsReadingList(
     {clubs.map((club: Club) => {
         if (club) {
             return (
-                <div key={club._id} className="">
+                <div key={club._id} className="club">
                     <Link to={`/bookclub/${club._id}`}>
-                    <div>
-                    {(club.imageUrl && club.imageUrl !== "") ? 
-                     <img src={club.imageUrl} alt={club.name} className="book-cover" /> 
-                    : <img src={require("../../images/BookclubDefault.jpeg")} alt={club.name} />}
-                    </div>
-                    <h5 >{club.name}</h5>
-                    <p>{club.description}</p>
+                        <div>
+                            {(club.imageUrl && club.imageUrl !== "") ? 
+                            <img src={club.imageUrl} alt={club.name} className="club-cover" /> 
+                            : <img src={require("../../images/BookclubDefault.jpeg")} alt={club.name} />}
+                        </div>
+                        <h5>{club.name}</h5>
                     </Link>
                 </div>
             );

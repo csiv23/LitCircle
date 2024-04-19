@@ -101,11 +101,10 @@ function BookClubs() {
                             <CurrentBook currBook={currBook} />
                         </div>
                         <div className="col-md-11 club-container">
-                        {(club.imageUrl && club.imageUrl !== "") ? 
-                     <img src={club.imageUrl} alt={club.name} className="book-cover" /> 
-                    : <img src={require("../../images/BookclubDefault.jpeg")} alt={club.name} />}
+                            {(club.imageUrl && club.imageUrl !== "") ? 
+                            <img src={club.imageUrl} alt={club.name} className="book-cover" /> 
+                            : <img src={require("../../images/BookclubDefault.jpeg")} alt={club.name} />}
                         </div>
-                        
                     </div>
                     <div className="row align-items-center">
                         <div className="col-md-11 club-container">
