@@ -58,8 +58,7 @@ exports.registerUser = async (req, res) => {
 
         await user.save();
         currentUser = user;
-        // Respond with the new user's ID
-        res.json({ userID: user.id });
+        res.json(user);
     } catch (error) {
         console.error("Error registering user:", error);
         res.status(500).send('Server error');
