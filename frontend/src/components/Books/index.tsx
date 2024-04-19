@@ -6,6 +6,7 @@ import { Book, Club } from "../types";
 import * as mongooseClient from "../../mongooseClient";
 import ClubsReadingList from "./ClubsReading";
 import MongooseBook from "./MongooseBook";
+import Header from "../Header";
 
 export default function Books() {
     const { bookId } = useParams<string>();

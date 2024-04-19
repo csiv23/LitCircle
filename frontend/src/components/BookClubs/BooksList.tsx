@@ -8,19 +8,19 @@ function BooksList(
 { books: Book[] }
 ) {
 
-    return (<div className="col-lg book-container book-cover d-flex flex-wrap">
+    return (<div className="col-lg book-container d-flex flex-wrap">
     {books.map((book: Book) => {
         if (book) {
             return (
                 <div key={book._id} className="book">
                     <Link to={`/book/${book.googleBooksId}`}>
-                    <div>
-                    {(book.coverImageUrl && book.coverImageUrl !== "") ? 
-                     <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
-                    : <img src={require("../../images/emptyBook.jpeg")} alt={book.title} />}
-                    </div>
-                    <h5 >{book.title}</h5>
-                    <p>{book.author}</p>
+                        <div>
+                        {(book.coverImageUrl && book.coverImageUrl !== "") ? 
+                        <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
+                        : <img src={require("../../images/emptyBook.jpeg")} alt={book.title} />}
+                        </div>
+                        <h5 className="book-title">{book.title}</h5>
+                        <p className="book-author">{book.author}</p>
                     </Link>
                 </div>
             );
