@@ -22,7 +22,7 @@ function Home() {
                 <Link to='/search-clubs'> 
                     <button>Join a Club</button>
                 </Link>
-                <Link to='/search-book'> 
+                <Link to='/search-books'> 
                     <button>Find a Book</button>
                 </Link>
             </div>
