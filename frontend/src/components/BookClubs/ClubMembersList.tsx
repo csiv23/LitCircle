@@ -14,8 +14,9 @@ function ClubMembersList(
             return (
                 <div key={user._id} className="member">
                     <Link to={`/public-profile/${user._id}`}>
-                        {/* <img className="member-profile-picture" 
-                            src={require(`../images/${user.avatar}`)} alt={user.username}/> */}
+                        {(user.avatar && user.avatar !== "") ? 
+                        <img src={user.avatar} alt={user.avatar}/> 
+                        : <img src={require("../images/avatar.jpeg")} alt={user.avatar} />}
                         <p>{user.username}</p>
                     </Link>
                 </div>

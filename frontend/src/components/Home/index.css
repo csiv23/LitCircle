@@ -1,0 +1,60 @@
+.home-font {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.home-heading {
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    /* color: #753742; */
+    background-color: rgb(214, 207, 192);
+    margin-bottom: 0;
+}
+
+.home-signed-out-section{
+    text-align: center;
+    font-weight: bold;
+    color: black;
+    text-shadow: whitesmoke 1px 0 10px;
+    background-position: center;
+    padding: 30px;
+}
+
+.home-content {
+    background-color: rgba(255, 255, 255, 0.2); 
+    padding: 20px;
+}
+
+.home-sign-up {
+    font-size: 20px;
+    border-radius: 12px;
+    border-style: none;
+    background-color: #AA5042;
+    color: white;
+    padding: 5px 10px 5px 10px;
+
+}
+
+.home-search {
+    display: flex;
+    justify-content: center;
+    background-color: rgb(214, 207, 192);
+    padding: 30px;
+    flex-grow: 1;
+    pointer-events: none; 
+}
+
+.home-search button{
+    font-size: 35px;
+    border-radius: 12px;
+    border-style: none;
+    background-color: #4F3130;
+    color: white;
+    padding: 5px 10px 5px 10px;
+    margin: 20px;
+    pointer-events: auto;
+}
+/* light-yellow color #fae4ba */
