@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { firebaseAuth } from "../../firebase";
-import { User, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import axios from "axios";
-import * as firebaseClient from '../../firebase'
 import { useDispatch, useSelector } from "react-redux";
 import Signin from "./Signin";
-import { setCurrentUser } from "../../reducers/usersReducer";
 import { useNavigate } from "react-router";
-import MyProfile from "../MyProfile";
-import * as client from "../../client";
+
 import Signup from "./Signup";
 
 function Login() {

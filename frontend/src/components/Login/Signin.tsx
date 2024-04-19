@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { User } from "../types";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import * as client from "../../client";
+import * as client from "../../mongooseClient";
 import { setCurrentUser } from "../../reducers/usersReducer";
 
 export default function Signin() {
     const [credentials, setCredentials] = useState({
-        Email: "",
-        Password: ""
+        email: "",
+        password: ""
     });
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -24,13 +24,17 @@ export default function Signin() {
         }
     }
 
+    console.log("credentials" + JSON.stringify(credentials) );
+
+    
+
     return (
         <div>
             <h1>Sign In</h1>
-            <input value={credentials.Email} placeholder="Email" type="email" onChange={(e) =>
-                setCredentials({ ...credentials, Email: e.target.value })} />
-            <input value={credentials.Password} placeholder="Password" type="password" onChange={(e) =>
-                setCredentials({ ...credentials, Password: e.target.value })} />
+            <input value={credentials.email} placeholder="Email" type="email" onChange={(e) =>
+                setCredentials({ ...credentials, email: e.target.value })} />
+            <input value={credentials.password} placeholder="Password" type="password" onChange={(e) =>
+                setCredentials({ ...credentials, password: e.target.value })} />
             <button onClick={signin}> Sign In </button>
         </div>
     )

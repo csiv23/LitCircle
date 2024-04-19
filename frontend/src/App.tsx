@@ -24,6 +24,7 @@ function App() {
           <Route path='login' element={<Login />} />
           <Route path="profile" element={<PublicProfile />} />
           <Route path="myProfile/:userId" element={<MyProfile />} />
+          <Route path="myProfile/:userId/Edit" element={<EditProfile />} />
           <Route path="bookclub" element={<BookClubs />} />
           <Route path="search/*" element={<GoogleAPI />} />
           <Route path="Book/:bookId" element={<Books />} />

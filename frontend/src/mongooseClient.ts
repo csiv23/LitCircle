@@ -296,3 +296,36 @@ export const getClubsReadingPerBook = async (bookId : ObjectId) => {
   return response.ClubsReading.map(cleanClub);
 }
 
+// signin only requires email and password
+export const signin = async (credentials: any) => {
+  const response = await axios.post(`${USERS_API_URL}/login`, credentials);
+  return cleanUser(response.data);
+}
+
+export const signup = async (credentials: User) => {
+  const response = await axios.post(`${USERS_API_URL}/register`, credentials);
+  return cleanUser(response.data);
+}
+
+export const signout = async () => {
+  const response = await axios.post(`${USERS_API_URL}/signout`);
+  return response.data;
+};
+
+export const profile = async () => {
+  const response = await axios.post(`${USERS_API_URL}/profile`);
+  return cleanUser(response.data);
+}
+
+export const updateUserProfile = async (id: string | undefined, username: string, password: string) => {
+  try {
+    const response = await axios.patch(`${MONGOOSE_URL}/users/${id}`, {username, password});
+    console.log("updateUserProfile: " + response.data);
+    return cleanUser(response.data);
+  }
+  catch (error) {
+    console.error("Failed to update user profile: ", error);
+    throw error;
+  }
+};
+

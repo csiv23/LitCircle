@@ -14,7 +14,7 @@ export default function EditProfile() {
 
     // Updates the user's username and password
     const updateProfile = async () => {
-        await client.updateUserProfile(userId, updatedUser.Username, updatedUser.Password);
+        await client.updateUserProfile(userId, updatedUser.username, updatedUser.password);
         dispatch(setCurrentUser(updatedUser));
         console.log("updatedProfile executed");
         navigate(`/myProfile/${userId}`);
@@ -27,11 +27,11 @@ export default function EditProfile() {
             {userId && (
                 <div>
                     Username:
-                    <input value={updatedUser?.Username} onChange={(e) =>
-                        setUpdatedUser({...updatedUser, Username: e.target.value})} />
+                    <input value={updatedUser?.username} onChange={(e) =>
+                        setUpdatedUser({...updatedUser, username: e.target.value})} />
                     Password:
-                    <input value={updatedUser?.Password} onChange={(e) =>
-                        setUpdatedUser({...updatedUser, Password: e.target.value})} />
+                    <input value={updatedUser?.password} onChange={(e) =>
+                        setUpdatedUser({...updatedUser, password: e.target.value})} />
                     <br />
                     <br />
                     <button onClick={updateProfile}> Save Changes </button>

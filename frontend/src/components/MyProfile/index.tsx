@@ -18,19 +18,19 @@ function MyProfile() {
     const dispatch = useDispatch();
 
     const { userId } = useParams();
-    const user = dbUsers.users.find((user) => user.userId === userId); // Local Testing database
+    // const user = dbUsers.users.find((user) => user.userId === userId); // Local Testing database
     const currentUser = useSelector((state: any) => state.users.currentUser);
     console.log("MyProfile currentUser: " + JSON.stringify(currentUser));
 
-    if (!user) {
-        return <div>User not found</div>;
-    }
-    const findClubById = (clubId: ObjectId) => {
-        return dbBookclubs.bookclubs.find(club => club.clubId === clubId);
-    };
-    const findBookbyId = (bookId: ObjectId) => {
-        return dbBooks.books.find(book => book.bookId === bookId);
-    };
+    // if (!user) {
+    //     return <div>User not found</div>;
+    // }
+    // const findClubById = (clubId: ObjectId) => {
+    //     return dbBookclubs.bookclubs.find(club => club.clubId === clubId);
+    // };
+    // const findBookbyId = (bookId: ObjectId) => {
+    //     return dbBooks.books.find(book => book.bookId === bookId);
+    // };
     const signout = async () => {
         console.log("currentUser before signout: " + JSON.stringify(currentUser));
         await client.signout();
@@ -50,7 +50,7 @@ function MyProfile() {
                     </div>
                     <div className="profile-name">
                         <h3>
-                            {user.firstName} {user.lastName}
+                            {currentUser?.firstName} {currentUser?.lastName}
                             <Link to={`/myProfile/${userId}/Edit`}>
                                 <button className="btn btn-secondary ml-2">Edit</button>
                             </Link>
@@ -58,24 +58,24 @@ function MyProfile() {
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <span className="mr-2">Username:</span> {currentUser?.Username}
+                            <span className="mr-2">Username:</span> {currentUser?.username}
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <span className="mr-2">Followers:</span> {user.followers.length}
+                            <span className="mr-2">Followers:</span> {currentUser?.followers.length}
                         </div>
                         <div className="col-sm-6">
-                            <span className="mr-2">Following:</span> {user.following.length}
+                            <span className="mr-2">Following:</span> {currentUser?.following.length}
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <span className="mr-2">Email:</span> {user.email}
+                            <span className="mr-2">Email:</span> {currentUser?.email}
                         </div>
                     </div>
                 </div>
-                <div className="col-md-9">
+                {/* <div className="col-md-9">
                     <div className="row align-items-center">
                         <div className="col-md-8 bookclub-section-title">
                             <h4>My BookClubs</h4>
@@ -168,7 +168,7 @@ function MyProfile() {
                             })}
                         </div>
                     </div>
-                </div>
+                </div> */}
                 <button onClick={signout}>Logout</button>
             </div>
         </div>

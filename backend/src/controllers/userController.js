@@ -31,16 +31,16 @@ exports.getUser = async (req, res) => {
 // Function to register a new user
 // TODO: Implement w/ FireBase
 exports.registerUser = async (req, res) => {
-    const { Username, Password, Email } = req.body;
+    const { username, password, email } = req.body;
     console.log("registerUser reached")
-    console.log(Username);
-    console.log(Password);
-    console.log(Email);
+    console.log(username);
+    console.log(password);
+    console.log(email);
 
     try {
         // Check if the user already exists
         console.log("userController.js registerUser reached")
-        let user = await User.findOne({ Email: Email, Password: Password });
+        let user = await User.findOne({ Email: email, Password: password });
         console.log("User.findOne(): " + JSON.stringify(user))
         if (user) {
             return res.status(400).json({ msg: 'User already exists' });
@@ -48,9 +48,9 @@ exports.registerUser = async (req, res) => {
 
         // Create a new user
         user = new User({
-            Username: Username,
-            Password: Password,
-            Email: Email,
+            Username: username,
+            Password: password,
+            Email: email,
             Role: "member"
         });
 
@@ -66,9 +66,9 @@ exports.registerUser = async (req, res) => {
 };
 
 exports.loginUser = async (req, res) => {
-    const { Email, Password } = req.body;
+    const { email, password } = req.body;
     try {
-        const user = await User.findOne({ Email: Email, Password: Password });
+        const user = await User.findOne({ Email: email, Password: password });
         console.log("User.findOne(): " + user);
         if (!user) {
             return res.status(400).json({ msg: 'User login does not exist' });

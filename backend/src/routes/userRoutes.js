@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
     getUsers, getUser, registerUser, loginUser, updateUserProfile,
-    followUser, getFollowers, getUserWishlist, addBookToWishlist, getUserClubs, getUserBooksRead, addBookToBooksRead, profile, signOut
+    followUser, getFollowers, getUserWishlist, addBookToWishlist, getUserClubs, getUserBooksRead, addBookToBooksRead, profile, signOut,
     getFollowing, deleteUser, getUserNextMeetings
 } = require('../controllers/userController');
 
