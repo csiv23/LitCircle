@@ -11,23 +11,16 @@ export default function EditProfile() {
     const [updatedUser, setUpdatedUser] = useState(currentUser);
     const dispatch = useDispatch();
     useEffect(() => {
-        const fetchUser = async () => {
-            const user = await client.profile();
-            setUpdatedUser(user);
-        }
-        fetchUser();
-    }, []);
-
-    console.log("EditProfile currentUser: " + JSON.stringify(currentUser));
-    console.log("updatedUser" + JSON.stringify(updatedUser));
+        dispatch(setCurrentUser(updatedUser));
+    }, [updatedUser]);
 
     const navigate = useNavigate();
     // Updates the user's username and password
     const updateProfile = async () => {
         await client.updateUserProfile(userId, updatedUser.Username, updatedUser.Password);
         console.log("Updated profile in MongoDB!");
-        // dispatch(setCurrentUser(updatedUser));
-        navigate(`/myProfile/${userId}`)
+        dispatch(setCurrentUser(updatedUser));
+        navigate(`/myProfile/${userId}`);
     }
 
     const currUsername = updatedUser.Username;
