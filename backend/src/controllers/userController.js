@@ -29,14 +29,14 @@ exports.getUser = async (req, res) => {
     }
 };
 
-// Function to register a new user
-// TODO: Implement w/ FireBase
 exports.registerUser = async (req, res) => {
-    const { username, password, email } = req.body;
+    const { username, password, email, firstName, lastName } = req.body;
     console.log("registerUser reached")
     console.log(username);
     console.log(password);
     console.log(email);
+    console.log(firstName);
+    console.log(lastName);
 
     try {
         // Check if the user already exists
@@ -46,19 +46,18 @@ exports.registerUser = async (req, res) => {
         if (user) {
             return res.status(400).json({ msg: 'User already exists' });
         }
-
         // Create a new user
         user = new User({
             Username: username,
-            Password: password,
+            FirstName: firstName,
+            LastName: lastName,
             Email: email,
+            Password: password,
             Role: "member"
         });
 
         console.log(user);
-
         await user.save();
-        currentUser = user;
         res.json(user);
     } catch (error) {
         console.error("Error registering user:", error);
