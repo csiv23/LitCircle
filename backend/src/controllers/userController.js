@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const Book = require('../models/book');
 let currentUser = null;
+// hi
 
 exports.getUsers = async (req, res) => {
     console.log("Fetching users...");
