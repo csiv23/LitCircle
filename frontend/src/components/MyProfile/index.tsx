@@ -14,45 +14,29 @@ function getURL( book: Book  ) {
 }
 
 function MyProfile() {
-    const { userId } = useParams();
-    console.log("userId" + userId)
-    const user = dbUsers.users.find((user) => user.userId === userId)
-    const currentUserRedux = useSelector((state: any) => state.users.currentUser);
-    console.log("currentUserRedux: " + JSON.stringify(currentUserRedux))
-    const [currUser, setCurrUser] = useState(currentUserRedux);
-    console.log("currUser: " + JSON.stringify(currUser));
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    useEffect(() => {
-        const fetchUser = async () => {
-            console.log("useEffect CALLED");
-            dispatch(setCurrentUser(currUser));
-            // alert("useEffect CALLED")
-        }
-        fetchUser();
-    }, [currUser]);
+
+    const { userId } = useParams();
+    const user = dbUsers.users.find((user) => user.userId === userId); // Local Testing database
+    const currentUser = useSelector((state: any) => state.users.currentUser);
+    console.log("MyProfile currentUser: " + JSON.stringify(currentUser));
 
     if (!user) {
         return <div>User not found</div>;
     }
-
     const findClubById = (clubId: ObjectId) => {
         return dbBookclubs.bookclubs.find(club => club.clubId === clubId);
     };
-
     const findBookbyId = (bookId: ObjectId) => {
         return dbBooks.books.find(book => book.bookId === bookId);
     };
-    
     const signout = async () => {
-        console.log("currentUser before signout: " + JSON.stringify(currUser));
+        console.log("currentUser before signout: " + JSON.stringify(currentUser));
         await client.signout();
-        setCurrUser(null);
+        dispatch(setCurrentUser(null));
         navigate("/login");
     };
-
-    
-    console.log("MyProfile CurrentUser: " + JSON.stringify(currUser));
 
     return (
         <div>
@@ -74,7 +58,7 @@ function MyProfile() {
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <span className="mr-2">Username:</span> {currUser?.Username}
+                            <span className="mr-2">Username:</span> {currentUser?.Username}
                         </div>
                     </div>
                     <div className="row">

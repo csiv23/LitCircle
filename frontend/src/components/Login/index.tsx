@@ -13,7 +13,7 @@ import Signup from "./Signup";
 
 function Login() {
     const currentUser = useSelector((state: any) => state.users.currentUser);
-    console.log("Login currentUser: " + currentUser);
+    console.log("Login currentUser: " + JSON.stringify(currentUser));
     const navigate = useNavigate();
     return (
         <div>

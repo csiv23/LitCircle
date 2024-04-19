@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { User } from "../types";
 import { useNavigate } from "react-router";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as client from "../../client";
 import { setCurrentUser } from "../../reducers/usersReducer";
 
@@ -14,9 +14,8 @@ export default function Signin() {
     const dispatch = useDispatch();
     const signin = async () => {
         try {
-            console.log("Signin credentials" + JSON.stringify(credentials));
             const user = await client.signin(credentials);
-            console.log("Signed in! User: " + JSON.stringify(user));
+            console.log("Signin user: " + JSON.stringify(user));
             dispatch(setCurrentUser(user))
             navigate(`/myProfile/${user._id}`);
         }
