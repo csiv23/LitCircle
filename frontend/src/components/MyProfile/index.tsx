@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as client from "../../client";
 import { useEffect, useState } from "react";
 import EditProfile from "../EditProfile";
+import { setCurrentUser } from "../../reducers/usersReducer";
 
 function getURL( book: Book  ) {
     return `/book/${book.title.replace(/\s+/g, '-').toLowerCase()}`
@@ -16,11 +17,12 @@ function MyProfile() {
     const { userId } = useParams();
     const user = dbUsers.users.find((user) => user.userId === userId)
     const currentUserRedux = useSelector((state: any) => state.users.currentUser);
-    const [currentUser, setCurrentUser] = useState(currentUserRedux);
+    const [currUser, setCurrUser] = useState(currentUserRedux);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     useEffect(() => {
-        
-    }, []);
+        dispatch(setCurrentUser(currUser));
+    }, [currUser]);
 
     if (!user) {
         return <div>User not found</div>;
@@ -35,14 +37,14 @@ function MyProfile() {
     };
     
     const signout = async () => {
-        console.log("currentUser before signout: " + JSON.stringify(currentUser));
+        console.log("currentUser before signout: " + JSON.stringify(currUser));
         await client.signout();
-        setCurrentUser(null);
+        setCurrUser(null);
         navigate("/login");
     };
 
     
-    console.log("MyProfile CurrentUser: " + JSON.stringify(currentUser));
+    console.log("MyProfile CurrentUser: " + JSON.stringify(currUser));
 
     return (
         <div>
@@ -64,7 +66,7 @@ function MyProfile() {
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <span className="mr-2">Username:</span> {currentUser.Username}
+                            <span className="mr-2">Username:</span> {currUser?.Username}
                         </div>
                     </div>
                     <div className="row">
