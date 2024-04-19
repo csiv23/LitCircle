@@ -8,11 +8,11 @@ import { setCurrentUser } from "../../reducers/usersReducer";
 export default function Signin() {
     const [credentials, setCredentials] = useState<User>({
         userId: "",
-        username: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
+        Username: "",
+        FirstName: "",
+        LastName: "",
+        Email: "",
+        Password: "",
         followers: [],
         following: [],
         wishlist: [],
@@ -40,10 +40,10 @@ export default function Signin() {
         <div>
             <h1>Sign In</h1>
             {error && <div>{error}</div>}
-            <input value={credentials.email} placeholder="Email" type="email" onChange={(e) =>
-                setCredentials({ ...credentials, email: e.target.value })} />
-            <input value={credentials.password} placeholder="Password" type="password" onChange={(e) =>
-                setCredentials({ ...credentials, password: e.target.value })} />
+            <input value={credentials.Email} placeholder="Email" type="email" onChange={(e) =>
+                setCredentials({ ...credentials, Email: e.target.value })} />
+            <input value={credentials.Password} placeholder="Password" type="password" onChange={(e) =>
+                setCredentials({ ...credentials, Password: e.target.value })} />
             <button onClick={signin}> Sign In </button>
         </div>
     )

@@ -87,6 +87,12 @@ export const signin = async (credentials: User) => {
   return response.data;
 }
 
+export const signup = async (credentials: User) => {
+  console.log("client.ts signup reached")
+  const response = await axios.post(`${USERS_API_URL}/register`, credentials);
+  return response.data;
+}
+
 export const signout = async () => {
   const response = await axios.post(`${USERS_API_URL}/signout`);
   return response.data;

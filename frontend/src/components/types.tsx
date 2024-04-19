@@ -7,11 +7,11 @@ type ObjectId = string;
 
 type User = {
     userId: ObjectId;
-    username: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
+    Username: string;
+    FirstName: string;
+    LastName: string;
+    Email: string;
+    Password: string;
     followers: ObjectId[];
     following: ObjectId[];
     wishlist: ObjectId[];
