@@ -6,6 +6,11 @@ const bookSchema = new Schema({
         type: String,
         required: true
     },
+    GoogleBooksId : {
+        type: String,
+        required: true,
+        unique: true,
+    },
     Author: {
         type: String,
         required: true
@@ -13,6 +18,9 @@ const bookSchema = new Schema({
     Description: {
         type: String,
         required: true
+    },
+    CoverImageUrl: {
+        type: String,
     },
     ClubsReading: [{
         type: Schema.Types.ObjectId,

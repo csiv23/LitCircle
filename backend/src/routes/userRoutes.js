@@ -11,6 +11,8 @@ router.get('/search', searchUsers);
 router.get('/:userId', getUser);
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+router.post('/signout', signOut)
+router.post("/profile", profile);
 router.patch('/:userId', updateUserProfile);
 router.patch('/:userId/follow', followUser);
 router.get('/:userId/followers', getFollowers);

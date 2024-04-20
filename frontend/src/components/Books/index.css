@@ -1,0 +1,38 @@
+.book-font {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.book-column {
+    background-color: rgb(214, 207, 192);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%; 
+}
+
+.book-cover-lg img{
+    margin: 20px;
+    width: 320px;
+    height: 500px;
+}
+
+.club-cover {
+    width:100px;
+    height: 100px;
+}
+
+.book-about-column {
+    background-color: rgb(240, 233, 225);
+    padding-left: 60px;
+    padding-top: 50px;
+}
+
+.club {
+    margin: 5px;
+}
+
+.club a{
+    text-decoration: none;
+    color: black;
+}

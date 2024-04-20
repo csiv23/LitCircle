@@ -49,6 +49,7 @@ exports.createClub = async (req, res) => {
             Wishlist: [],
             CurrentBook: null,
             Organizer,
+            ImageUrl,
         });
 
         await newClub.save();
@@ -176,10 +177,9 @@ exports.fetchClubAttribute = (attributeName) => {
         try {
             const populatedClub = await Club.findById(club._id).populate(attributeName);
             if (!populatedClub || !populatedClub[attributeName]) {
-                return res.status(404).json({ message: `${attributeName} not found` });
+                return res.status(404).json({ message: `${attributeName} not found in club details` });
             }
-            // Since populate returns a promise, you can await it directly
-            // and then use the populated club document
+
             res.json({ [attributeName]: populatedClub[attributeName] });
         } catch (error) {
             console.error(`Error fetching ${attributeName}:`, error);
@@ -187,6 +187,7 @@ exports.fetchClubAttribute = (attributeName) => {
         }
     };
 };
+
 
 /**
  * Adds a recommended book to the club's wishlist.
@@ -260,7 +261,7 @@ exports.markCurrentBookAsRead = async (req, res) => {
 
     try {
         const club = await validateClubExists(clubId, res);
-        const book = await validateUserExists(club.currentBook, res);
+        const book = await validateBookExists(club.CurrentBook, res);
         if (!club || !book) return; // Already handled in validate*
 
 

@@ -1,0 +1,74 @@
+{
+    "users": [
+      {
+        "userId": "0",
+        "username": "lesboeroticaluvr",
+        "firstName": "Candice",
+        "lastName": "Mac",
+        "email": "candieluvsorgies69@gmail.com",
+        "password": "password123",
+        "followers": ["1", "2"],
+        "following": ["2"],
+        "wishlist": ["2"],
+        "booksRead": ["1", "2"],
+        "bookClubs": ["1", "2"],
+        "avatar": "avatar.jpeg"
+      },
+      {
+        "userId": "1",
+        "username": "user1",
+        "firstName": "John",
+        "lastName": "Smith",
+        "email": "john.smith@gmail.com",
+        "password": "password123",
+        "followers": [],
+        "following": [],
+        "wishlist": [],
+        "booksRead": [],
+        "bookClubs": [],
+        "avatar": "avatar.jpeg"
+      },
+      {
+        "userId": "2",
+        "username": "user2",
+        "firstName": "Jane",
+        "lastName": "Smith",
+        "email": "jane.smith@example.com",
+        "password": "password456",
+        "followers": [],
+        "following": [],
+        "wishlist": [],
+        "booksRead": [],
+        "bookClubs": [],
+        "avatar": "avatar.jpeg"
+      },
+      {
+        "userId": "661fdda08057d32f04114016",
+        "username": "test_username",
+        "firstName": "testFirst",
+        "lastName": "testLast",
+        "email": "test@test.com",
+        "password": "asdfasdf",
+        "followers": [],
+        "following": [],
+        "wishlist": [],
+        "booksRead": [],
+        "bookClubs": [],
+        "avatar": "avatar.jpeg"
+      },
+      {
+        "userId": "661c33b54ea30aec6aaac466",
+        "username": "cam",
+        "firstName": "cam",
+        "lastName": "cam",
+        "email": "qwe@qwe.com",
+        "password": "qweqwe",
+        "followers": [],
+        "following": [],
+        "wishlist": [],
+        "booksRead": [],
+        "bookClubs": [],
+        "avatar": "avatar.jpeg"
+      }
+    ]
+  }

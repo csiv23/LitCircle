@@ -1,0 +1,90 @@
+.club-profile-picture {
+    width: 200px;
+    height: 200px;
+}
+
+.club-font {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.club-heading {
+    font-weight: bold;
+}
+
+.club-column {
+    background-color: rgb(214, 207, 192);
+}
+
+.club-text {
+    margin: 45px;
+}
+
+.club-bg {
+    background-color: rgb(240, 233, 225);
+    padding-left: 60px;
+    padding-top: 50px;
+}
+
+.club-container {
+    background-color: rgba(244, 228, 210, 0.697);
+    border-radius: 10px;
+    margin: 10px;
+    padding: 10px;
+}
+
+.book-cover {
+    width: 100px;
+    height: 150px;
+}
+
+.book-cover img{
+    width: 100px;
+    height: 150px;
+}
+
+.member {
+    margin: 5px;
+}
+
+.member a{
+    text-decoration: none;
+    color: black;
+}
+
+.member img{
+    width: 110px;
+    height: 100px;
+    margin-bottom: 10px;;
+}
+
+.book-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.book {
+    margin: 5px;
+}
+
+.book a {
+    text-decoration: none;
+    color: black;
+}
+
+.book-title {
+    margin-top: 10px;
+}
+
+.book-author {
+    color:rgb(78, 77, 77);
+}
+
+.book-btn {
+    background-color: rgb(126, 135, 96);
+    border: none;
+}
+
+.vertical-divider {
+    border-left: 2px; 
+    height: 100%;
+}

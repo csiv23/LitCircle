@@ -1,0 +1,32 @@
+.header-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-bottom: 3px;
+    margin: 0;
+    background-color: rgb(240, 233, 225);
+    /* background-color: rgb(236, 226, 200); */
+}
+.header-icon {
+    margin-right: 20px;
+    list-style-type: none;
+}
+.header-icon img{
+    height: 75px;
+    margin-top: 0px;
+}
+.header-icon a{
+    text-decoration: none;
+}
+.header-label {
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    /* color: #753742; */
+    color: rgb(126, 135, 96);
+    font-weight: bolder;
+}
+.header-divider {
+    margin: 0;
+}
+.profile-label {
+    margin-left: auto; /* Move the Profile label to the right side */
+}

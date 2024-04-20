@@ -4,6 +4,15 @@ const User = require('../models/user');
 
 // Fetch and validate a book exists
 async function validateBookExists(bookId, res) {
+    const book = await Book.findOne({GoogleBooksId : bookId});
+    if (!book) {
+        res.status(404).json({ message: 'Book not found' });
+        return null;
+    }
+    return book;
+}
+
+async function validateBookbyId(bookId, res) {
     const book = await Book.findById(bookId);
     if (!book) {
         res.status(404).json({ message: 'Book not found' });
@@ -11,6 +20,7 @@ async function validateBookExists(bookId, res) {
     }
     return book;
 }
+
 
 // Fetch and validate a club exists
 async function validateClubExists(clubId, res) {
@@ -32,4 +42,4 @@ async function validateUserExists(userId, res) {
     return user;
 }
 
-module.exports = { validateBookExists, validateClubExists, validateUserExists };
+module.exports = { validateBookExists, validateClubExists, validateUserExists, validateBookbyId };

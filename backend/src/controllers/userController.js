@@ -1,7 +1,6 @@
 const User = require('../models/user');
 const Book = require('../models/book');
 
-
 exports.getUsers = async (req, res) => {
     console.log("Fetching users...");
     try {
@@ -57,57 +56,65 @@ exports.getUser = async (req, res) => {
     }
 };
 
-// Function to register a new user
-// TODO: Implement w/ FireBase
 exports.registerUser = async (req, res) => {
-    const { Username, FirstName, LastName, Password, Email } = req.body;
+    const { username, password, email, firstName, lastName } = req.body;
+    console.log("registerUser...")
+    console.log(username);
+    console.log(password);
+    console.log(email);
+    console.log(firstName);
+    console.log(lastName);
 
     try {
         // Check if the user already exists
-        let user = await User.findOne({ Email });
+        console.log("userController.js registerUser reached")
+        let user = await User.findOne({ Email: email, Password: password });
+        console.log("User.findOne(): " + JSON.stringify(user))
         if (user) {
             return res.status(400).json({ msg: 'User already exists' });
         }
-
         // Create a new user
         user = new User({
-            Username,
-            FirstName,
-            LastName,
-            Password,
-            Email,
-            role
+            Username: username,
+            FirstName: firstName,
+            LastName: lastName,
+            Email: email,
+            Password: password,
+            Role: "member"
         });
 
+        console.log(user);
         await user.save();
-
-        // Respond with the new user's ID
-        res.json({ userID: user.id });
+        req.session["currentUser"] = user; // TODO: Might not work?
+        res.json(user);
     } catch (error) {
         console.error("Error registering user:", error);
         res.status(500).send('Server error');
     }
 };
 
-// TODO: implement using FireBase
 exports.loginUser = async (req, res) => {
-    const { Email, Password } = req.body;
-
+    const { email, password } = req.body;
     try {
-        let user = await User.findOne({ Email });
+        const user = await User.findOne({ Email: email, Password: password });
+        console.log("User.findOne(): " + user);
         if (!user) {
-            return res.status(400).json({ msg: 'User email does not exist' });
+            return res.status(400).json({ msg: 'User login does not exist' });
         }
-
-        // Directly compare plaintext passwords
-        // TODO: Hash(?)
-        if (Password !== user.Password) {
-            return res.status(400).json({ msg: 'Invalid password' });
-        }
-
-        res.json({ userID: user.id });
+        req.session["currentUser"] = user;
+        res.json(user);
     } catch (error) {
         console.error("Error logging in user:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+exports.signOut = async (req, res) => {
+    try {
+        req.session.destroy();
+        res.sendStatus(200);
+    } catch (error) {
+        console.error("Error signing out user:", error);
         res.status(500).send('Server error');
     }
 };
@@ -115,14 +122,15 @@ exports.loginUser = async (req, res) => {
 // Update user profile
 exports.updateUserProfile = async (req, res) => {
     const { userId } = req.params;
-    const { Username, Email, FirstName, LastName } = req.body;
+    const { username, password } = req.body;
 
     try {
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            { $set: { Username: Username, Email: Email, FirstName: FirstName, LastName: LastName } },
+            { $set: { Username: username, Password: password }},
             { new: true }
         );
+        req.session["currentUser"] = updatedUser;
         res.json(updatedUser);
     } catch (error) {
         console.error("Error updating user profile:", error);
@@ -303,6 +311,23 @@ exports.addBookToBooksRead = async (req, res) => {
         res.json(updatedUser);
     } catch (error) {
         console.error("Error adding book to user's BooksRead:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+exports.profile = async (req, res) => {
+    console.log("Fetching profile...");
+    try {
+        const currentUser = req.session["currentUser"];
+        console.log(currentUser);
+        if (!currentUser) {
+            res.sendStatus(401);
+            return;
+        }
+        console.log("Fetched profile: " + currentUser);
+        res.json(currentUser);
+    } catch (error) {
+        console.error("Error fetching profile:", error);
         res.status(500).send('Server error');
     }
 };
