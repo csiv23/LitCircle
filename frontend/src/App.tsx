@@ -14,7 +14,8 @@ import EditProfile from './components/EditProfile';
 import GoogleAPI from './components/SearchBooks';
 import Home from './components/Home';
 import SearchBookclubs from './components/SearchBookclubs';
-
+require('dotenv').config();
+console.log(process.env);
 function App() {
   return (
 

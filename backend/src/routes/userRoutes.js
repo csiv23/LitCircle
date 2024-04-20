@@ -3,7 +3,7 @@ const router = express.Router();
 const {
     getUsers, searchUsers, getUser, registerUser, loginUser, updateUserProfile,
     followUser, getFollowers, getFollowing, getUserWishlist, addBookToWishlist, getUserClubs, 
-    getUserBooksRead, addBookToBooksRead, deleteUser, getUserNextMeetings
+    getUserBooksRead, addBookToBooksRead, deleteUser, getUserNextMeetings, signOut, profile,
 } = require('../controllers/userController');
 
 router.get('/', getUsers);

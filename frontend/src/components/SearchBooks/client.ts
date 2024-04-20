@@ -1,10 +1,11 @@
 import axios from "axios";
 import { Book } from "../types";
 
+require('dotenv').config();
 // TODO : MOVE THIS TO BACKEND ENV 
 // const API_KEY = process.env.BOOKS_API_KEY;
-const API_KEY = "AIzaSyBcnaenOTl-FLXJc3vyE_LSR3mwKa_u3Us"
-const GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1"
+const API_KEY = process.env.BOOKS_API_KEY
+const GOOGLE_BOOKS_URL = process.env.GOOGLE_BOOKS_URL
 
 function cleanBookObj (bookData: any) : Book {
   let bookClean = {

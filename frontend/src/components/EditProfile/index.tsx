@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import * as client from "../../client";
+import * as client from "../../mongooseClient";
 import { User } from "../types";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "../../reducers/usersReducer";

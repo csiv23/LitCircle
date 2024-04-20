@@ -1,7 +1,9 @@
 import axios from "axios";
 import { Book, Club, ObjectId, User } from "./components/types";
+
+require('dotenv').config();
 // TODO : MOVE THIS TO BACKEND ENV 
-const MONGOOSE_URL = "http://localhost:4000/api"
+const MONGOOSE_URL = process.env.MONGOOSE_URL;
 const USERS_API_URL = `${MONGOOSE_URL}/users`
 // axios.defaults.withCredentials = true
 
