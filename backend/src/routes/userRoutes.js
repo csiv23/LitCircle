@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const {
-    getUsers, getUser, registerUser, loginUser, updateUserProfile,
-    followUser, getFollowers, getUserWishlist, addBookToWishlist, getUserClubs, getUserBooksRead, addBookToBooksRead, profile, signOut,
-    getFollowing, deleteUser, getUserNextMeetings
+    getUsers, searchUsers, getUser, registerUser, loginUser, updateUserProfile,
+    followUser, getFollowers, getFollowing, getUserWishlist, addBookToWishlist, getUserClubs, 
+    getUserBooksRead, addBookToBooksRead, deleteUser, getUserNextMeetings
 } = require('../controllers/userController');
 
 router.get('/', getUsers);
+router.get('/search', searchUsers);
 router.get('/:userId', getUser);
 router.post('/register', registerUser);
 router.post('/login', loginUser);

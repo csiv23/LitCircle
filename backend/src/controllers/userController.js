@@ -13,6 +13,35 @@ exports.getUsers = async (req, res) => {
     }
 };
 
+// Route handler to search users by name or username
+exports.searchUsers = async (req, res) => {
+    const { query } = req.query; // Extract the search query from the URL query parameters
+
+    if (!query) {
+        return res.status(400).json({ message: 'Search query is required' });
+    }
+
+    try {
+        // Use a regex to search for users by first name, last name, or username, case-insensitive
+        const users = await User.find({
+            $or: [
+                { FirstName: { $regex: query, $options: 'i' } },
+                { LastName: { $regex: query, $options: 'i' } },
+                { Username: { $regex: query, $options: 'i' } }
+            ]
+        });
+
+        if (users.length === 0) {
+            return res.status(404).json({ message: 'No users found matching the search criteria.' });
+        }
+
+        res.json(users);
+    } catch (error) {
+        console.error("Error searching users:", error);
+        res.status(500).json({ error: 'Internal server error while searching for users.' });
+    }
+};
+
 exports.getUser = async (req, res) => {
     const { userId } = req.params;
     try {
