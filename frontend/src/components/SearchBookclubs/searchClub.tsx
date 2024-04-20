@@ -1,47 +1,44 @@
-import * as client from "./client";
+import * as mongooseClient from "../../mongooseClient";
 import React, { useState, useEffect } from "react";
-import GoogleBooks from "./books";
 import { useParams, Link } from "react-router-dom";
-import { getUsers } from "../../mongooseClient";
+import BookclubResults from "./bookclubSearchResults";
 
 
-export default function GoogleBooksSearch() {
- const { title } = useParams();
- const [search, setSearch] = useState(title);
+export default function BookclubSearch() {
+ const { name } = useParams();
+ const [search, setSearch] = useState(name);
  const [results, setResults] = useState<any>();
 
  const fullTextSearch = async (text="") => {
    if (text !== "") {
-    const results = await client.searchBooks(text);
+    const results = await mongooseClient.searchBookclubs(text);
     setResults(results);
+
    }
  };
 
- 
-
  useEffect(() => {
-    fullTextSearch(title);
+    fullTextSearch(name);
  }, []);
 
  return (
     <div>
-      <h2>Search Books</h2>
+      <h2>Search Bookclubs</h2>
       <input type="text" value={search}
         onChange={(e) =>
             setSearch(e.target.value)}/>
-      <Link to={`/search-books/${search}`}>
+      <Link to={`/search-clubs/${search}`}>
       <button
         onClick={() => fullTextSearch(search)}>
         Search
       </button>
       </Link>
       {results &&
-        results.items &&
-        results.items.length > 0 && (
+        results.length > 0 && (
       <>
         <h2>Books</h2>
-        <GoogleBooks
-          books={results.items} />
+        <BookclubResults
+          clubs={results} />
       </>
     )}
    </div>

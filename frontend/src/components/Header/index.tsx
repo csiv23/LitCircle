@@ -3,7 +3,7 @@ import "./index.css";
 
 function Header() {
     const links = [
-        { label: "Homepage", url: "homepage", icon: "litcircle-logo.png" },
+        { label: "Homepage", url: "home", icon: "litcircle-logo.png" },
         { label: "Search Bookclubs", url: "search-clubs" },
         { label: "Search Books", url: "search-books" },
         { label: "Profile", url: "profile/0" }

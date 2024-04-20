@@ -296,6 +296,11 @@ export const getClubsReadingPerBook = async (bookId : ObjectId) => {
   return response.ClubsReading.map(cleanClub);
 }
 
+export const searchBookclubs = async (name : string) => {
+  const response = await mongooseGet(`clubs/search?name=${name}`);
+  return response.map(cleanClub);
+}
+
 // signin only requires email and password
 export const signin = async (credentials: any) => {
   const response = await axios.post(`${USERS_API_URL}/login`, credentials);
@@ -328,4 +333,5 @@ export const updateUserProfile = async (id: string | undefined, username: string
     throw error;
   }
 };
+
 
