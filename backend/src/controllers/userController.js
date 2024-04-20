@@ -1,7 +1,5 @@
 const User = require('../models/user');
 const Book = require('../models/book');
-let currentUser = null;
-// hi
 
 exports.getUsers = async (req, res) => {
     console.log("Fetching users...");
@@ -31,7 +29,7 @@ exports.getUser = async (req, res) => {
 
 exports.registerUser = async (req, res) => {
     const { username, password, email, firstName, lastName } = req.body;
-    console.log("registerUser reached")
+    console.log("registerUser...")
     console.log(username);
     console.log(password);
     console.log(email);
@@ -58,6 +56,7 @@ exports.registerUser = async (req, res) => {
 
         console.log(user);
         await user.save();
+        req.session["currentUser"] = user; // TODO: Might not work?
         res.json(user);
     } catch (error) {
         console.error("Error registering user:", error);
@@ -73,7 +72,6 @@ exports.loginUser = async (req, res) => {
         if (!user) {
             return res.status(400).json({ msg: 'User login does not exist' });
         }
-        // currentUser = user;
         req.session["currentUser"] = user;
         res.json(user);
     } catch (error) {
@@ -84,7 +82,7 @@ exports.loginUser = async (req, res) => {
 
 exports.signOut = async (req, res) => {
     try {
-        currentUser = null;
+        req.session.destroy();
         res.sendStatus(200);
     } catch (error) {
         console.error("Error signing out user:", error);
@@ -103,7 +101,7 @@ exports.updateUserProfile = async (req, res) => {
             { $set: { Username: username, Password: password }},
             { new: true }
         );
-        currentUser = updatedUser;
+        req.session["currentUser"] = updatedUser;
         res.json(updatedUser);
     } catch (error) {
         console.error("Error updating user profile:", error);
@@ -291,9 +289,12 @@ exports.addBookToBooksRead = async (req, res) => {
 exports.profile = async (req, res) => {
     console.log("Fetching profile...");
     try {
-        // if (!currentUser) {
-        //     return res.status(404).send('No profile found');
-        // }
+        const currentUser = req.session["currentUser"];
+        console.log(currentUser);
+        if (!currentUser) {
+            res.sendStatus(401);
+            return;
+        }
         console.log("Fetched profile: " + currentUser);
         res.json(currentUser);
     } catch (error) {

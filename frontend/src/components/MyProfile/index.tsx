@@ -4,7 +4,7 @@ import { User, Book, Club, ObjectId } from "../types";
 import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from '../../database';
 import Header from "../Header";
 import { useDispatch, useSelector } from "react-redux";
-import * as client from "../../client";
+import * as client from "../../mongooseClient";
 import { useEffect, useState } from "react";
 import EditProfile from "../EditProfile";
 import { setCurrentUser } from "../../reducers/usersReducer";
@@ -37,6 +37,18 @@ function MyProfile() {
         dispatch(setCurrentUser(null));
         navigate("/login");
     };
+
+    // const [currentUserSession, setCurrentUserSession] = useState<User | null>(null);
+    // const fetchProfile = async () => {
+    //     const currentUserSession = await client.profile();
+    //     // setCurrentUserSession(currentUserSession);
+    //     dispatch(setCurrentUser(currentUser));
+    // }
+    // useEffect(() => {
+    //     fetchProfile();
+    // }, []);
+
+    // console.log("fetchProfile currentUserSession: " + currentUserSession);
 
     return (
         <div>
