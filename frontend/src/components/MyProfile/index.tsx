@@ -96,7 +96,7 @@ function MyProfile() {
                             <button className="btn btn-primary">Add BookClub</button>
                         </div>
                         <div className="d-flex flex-wrap bookclub-pfp">
-                            {user.bookClubs.map((clubId: ObjectId) => {
+                            {currentUser?.bookClubs.map((clubId: ObjectId) => {
                                 const club = findClubById(clubId);
                                 if (club) {
                                     return (
@@ -126,7 +126,7 @@ function MyProfile() {
                             <button className="btn btn-primary">Add Book</button>
                         </div>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {user.booksRead.map((bookId: ObjectId) => {
+                            {currentUser?.booksRead.map((bookId: ObjectId) => {
                                 const book = findBookbyId(bookId);
                                 if (book) {
                                     return (
@@ -157,7 +157,7 @@ function MyProfile() {
                             <button className="btn btn-primary">Add Book</button>
                         </div>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {user.wishlist.map((bookId: ObjectId) => {
+                            {currentUser?.wishlist.map((bookId: ObjectId) => {
                                 const book = findBookbyId(bookId);
                                 if (book) {
                                     return (
