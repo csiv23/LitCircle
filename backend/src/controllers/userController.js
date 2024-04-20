@@ -73,7 +73,8 @@ exports.loginUser = async (req, res) => {
         if (!user) {
             return res.status(400).json({ msg: 'User login does not exist' });
         }
-        currentUser = user;
+        // currentUser = user;
+        req.session["currentUser"] = user;
         res.json(user);
     } catch (error) {
         console.error("Error logging in user:", error);
