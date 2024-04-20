@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { User } from "../types";
 import { useNavigate } from "react-router";
-import * as client from "../../client";
+import * as client from "../../mongooseClient";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../../reducers/usersReducer";
 
