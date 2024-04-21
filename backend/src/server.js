@@ -14,7 +14,6 @@ const server = express();
 connectToMongoDB();
 
 // Middleware
-server.use(cors());
 server.use(cors({
   credentials: true,
   origin: process.env.FRONTEND_URL // Adjust the port and protocol to match your frontend
