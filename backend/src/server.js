@@ -1,4 +1,3 @@
-require('dotenv').config();
 const session = require('express-session');
 const express = require('express');
 const cors = require('cors');
@@ -8,11 +7,9 @@ const userRoutes = require('./routes/userRoutes');
 const clubRoutes = require('./routes/clubRoutes');
 const bookRoutes = require('./routes/bookRoutes');
 
-const server = express();
-
 // Connect to MongoDB
 connectToMongoDB();
-
+const server = express();
 // Middleware
 server.use(cors({
   credentials: true,
