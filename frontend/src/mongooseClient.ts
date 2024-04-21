@@ -252,6 +252,7 @@ export async function notImplemented() {
  // implement this 
  export const getUserById = async (userId : ObjectId) => {
   const response = await mongooseGet(`users/${userId}`);
+  console.log("getUserById: " + JSON.stringify(response))
   return cleanUser(response);
  }
 

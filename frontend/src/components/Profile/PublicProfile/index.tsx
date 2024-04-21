@@ -5,6 +5,7 @@ import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from '../
 import Header from "../../Header";
 import { useDispatch, useSelector } from "react-redux";
 import * as client from "../../../mongooseClient";
+import { useEffect, useState } from "react";
 
 function getURL( book: Book  ) {
     return `/book/${book.title.replace(/\s+/g, '-').toLowerCase()}`
@@ -13,28 +14,36 @@ function getURL( book: Book  ) {
 function PublicProfile() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
     const { userId } = useParams();
+
+    // REMOVE THIS WHEN DONE TESTING
     const user = dbUsers.users.find((user) => user.userId === userId)
 
-    let publicUser: any;
-    if (userId) {
-        publicUser = client.getUserById(userId);
-    }
     const currentUser = useSelector((state: any) => state.users.currentUser);
     console.log("PublicProfile. The currentUser is: " + JSON.stringify(currentUser));
-    if (!currentUser) {
-        navigate("/login");
-    } else if (currentUser?._id == userId) {
+    if (currentUser?._id == userId) {
         navigate(`/myProfile/${currentUser?._id}`);
     }
+    // Get public profile user
+    const [publicUser, setPublicUser] = useState<User | null>(null);
+    useEffect(() => {
+        const fetchPublicUser = async () => {
+            if (userId) {
+                const fetchedUser = await client.getUserById(userId);
+                setPublicUser(fetchedUser);
+            }
+        }
+        fetchPublicUser();
+    }, [])
+    console.log("publicUser: " + JSON.stringify(publicUser))
 
     const follow = () => {
         if (currentUser) {
             // TODO:
             // 1. Check if currentUser already exists in this user's followers list
-            const alreadyFollowing = publicUser.followers.some((followerId: String) => followerId === currentUser._id);
-            console.log("alreadyFollowing?: " + alreadyFollowing);
+            console.log("follow button clicked")
+            // const alreadyFollowing = publicUser.followers.some((followerId: String) => followerId === currentUser._id);
+            // console.log("alreadyFollowing?: " + publicUser?.followers);
             // 2. Add this user's id to currentUser's following list
             // console.log("Clicked follow")
             // 3. Add this currentUser's id to this user's followers list

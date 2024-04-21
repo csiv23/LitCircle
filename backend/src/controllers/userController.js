@@ -49,6 +49,7 @@ exports.getUser = async (req, res) => {
         if (!user) {
             return res.status(404).send('User not found');
         }
+        console.log("getUser findById: " + user);
         res.json(user);
     } catch (error) {
         console.error("Error fetching user:", error);

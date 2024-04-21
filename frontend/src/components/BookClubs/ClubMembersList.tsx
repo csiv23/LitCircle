@@ -13,7 +13,7 @@ function ClubMembersList(
         if (user) {
             return (
                 <div key={user._id} className="member">
-                    <Link to={`/public-profile/${user._id}`}>
+                    <Link to={`/profile/${user._id}`}>
                         {(user.avatar && user.avatar !== "") ? 
                         <img src={user.avatar} alt={user.avatar}/> 
                         : <img src={require("../images/avatar.jpeg")} alt={user.avatar} />}
