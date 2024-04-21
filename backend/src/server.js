@@ -17,11 +17,11 @@ connectToMongoDB();
 server.use(cors());
 server.use(cors({
   credentials: true,
-  origin: process.env.FRONTEND_ORIGIN // Adjust the port and protocol to match your frontend
+  origin: process.env.FRONTEND_URL // Adjust the port and protocol to match your frontend
 }));
 // Multiple user sessions:
 const sessionOptions = {
-  secret: "secret_session", // process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET, // process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
 };
@@ -30,7 +30,7 @@ if (process.env.NODE_ENV !== "development") {
   sessionOptions.cookie = {
     sameSite: "none",
     secure: true,
-    domain: "http://localhost:4000" // process.env.HTTP_SERVER_DOMAIN,
+    domain: process.env.HTTP_SERVER_DOMAIN,
   };
 }
 server.use(session(sessionOptions));
