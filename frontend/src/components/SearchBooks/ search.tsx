@@ -2,7 +2,6 @@ import * as client from "./client";
 import React, { useState, useEffect } from "react";
 import GoogleBooks from "./books";
 import { useParams, Link } from "react-router-dom";
-import { getUsers } from "../../mongooseClient";
 
 
 export default function GoogleBooksSearch() {

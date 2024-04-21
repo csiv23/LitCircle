@@ -4,7 +4,7 @@ import { Book } from "../types";
 // TODO : MOVE THIS TO BACKEND ENV 
 // const API_KEY = process.env.BOOKS_API_KEY;
 const API_KEY = process.env.REACT_APP_BOOKS_API_KEY
-const GOOGLE_BOOKS_URL = process.env.REACT_APP_GOOGLE_BOOKS_URL
+const GOOGLE_BOOKS_URL = process.env.REACT_APP_GOOGLE_BOOKS_URL 
 
 function cleanBookObj (bookData: any) : Book {
   let bookClean = {

@@ -2,7 +2,7 @@ import axios from "axios";
 import { Book, Club, ObjectId, User } from "./components/types";
 
 // TODO : MOVE THIS TO BACKEND ENV 
-const MONGOOSE_URL = process.env.REACT_APP_MONGOOSE_URL;
+const MONGOOSE_URL = process.env.REACT_APP_MONGOOSE_URL || "http://localhost:4000/api"
 const USERS_API_URL = `${MONGOOSE_URL}/users`
 axios.defaults.withCredentials = true
 

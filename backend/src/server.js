@@ -11,10 +11,16 @@ const bookRoutes = require('./routes/bookRoutes');
 connectToMongoDB();
 const server = express();
 // Middleware
-server.use(cors({
-  credentials: true,
-  origin: process.env.FRONTEND_URL // Adjust the port and protocol to match your frontend
-}));
+if (process.env.NODE_ENV !== "development") {
+  server.use(cors());
+}
+else {
+  server.use(cors({
+    credentials: true,
+    origin: process.env.FRONTEND_URL, // Adjust the port and protocol to match your frontend
+  }));
+}
+
 // Multiple user sessions:
 const sessionOptions = {
   secret: process.env.SESSION_SECRET, // process.env.SESSION_SECRET,
@@ -49,5 +55,6 @@ server.use('/api/books', bookRoutes);
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(process.env.FRONTEND_URL);
 });
 

@@ -1,0 +1,6 @@
+[[redirects]]
+  from = "/google-books-api/*"
+  to = "https://www.googleapis.com/books/v1"
+  status = 200
+  force = true
+  headers = {X-From = "Netlify"}
