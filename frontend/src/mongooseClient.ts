@@ -250,7 +250,10 @@ export async function notImplemented() {
 };
 
  // implement this 
- export const getUserById = async (userId : ObjectId) => {return await notImplemented()}
+ export const getUserById = async (userId : ObjectId) => {
+  const response = await mongooseGet(`users/${userId}`);
+  return cleanUser(response);
+ }
 
   // implement this 
   export const getBookById = async (bookId : ObjectId) => {

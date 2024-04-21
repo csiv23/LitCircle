@@ -1,26 +1,47 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "./index.css";
-import { User, Book, Club, ObjectId } from "../types";
-import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from '../../database';
-import Header from "../Header";
+import { User, Book, Club, ObjectId } from "../../types";
+import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from '../../../database';
+import Header from "../../Header";
+import { useDispatch, useSelector } from "react-redux";
+import * as client from "../../../mongooseClient";
+import { useEffect, useState } from "react";
+import EditProfile from "./EditProfile";
+import { setCurrentUser } from "../../../reducers/usersReducer";
 
 function getURL( book: Book  ) {
     return `/book/${book.title.replace(/\s+/g, '-').toLowerCase()}`
 }
 
-function PublicProfile() {
+function MyProfile() {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const { userId } = useParams();
-    const user = dbUsers.users.find((user) => user.userId === userId)
-    if (!user) {
-        return <div>User not found</div>;
+    // const user = dbUsers.users.find((user) => user.userId === userId); // Local Testing database
+    let currentUser = useSelector((state: any) => state.users.currentUser);
+    console.log("MyProfile currentUser: " + JSON.stringify(currentUser));
+
+    if (!currentUser) {
+        navigate("/login");
+    } else if (currentUser?._id !== userId) {
+        navigate(`/myProfile/${currentUser?._id}`);
     }
 
-    const findClubById = (clubId: ObjectId) => {
-        return dbBookclubs.bookclubs.find(club => club.clubId === clubId);
-    };
-
-    const findBookbyId = (bookId: ObjectId) => {
-        return dbBooks.books.find(book => book.bookId === bookId);
+    // if (!user) {
+    //     return <div>User not found</div>;
+    // }
+    // const findClubById = (clubId: ObjectId) => {
+    //     return dbBookclubs.bookclubs.find(club => club.clubId === clubId);
+    // };
+    // const findBookbyId = (bookId: ObjectId) => {
+    //     return dbBooks.books.find(book => book.bookId === bookId);
+    // };
+    const signout = async () => {
+        console.log("currentUser before signout: " + JSON.stringify(currentUser));
+        await client.signout();
+        dispatch(setCurrentUser(null));
+        navigate("/login");
     };
 
     return (
@@ -35,27 +56,32 @@ function PublicProfile() {
                     </div>
                     <div className="profile-name">
                         <h3>
-                            {user.firstName} {user.lastName}
-                            <Link to={"/profile/:userId"}>
+                            {currentUser?.firstName} {currentUser?.lastName}
+                            <Link to={`/myProfile/${userId}/Edit`}>
                                 <button className="btn btn-secondary ml-2">Edit</button>
                             </Link>
                         </h3>
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <span className="mr-2">Followers:</span> {user.followers.length}
-                        </div>
-                        <div className="col-sm-6">
-                            <span className="mr-2">Following:</span> {user.following.length}
+                            <span className="mr-2">Username:</span> {currentUser?.username}
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <span className="mr-2">Email:</span> {user.email}
+                            <span className="mr-2">Followers:</span> {currentUser?.followers.length}
+                        </div>
+                        <div className="col-sm-6">
+                            <span className="mr-2">Following:</span> {currentUser?.following.length}
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <span className="mr-2">Email:</span> {currentUser?.email}
                         </div>
                     </div>
                 </div>
-                <div className="col-md-9">
+                {/* <div className="col-md-9">
                     <div className="row align-items-center">
                         <div className="col-md-8 bookclub-section-title">
                             <h4>My BookClubs</h4>
@@ -148,9 +174,10 @@ function PublicProfile() {
                             })}
                         </div>
                     </div>
-                </div>
+                </div> */}
+                <button onClick={signout}>Logout</button>
             </div>
         </div>
     );
 }
-export default PublicProfile;
+export default MyProfile;
