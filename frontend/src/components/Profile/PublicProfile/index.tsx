@@ -65,7 +65,7 @@ function PublicProfile() {
                     <h2>Profile</h2>
                     <br />
                     <div className="profile-avatar">
-                        <img src={require(`../images/avatar.jpeg`)} alt="Avatar" />
+                        <img src={require(`../../images/avatar.jpeg`)} alt="Avatar" />
                     </div>
                     <div className="profile-name">
                         <h3>
@@ -109,7 +109,7 @@ function PublicProfile() {
                                         <div key={club.clubId}>
                                             <Link to={`/bookclub/${club.clubId}`}>
                                                 <h5>{club.name}</h5>
-                                                <img src={require(`../images/${club.clubImage}`)} alt={club.name} className="book-cover" />
+                                                <img src={require(`../../images/${club.clubImage}`)} alt={club.name} className="book-cover" />
                                             </Link>
                                             <p>Members: {club.members.length}</p>
                                         </div>
@@ -138,7 +138,7 @@ function PublicProfile() {
                                     return (
                                         <div key={book.bookId} className="book">
                                             <Link to={`/book/${book.bookId}`}>
-                                                <img src={require(`../images/${book.coverImage}`)}
+                                                <img src={require(`../../images/${book.coverImage}`)}
                                                     alt={book.title} />
                                                 <h5>{book.title}</h5>
                                                 <p>{book.author}</p>
@@ -169,7 +169,7 @@ function PublicProfile() {
                                     return (
                                         <div key={book.bookId} className="book">
                                             <Link to={`/book/${book.bookId}`}>
-                                                <img src={require(`../images/${book.coverImage}`)}
+                                                <img src={require(`../../images/${book.coverImage}`)}
                                                     alt={book.title} />
                                                 <h5>{book.title}</h5>
                                                 <p>{book.author}</p>

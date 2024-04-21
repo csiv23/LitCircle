@@ -52,7 +52,7 @@ function MyProfile() {
                     <h2>Profile</h2>
                     <br />
                     <div className="profile-avatar">
-                        <img src={require(`../images/avatar.jpeg`)} alt="Avatar" />
+                        <img src={require(`../../images/avatar.jpeg`)} alt="Avatar" />
                     </div>
                     <div className="profile-name">
                         <h3>
