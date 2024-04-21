@@ -7,19 +7,16 @@ const userRoutes = require('./routes/userRoutes');
 const clubRoutes = require('./routes/clubRoutes');
 const bookRoutes = require('./routes/bookRoutes');
 
+const server = express();
 // Connect to MongoDB
 connectToMongoDB();
-const server = express();
+
+const { createProxyMiddleware } = require('http-proxy-middleware');
 // Middleware
-if (process.env.NODE_ENV !== "development") {
-  server.use(cors());
-}
-else {
   server.use(cors({
     credentials: true,
     origin: process.env.FRONTEND_URL, // Adjust the port and protocol to match your frontend
   }));
-}
 
 // Multiple user sessions:
 const sessionOptions = {
@@ -37,7 +34,13 @@ if (process.env.NODE_ENV !== "development") {
 }
 server.use(session(sessionOptions));
 server.use(express.json()); // for parsing application/json
-
+server.use('/google-books-api', createProxyMiddleware({
+  target: 'https://www.googleapis.com', // Base URL for Google Books API
+  changeOrigin: true,
+  // pathRewrite: {
+  //   '^/google-books-api': '', // Rewrite paths from /api to /
+  // },
+}));
 // Test route
 server.get('/', (req, res) => {
   res.send('Hello, LitCircle API!');
