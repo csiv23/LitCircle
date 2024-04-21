@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import * as client from "../../mongooseClient";
-import { User } from "../types";
+import * as client from "../../../mongooseClient";
+import { User } from "../../types";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentUser } from "../../reducers/usersReducer";
+import { setCurrentUser } from "../../../reducers/usersReducer";
 
 export default function EditProfile() {
     const navigate = useNavigate();
@@ -16,7 +16,6 @@ export default function EditProfile() {
     const updateProfile = async () => {
         await client.updateUserProfile(userId, updatedUser.username, updatedUser.password);
         dispatch(setCurrentUser(updatedUser));
-        console.log("updatedProfile executed");
         navigate(`/myProfile/${userId}`);
     }
 

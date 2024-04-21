@@ -10,7 +10,7 @@ import Books from './components/Books';
 import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from './database';
 import { User, ObjectId } from './components/types';
 import Login from './components/Login';
-import EditProfile from './components/EditProfile';
+import EditProfile from './components/MyProfile/EditProfile';
 import GoogleAPI from './components/SearchBooks';
 import Home from './components/Home';
 import SearchBookclubs from './components/SearchBookclubs';
@@ -23,7 +23,7 @@ function App() {
           <Route path="/" element={<Navigate to="login" />} />
           <Route path="home" element={<Home />} />
           <Route path='login' element={<Login />} />
-          <Route path="profile" element={<PublicProfile />} />
+          <Route path="profile/:userId" element={<PublicProfile />} />
           <Route path="myProfile/:userId" element={<MyProfile />} />
           <Route path="myProfile/:userId/Edit" element={<EditProfile />} />
           <Route path="bookclub/:clubId" element={<BookClubs />} />
