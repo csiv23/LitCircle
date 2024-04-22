@@ -6,6 +6,7 @@ import Header from "../../Header";
 import { useDispatch, useSelector } from "react-redux";
 import * as client from "../../../mongooseClient";
 import { useEffect, useState } from "react";
+import { setCurrentUser } from "../../../reducers/usersReducer";
 
 function getURL( book: Book  ) {
     return `/book/${book.title.replace(/\s+/g, '-').toLowerCase()}`
@@ -42,11 +43,19 @@ function PublicProfile() {
             // TODO:
             // 1. Check if currentUser already exists in this user's followers list
             console.log("follow button clicked")
-            // const alreadyFollowing = publicUser.followers.some((followerId: String) => followerId === currentUser._id);
-            // console.log("alreadyFollowing?: " + publicUser?.followers);
-            // 2. Add this user's id to currentUser's following list
-            // console.log("Clicked follow")
+            // const alreadyFollowing = publicUser?.followers.some((followerId: String) => followerId === currentUser._id);
+            // console.log("alreadyFollowing?: " + alreadyFollowing);
+            // 2. Add public user's id to currentUser's following list
+            if (publicUser) {
+                client.followUser(currentUser._id, publicUser?._id);
+                console.log("Followed user!")
+            }
+            // if (!alreadyFollowing) {
+            //     dispatch(setCurrentUser({...currentUser, following: [...currentUser.following, userId]}))
+            //     console.log("Added public user's id to currentUser's following list")
+            // }
             // 3. Add this currentUser's id to this user's followers list
+            // setPublicUser(...publicUser, )
             // 4. Dispatch setCurrentUser to update the currentUser
         } else {
             navigate("/login");

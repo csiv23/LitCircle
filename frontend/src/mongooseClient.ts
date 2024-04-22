@@ -340,4 +340,7 @@ export const updateUserProfile = async (id: string | undefined, username: string
   }
 };
 
-
+export const followUser = async (userId: string, userIdToFollow: string) => {
+  const response = await axios.patch(`${USERS_API_URL}/${userId}/follow`, userIdToFollow);
+  return cleanUser(response.data);
+}
