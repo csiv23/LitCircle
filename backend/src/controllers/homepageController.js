@@ -14,22 +14,29 @@ exports.getRecentUsers = async (req, res) => {
     }
 };
 
-exports.getUpcomingMeetings = async (req, res) => {
+// Handler for fetching the last five followers of a specific user.
+exports.getNewFollowers = async (req, res) => {
+    const { userId } = req.params;
+
     try {
-        // Fetch all clubs and populate the NextMeeting field
-        const clubs = await Club.find().populate('NextMeeting');
+        // Find the user by ID, retrieve only the last 5 followers
+        const user = await User.findById(userId, {
+            Followers: { $slice: -5 }  // Retrieves only the last 5 items from the Followers array
+        }).populate({
+            path: 'Followers', // Populate the Followers field to return user documents
+            select: 'Username Email' // Limit the fields to include only Username and Email
+        });
 
-        // Map through the clubs to extract the next meeting details
-        const upcomingMeetings = clubs.map(club => ({
-            ClubId: club._id, // Extracting the Club ID
-            ClubName: club.Name, // Extracting the Club Name
-            NextMeetingDate: club.NextMeeting ? club.NextMeeting.Date : 'No upcoming meeting',
-            NextMeetingLocation: club.NextMeeting ? club.NextMeeting.Location : 'TBA'
-        })).filter(meeting => meeting.NextMeetingDate !== 'No upcoming meeting'); // Filter out clubs without a scheduled next meeting
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-        res.json(upcomingMeetings); // Send the upcoming meetings info as a response
+        // If successful, send back the populated Followers array in the response.
+        res.json(user.Followers);
     } catch (error) {
-        console.error("Error fetching upcoming meetings:", error);
-        res.status(500).json({ error: 'Server error while fetching upcoming meetings.' });
+        console.error("Error getting last five followers:", error);
+        res.status(500).send('Server error');
     }
 };
+
+
