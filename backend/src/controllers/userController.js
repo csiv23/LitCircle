@@ -49,7 +49,6 @@ exports.getUser = async (req, res) => {
         if (!user) {
             return res.status(404).send('User not found');
         }
-        console.log("getUser findById: " + user);
         res.json(user);
     } catch (error) {
         console.error("Error fetching user:", error);
@@ -145,6 +144,14 @@ exports.followUser = async (req, res) => {
     const { userIdToFollow } = req.body; // Followed
 
     try {
+        // Check if user already following
+        const user = await User.findById(userId);
+        const alreadyFollowing = user.Following.some(id => id == userIdToFollow);
+        if (alreadyFollowing) {
+            console.log("Already following this user!")
+            return res.status(400).json({ msg: 'Already following this user!' });
+        }
+
         // Add userIdToFollow to the Following array of the follower
         await User.findByIdAndUpdate(
             userId,

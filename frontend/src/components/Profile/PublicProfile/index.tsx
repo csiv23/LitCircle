@@ -35,28 +35,22 @@ function PublicProfile() {
             }
         }
         fetchPublicUser();
-    }, [])
-    console.log("publicUser: " + JSON.stringify(publicUser))
+    }, [currentUser])
 
-    const follow = () => {
+    const follow = async () => {
         if (currentUser) {
-            // TODO:
-            // 1. Check if currentUser already exists in this user's followers list
             console.log("follow button clicked")
-            // const alreadyFollowing = publicUser?.followers.some((followerId: String) => followerId === currentUser._id);
-            // console.log("alreadyFollowing?: " + alreadyFollowing);
-            // 2. Add public user's id to currentUser's following list
             if (publicUser) {
-                client.followUser(currentUser._id, publicUser?._id);
-                console.log("Followed user!")
+                try {
+                    client.followUser(currentUser._id, publicUser?._id);
+                    setPublicUser(await client.getUserById(publicUser._id))
+                    dispatch(setCurrentUser(await client.getUserById(currentUser._id)));
+                    // dispatch(setCurrentUser({...currentUser, followers: [...currentUser.followers, ]}))
+                } catch (error) {
+                    console.log("PublicProfile failed to follow user");
+                }
             }
-            // if (!alreadyFollowing) {
-            //     dispatch(setCurrentUser({...currentUser, following: [...currentUser.following, userId]}))
-            //     console.log("Added public user's id to currentUser's following list")
-            // }
-            // 3. Add this currentUser's id to this user's followers list
-            // setPublicUser(...publicUser, )
-            // 4. Dispatch setCurrentUser to update the currentUser
+            // Dispatch setCurrentUser to update the currentUser
         } else {
             navigate("/login");
         }

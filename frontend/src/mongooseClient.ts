@@ -252,7 +252,6 @@ export async function notImplemented() {
  // implement this 
  export const getUserById = async (userId : ObjectId) => {
   const response = await mongooseGet(`users/${userId}`);
-  console.log("getUserById: " + JSON.stringify(response))
   return cleanUser(response);
  }
 
@@ -341,6 +340,10 @@ export const updateUserProfile = async (id: string | undefined, username: string
 };
 
 export const followUser = async (userId: string, userIdToFollow: string) => {
-  const response = await axios.patch(`${USERS_API_URL}/${userId}/follow`, userIdToFollow);
-  return cleanUser(response.data);
+  try {
+    const response = await axios.patch(`${USERS_API_URL}/${userId}/follow`, {userIdToFollow: userIdToFollow});
+    return cleanUser(response.data);
+  } catch (error) {
+    console.log("Already following this user!")
+  }
 }
