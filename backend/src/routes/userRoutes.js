@@ -4,6 +4,7 @@ const {
     getUsers, searchUsers, getUser, registerUser, loginUser, updateUserProfile,
     followUser, getFollowers, getFollowing, getUserWishlist, addBookToWishlist, getUserClubs, 
     getUserBooksRead, addBookToBooksRead, deleteUser, getUserNextMeetings, signOut, profile,
+    removeBookFromWishlist, removeBookFromBooksRead, getUserClubsWithoutBookRec
 } = require('../controllers/userController');
 
 router.get('/', getUsers);
@@ -18,11 +19,16 @@ router.patch('/:userId/follow', followUser);
 router.get('/:userId/followers', getFollowers);
 router.get('/:userId/following', getFollowing);
 router.get('/:userId/wishlist', getUserWishlist);
+router.post('/:userId/wishlist-delete', removeBookFromWishlist);
 router.patch('/:userId/wishlist', addBookToWishlist);
 router.get('/:userId/clubs', getUserClubs);
 router.get('/:userId/booksread', getUserBooksRead)
+router.post('/:userId/booksread-delete', removeBookFromBooksRead);
 router.patch('/:userId/booksread', addBookToBooksRead);
 router.delete('/:userId', deleteUser);
 router.get('/:userId/nextmeetings', getUserNextMeetings);
+router.get('/:userId/clubsWithoutRec', getUserClubsWithoutBookRec);
+
+
 
 module.exports = router;

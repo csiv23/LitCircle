@@ -1,5 +1,7 @@
 const User = require('../models/user');
 const Book = require('../models/book');
+const Club = require('../models/club');
+const mongoose = require('mongoose');
 
 exports.getUsers = async (req, res) => {
     console.log("Fetching users...");
@@ -248,6 +250,29 @@ exports.addBookToWishlist = async (req, res) => {
     }
 };
 
+exports.removeBookFromWishlist = async (req, res ) => {
+    const { userId } = req.params;
+    const { bookId } = req.body;
+
+    try {
+        const updatedUser = await User.updateOne(
+            { _id: userId },
+            { $pull: { Wishlist: bookId} }
+        );
+
+        // Check if the document was modified
+        if (updatedUser.modifiedCount === 0) {
+            return res.status(404).send('No item was removed, check your input.');
+        }
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        // Log and send the error if something goes wrong
+        console.error('Failed to remove item:', error);
+        res.status(500).send('Error removing item from list.');
+    }
+}
+
 exports.getUserClubs = async (req, res) => {
     const { userId } = req.params;
 
@@ -315,6 +340,29 @@ exports.addBookToBooksRead = async (req, res) => {
     }
 };
 
+exports.removeBookFromBooksRead = async (req, res ) => {
+    const { userId } = req.params;
+    const { bookId } = req.body;
+
+    try {
+        const updatedUser = await User.updateOne(
+            { _id: userId },
+            { $pull: { BooksRead: bookId } }
+        );
+
+        // Check if the document was modified
+        if (updatedUser.modifiedCount === 0) {
+            return res.status(404).send('No item was removed, check your input.');
+        }
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        // Log and send the error if something goes wrong
+        console.error('Failed to remove item:', error);
+        res.status(500).send('Error removing item from list.');
+    }
+}
+
 exports.profile = async (req, res) => {
     console.log("Fetching profile...");
     try {
@@ -377,6 +425,37 @@ exports.getUserNextMeetings = async (req, res) => {
         res.json(nextMeetings);  // Send the next meetings info as a response
     } catch (error) {
         console.error("Error fetching user's next meetings:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+exports.getUserClubsWithoutBookRec = async (req, res) => {
+    const { userId } = req.params;
+    const { bookId } = req.body;
+    console.log('Book ID:', bookId);
+
+    try {
+        const user = await User.findById(userId).populate({
+            path: 'BookClubs.ClubId',
+            model: Club,
+            populate: {
+                path: 'Wishlist',
+                model: Book
+            }
+        });
+
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        // Filter out entries where ClubId is not populated or is null
+        const clubsWithoutRec = user.BookClubs.filter(bc =>
+            bc.ClubId && bc.ClubId.Wishlist && bc.ClubId.Wishlist.every(book => book._id.toString() !== bookId)
+        ).map(bc => bc.ClubId);
+
+        res.json(clubsWithoutRec);
+    } catch (error) {
+        console.error("Error fetching user's clubs without current book rec:", error);
         res.status(500).send('Server error');
     }
 };

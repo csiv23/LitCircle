@@ -7,6 +7,7 @@ import * as mongooseClient from "../../mongooseClient";
 import ClubsReadingList from "./ClubsReading";
 import MongooseBook from "./MongooseBook";
 import Header from "../Header";
+import { useSelector } from "react-redux";
 
 export default function Books() {
     const { bookId } = useParams<string>();
@@ -21,6 +22,7 @@ export default function Books() {
       setBook(mongooseBookData as Book);
       console.log(mongooseBookData);
     };
+    const currentUser = useSelector((state: any) => state.users.currentUser);
 
     useEffect(() => {
       if (bookId) {
@@ -31,7 +33,7 @@ export default function Books() {
     return (
         <div>
             <Header/>
-            <MongooseBook book={book}/>
+            <MongooseBook book={book} currentUser={currentUser}/>
         </div>
 
     );
