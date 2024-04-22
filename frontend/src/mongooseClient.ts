@@ -385,8 +385,8 @@ export const getUserClubsWithoutBookRec = async (userId : string, bookId : strin
   const response = await mongooseGet(
     `users/${userId}/clubsWithoutRec/${bookId}`);
   return response.map(cleanClub);
+  
 }
-
 
 
 export const followUser = async (userId: string, userIdToFollow: string) => {

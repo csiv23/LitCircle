@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import * as client from '../SearchBooks/client';
 import './index.css';
-import { Book, Club } from "../types";
+import { Book, Club, User } from "../types";
 import * as mongooseClient from "../../mongooseClient";
 import ClubsReadingList from "./ClubsReading";
 import MongooseBook from "./MongooseBook";
@@ -16,7 +16,22 @@ export default function Books() {
     const [bookInWishlist, setBookInWishlist] = useState(false);
     const [userClubsWithoutRecs, setUserClubsWithoutRecs] = useState([] as Club[]);
     const [clubsReading, setClubsReading] = useState([] as Club[]);
-    const currentUser = useSelector((state: any) => state.users.currentUser);
+    const [currentUser, setCurrentUser] = useState<User>(
+        {
+            _id: "",
+            username: "",
+            firstName: "",
+            lastName: "",
+            email: "",
+            password: "",
+            followers: [],
+            following: [],
+            wishlist: [],
+            booksRead: [],
+            bookClubs: [],
+            avatar: "",
+        }
+    );
 
     const findBook = async (id: string) => {
       const googleBookData = await client.getBookDetails(id);
@@ -33,16 +48,20 @@ export default function Books() {
         const response = await mongooseClient.getClubsReadingPerBook(mongooseBookData._id);
         setClubsReading(response);
 
-        if (currentUser) {
-          if (currentUser.booksRead) {
-              setBookInBooksRead(currentUser.booksRead.includes(mongooseBookData._id));
+        const userSession = await mongooseClient.profile();
+        setCurrentUser(userSession);
+
+        if (userSession) {
+           console.log(userSession);
+          if (userSession.booksRead) {
+              setBookInBooksRead(userSession.booksRead.includes(mongooseBookData._id));
           }
   
-          if (currentUser.wishlist) {
-              setBookInWishlist(currentUser.wishlist.includes(mongooseBookData._id));
+          if (userSession.wishlist) {
+              setBookInWishlist(userSession.wishlist.includes(mongooseBookData._id));
           }
 
-          const clubs = await mongooseClient.getUserClubsWithoutBookRec(currentUser._id, mongooseBookData._id);
+          const clubs = await mongooseClient.getUserClubsWithoutBookRec(userSession._id, mongooseBookData._id);
           console.log("clubs without recs");
           console.log(clubs);
           setUserClubsWithoutRecs(clubs);
@@ -71,7 +90,7 @@ export default function Books() {
 
   const toggleBookInBooksRead = async () => {
       if (currentUser) {
-          if (bookInWishlist) {
+          if (bookInBooksRead) {
               await mongooseClient.removeFromBooksRead(currentUser._id, book._id);
           }
           else {  
