@@ -6,8 +6,8 @@ import { useState, useEffect, JSXElementConstructor, Key, ReactElement, ReactNod
 function ClubsReadingList(
 { clubs } : 
 { clubs: Club[] }
-) {
-    console.log(clubs);
+) { 
+    console.log("rendered");
     return (<div className="">
     {clubs.map((club: Club) => {
         if (club) {
@@ -20,6 +20,7 @@ function ClubsReadingList(
                             : <img src={require("../../images/BookclubDefault.jpeg")} alt={club.name} />}
                         </div>
                         <h5>{club.name}</h5>
+                        <p>{club.description}</p>
                     </Link>
                 </div>
             );

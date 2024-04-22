@@ -13,14 +13,14 @@ export default function SearchBookclubs() {
     }
   }, [])
 
-  return (
-    <div className="container-fluid">
-      <h1>Search Books</h1>
-      <Routes>
-        <Route path="/" element={<BookclubSearch />} />
-        <Route path="/:name" element={<BookclubSearch />} />
-      </Routes>
-    </div>
-  );
-
+    return (
+        <div className="container-fluid">
+          <h1>Search Bookclubs</h1>
+          <Routes>
+       <Route path="/" element={<BookclubSearch />} />
+       <Route path="/:name" element={<BookclubSearch />} />
+        </Routes>
+        </div>
+      );
+     
 }

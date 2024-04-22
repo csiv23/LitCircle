@@ -1,28 +1,40 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import * as client from '../SearchBooks/client';
 import './index.css';
-import { Book, Club } from "../types";
+import { Book, Club, User} from "../types";
 import * as mongooseClient from "../../mongooseClient";
 import ClubsReadingList from "./ClubsReading";
 import Header from "../Header";
+import { useSelector } from "react-redux";
 
 
-export default function MongooseBook({book} : {book : Book}) {
-    const [clubsReading, setClubsReading] = useState([] as Club[]);
+export default function MongooseBook(
+    {book, currentUser, clubsReading, bookInBooksRead, bookInWishlist, userClubsWithoutRecs,
+        recommendBookToClub, toggleBookInBooksRead, toggleBookInWishlist
+    } 
+    : 
+    {   
+        book : Book, 
+        currentUser : User
+        clubsReading: Club[],
+        bookInBooksRead: boolean,
+        bookInWishlist: boolean,
+        userClubsWithoutRecs: Club[],
+        recommendBookToClub: (clubId:string) => void;
+        toggleBookInWishlist: () => void;
+        toggleBookInBooksRead: () => void;
 
-    const getClubsReading = async () => {
-        if (!book._id)
-            return;
-        const response = await mongooseClient.getClubsReadingPerBook(book._id);
-        console.log("club?")
-        console.log(response);
-        setClubsReading(response);
-    }
+    }) {
+    
+    // const [addBookOpen, setAddBookOpen] = React.useState(false);
+    // const [recClubOpen, setRecClubOpen] = React.useState(false);
 
-    useEffect(() => {
-      getClubsReading();
-    }, [book._id]);
+
+    // console.log(addBookOpen);
+    console.log(currentUser);
+    // const handleAddBookOpen = () => setAddBookOpen(!addBookOpen);
+
+    //   const handleRecClubOpen = () => setRecClubOpen(!recClubOpen);
 
     return (
         <div className="book-font">
@@ -39,6 +51,51 @@ export default function MongooseBook({book} : {book : Book}) {
                             <h2>{book.title}</h2>
                             <h4 className="book-author">By {book.author}</h4>
                             <p className="book-desc"> {book.description}</p>
+                        </div>
+                        <div className="col-md-11 club-container">
+                        <div >
+                            {/* <button className="btn btn-secondary dropdown-toggle" onClick={handleAddBookOpen}>
+                                Add Book to ...
+                            </button> */}
+
+                                <ul className="">
+                                    <li className="">
+                                        <button onClick={toggleBookInBooksRead}> 
+                                            {bookInBooksRead ? "Remove from" : "Add to" }  Books I've Read
+                                        </button>
+                                    </li>
+                                    <li className="">
+                                        <button onClick={toggleBookInWishlist}> 
+                                            {bookInWishlist ? "Remove from" : "Add to" }  Books I Want to Read
+                                        </button>
+                                    </li>
+                                </ul>
+
+                        </div>
+                        <div >
+                            {/* <button className="btn btn-secondary dropdown-toggle" onClick={handleRecClubOpen}>
+                                Recommend Book to Club 
+                            </button> */}
+                                <ul >
+                                    {userClubsWithoutRecs.map((club : Club) => {
+                                        if (club) {
+                                            return ( <li key={club._id}>
+                                            <button onClick={() => {recommendBookToClub(club._id)}}> 
+                                               {club.name}
+                                            </button>
+                                            </li>
+                                            )
+                                        }
+                                        else {
+                                            return (
+                                                <div key={club}>
+                                                    <p>Club with ID {club} not found.</p>
+                                                </div>
+                                            );
+                                        }
+                                    })}
+                                </ul>
+                        </div>
                         </div>
                         <div className="col-md-11 club-container">
                             <h4>Clubs That Have Recently Read This Book...</h4>

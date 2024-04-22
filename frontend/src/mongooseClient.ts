@@ -185,10 +185,22 @@ function cleanClub (clubData : any) : Club {
   return clubClean;
 }
 
-export async function mongooseGet(uri : string) {
+export async function mongooseGet(uri : string, body = {}) {
   const url = `${MONGOOSE_URL}/${uri}`;
   try {
-      const response = await axios.get(url);
+      const response = await axios.get(url, body);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error(`Mongoose request failed at ${url}`, error);
+      throw error;
+  }
+}
+
+export async function mongoosePatch(uri : string, params : any) {
+  const url = `${MONGOOSE_URL}/${uri}`;
+  try {
+      const response = await axios.patch(url, params);
       console.log(response.data);
       return response.data;
     } catch (error) {
@@ -343,6 +355,39 @@ export const updateUserProfile = async (id: string | undefined, username: string
     throw error;
   }
 };
+
+export const addToWishlist = async (userId : string, bookId : string) => {
+  const response = await mongoosePatch(`users/${userId}/wishlist`, {bookId : bookId})
+  return cleanUser(response);
+}
+
+export const addToBooksRead = async (userId : string, bookId : string) => {
+  const response = await mongoosePatch(`users/${userId}/booksread`, {bookId : bookId})
+  return cleanUser(response);
+}
+
+export const removeFromWishlist = async (userId : string, bookId : string) => {
+  const response = await mongoosePost(`users/${userId}/wishlist-delete`, {bookId : bookId})
+  return cleanUser(response);
+}
+
+export const removeFromBooksRead = async (userId : string, bookId : string) => {
+  const response = await mongoosePost(`users/${userId}/booksread-delete`, {bookId : bookId})
+  return cleanUser(response);
+}
+
+export const recommendBookToClub = async (clubId : string, bookId : string) => {
+  const response = await mongoosePost(`clubs/${clubId}/recommendBook`, {bookId : bookId});
+  return response.Wishlist; 
+}
+
+export const getUserClubsWithoutBookRec = async (userId : string, bookId : string) => {
+  const response = await mongooseGet(
+    `users/${userId}/clubsWithoutRec/${bookId}`);
+  return response.map(cleanClub);
+}
+
+
 
 export const followUser = async (userId: string, userIdToFollow: string) => {
   try {
