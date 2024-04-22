@@ -1,16 +1,71 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "./index.css";
-import { User, Book, Club, ObjectId } from "../types";
-import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from '../../database';
-import Header from "../Header";
+import { User, Book, Club, ObjectId } from "../../types";
+import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from '../../../database';
+import Header from "../../Header";
+import { useDispatch, useSelector } from "react-redux";
+import * as client from "../../../mongooseClient";
+import { useEffect, useState } from "react";
+import { setCurrentUser } from "../../../reducers/usersReducer";
 
 function getURL( book: Book  ) {
     return `/book/${book.title.replace(/\s+/g, '-').toLowerCase()}`
 }
 
 function PublicProfile() {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const { userId } = useParams();
+
+    // REMOVE THIS WHEN DONE TESTING
     const user = dbUsers.users.find((user) => user.userId === userId)
+
+    // let currentUser = useSelector((state: any) => state.users.currentUser);
+    const [currentUser, setCurrentUser] = useState<User>();
+    // console.log("PublicProfile. The currentUser is: " + JSON.stringify(currentUser));
+    if (currentUser?._id == userId) {
+        navigate(`/myProfile/${currentUser?._id}`);
+    }
+    // Get public profile user
+    const [publicUser, setPublicUser] = useState<User | null>(null);
+    useEffect(() => {
+        const fetchPublicUser = async () => {
+            if (userId) {
+                const fetchedUser = await client.getUserById(userId);
+                setPublicUser(fetchedUser);
+            }
+        }
+        const fetchCurrentUser = async () => {
+            const userSession = await client.profile();
+            setCurrentUser(userSession);
+        }
+        fetchPublicUser();
+        fetchCurrentUser();
+    }, [])
+    
+    console.log("PublicProfile. The currentUser is: " + JSON.stringify(currentUser));
+
+    const follow = async () => {
+        if (currentUser) {
+            console.log("follow button clicked")
+            if (publicUser) {
+                try {
+                    client.followUser(currentUser._id, publicUser?._id);
+                    // setPublicUser(await client.getUserById(publicUser._id));
+                    // currentUser = await client.getUserById(currentUser._id);
+                    // dispatch(setCurrentUser(currentUser));
+                    // dispatch(setCurrentUser({...currentUser, followers: [...currentUser.followers, ]}))
+                } catch (error) {
+                    console.log("PublicProfile failed to follow user");
+                }
+            }
+            // Dispatch setCurrentUser to update the currentUser
+        } else {
+            navigate("/login");
+        }
+    }
+    
+
     if (!user) {
         return <div>User not found</div>;
     }
@@ -31,7 +86,7 @@ function PublicProfile() {
                     <h2>Profile</h2>
                     <br />
                     <div className="profile-avatar">
-                        <img src={require(`../images/avatar.jpeg`)} alt="Avatar" />
+                        <img src={require(`../../images/avatar.jpeg`)} alt="Avatar" />
                     </div>
                     <div className="profile-name">
                         <h3>
@@ -54,6 +109,10 @@ function PublicProfile() {
                             <span className="mr-2">Email:</span> {user.email}
                         </div>
                     </div>
+                    <div>
+                        <button onClick={follow}>Follow</button>
+                        <button>Unfollow</button>
+                    </div>
                 </div>
                 <div className="col-md-9">
                     <div className="row align-items-center">
@@ -71,7 +130,7 @@ function PublicProfile() {
                                         <div key={club.clubId}>
                                             <Link to={`/bookclub/${club.clubId}`}>
                                                 <h5>{club.name}</h5>
-                                                <img src={require(`../images/${club.clubImage}`)} alt={club.name} className="book-cover" />
+                                                <img src={require(`../../images/${club.clubImage}`)} alt={club.name} className="book-cover" />
                                             </Link>
                                             <p>Members: {club.members.length}</p>
                                         </div>
@@ -100,7 +159,7 @@ function PublicProfile() {
                                     return (
                                         <div key={book.bookId} className="book">
                                             <Link to={`/book/${book.bookId}`}>
-                                                <img src={require(`../images/${book.coverImage}`)}
+                                                <img src={require(`../../images/${book.coverImage}`)}
                                                     alt={book.title} />
                                                 <h5>{book.title}</h5>
                                                 <p>{book.author}</p>
@@ -131,7 +190,7 @@ function PublicProfile() {
                                     return (
                                         <div key={book.bookId} className="book">
                                             <Link to={`/book/${book.bookId}`}>
-                                                <img src={require(`../images/${book.coverImage}`)}
+                                                <img src={require(`../../images/${book.coverImage}`)}
                                                     alt={book.title} />
                                                 <h5>{book.title}</h5>
                                                 <p>{book.author}</p>
