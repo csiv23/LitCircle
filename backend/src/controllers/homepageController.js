@@ -13,3 +13,23 @@ exports.getRecentUsers = async (req, res) => {
         res.status(500).json({ error: 'Internal server error while fetching recent users.' });
     }
 };
+
+exports.getUpcomingMeetings = async (req, res) => {
+    try {
+        // Fetch all clubs and populate the NextMeeting field
+        const clubs = await Club.find().populate('NextMeeting');
+
+        // Map through the clubs to extract the next meeting details
+        const upcomingMeetings = clubs.map(club => ({
+            ClubId: club._id, // Extracting the Club ID
+            ClubName: club.Name, // Extracting the Club Name
+            NextMeetingDate: club.NextMeeting ? club.NextMeeting.Date : 'No upcoming meeting',
+            NextMeetingLocation: club.NextMeeting ? club.NextMeeting.Location : 'TBA'
+        })).filter(meeting => meeting.NextMeetingDate !== 'No upcoming meeting'); // Filter out clubs without a scheduled next meeting
+
+        res.json(upcomingMeetings); // Send the upcoming meetings info as a response
+    } catch (error) {
+        console.error("Error fetching upcoming meetings:", error);
+        res.status(500).json({ error: 'Server error while fetching upcoming meetings.' });
+    }
+};
