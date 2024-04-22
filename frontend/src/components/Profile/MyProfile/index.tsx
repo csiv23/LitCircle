@@ -22,12 +22,20 @@ function MyProfile() {
     let currentUser = useSelector((state: any) => state.users.currentUser);
     console.log("MyProfile currentUser: " + JSON.stringify(currentUser));
 
+    const [currentUserSession, setCurrentUserSession] = useState<User>();
+    const fetchProfile = async () => {
+        const userSession = await client.profile();
+        setCurrentUserSession(userSession);
+    }
+
     useEffect(() => {
-        if (!currentUser || currentUser?._id !== userId) {
-            // Display the public profile
-            navigate(`/profile/${userId}`);
-        }
+        // if (!currentUser || currentUser?._id !== userId) {
+        //     // Display the public profile
+        //     navigate(`/profile/${userId}`);
+        // }
+        fetchProfile();
     }, [])
+    console.log("currentUserSession: " + JSON.stringify(currentUserSession));
 
     // if (!user) {
     //     return <div>User not found</div>;
@@ -69,7 +77,7 @@ function MyProfile() {
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <span className="mr-2">Username:</span> {currentUser?.username}
+                            <span className="mr-2">Username:</span> {currentUserSession?.username}
                         </div>
                     </div>
                     <div className="row">
