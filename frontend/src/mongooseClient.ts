@@ -262,7 +262,10 @@ export async function notImplemented() {
 };
 
  // implement this 
- export const getUserById = async (userId : ObjectId) => {return await notImplemented()}
+ export const getUserById = async (userId : ObjectId) => {
+  const response = await mongooseGet(`users/${userId}`);
+  return cleanUser(response);
+ }
 
   // implement this 
   export const getBookById = async (bookId : ObjectId) => {
@@ -315,6 +318,11 @@ export const searchBookclubs = async (name : string) => {
   return response.map(cleanClub);
 }
 
+export const getClubs = async () => {
+  const response = await mongooseGet('clubs');
+  return response.map(cleanClub);
+}
+
 // signin only requires email and password
 export const signin = async (credentials: any) => {
   const response = await axios.post(`${USERS_API_URL}/login`, credentials);
@@ -336,7 +344,7 @@ export const profile = async () => {
   return cleanUser(response.data);
 }
 
-export const updateUserProfile = async (id: string | undefined, username: string, password: string) => {
+export const updateUserProfile = async (id: string | undefined, username: string | undefined, password: string | undefined) => {
   try {
     const response = await axios.patch(`${MONGOOSE_URL}/users/${id}`, {username, password});
     console.log("updateUserProfile: " + response.data);
@@ -381,4 +389,11 @@ export const getUserClubsWithoutBookRec = async (userId : string, bookId : strin
 
 
 
-
+export const followUser = async (userId: string, userIdToFollow: string) => {
+  try {
+    const response = await axios.patch(`${USERS_API_URL}/${userId}/follow`, {userIdToFollow: userIdToFollow});
+    return cleanUser(response.data);
+  } catch (error) {
+    console.log("Already following this user!")
+  }
+}

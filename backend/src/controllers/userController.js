@@ -146,6 +146,14 @@ exports.followUser = async (req, res) => {
     const { userIdToFollow } = req.body; // Followed
 
     try {
+        // Check if user already following
+        const user = await User.findById(userId);
+        const alreadyFollowing = user.Following.some(id => id == userIdToFollow);
+        if (alreadyFollowing) {
+            console.log("Already following this user!")
+            return res.status(400).json({ msg: 'Already following this user!' });
+        }
+
         // Add userIdToFollow to the Following array of the follower
         await User.findByIdAndUpdate(
             userId,
@@ -372,7 +380,7 @@ exports.profile = async (req, res) => {
             res.sendStatus(401);
             return;
         }
-        console.log("Fetched profile: " + currentUser);
+        console.log("Fetched profile: " + JSON.stringify(currentUser));
         res.json(currentUser);
     } catch (error) {
         console.error("Error fetching profile:", error);

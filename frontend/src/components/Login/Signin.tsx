@@ -24,10 +24,6 @@ export default function Signin() {
         }
     }
 
-    console.log("credentials" + JSON.stringify(credentials) );
-
-    
-
     return (
         <div>
             <h1>Sign In</h1>

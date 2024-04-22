@@ -1,13 +1,13 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "./index.css";
-import { User, Book, Club, ObjectId } from "../types";
-import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from '../../database';
-import Header from "../Header";
+import { User, Book, Club, ObjectId } from "../../types";
+import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from '../../../database';
+import Header from "../../Header";
 import { useDispatch, useSelector } from "react-redux";
-import * as client from "../../mongooseClient";
+import * as client from "../../../mongooseClient";
 import { useEffect, useState } from "react";
-import EditProfile from "../EditProfile";
-import { setCurrentUser } from "../../reducers/usersReducer";
+import EditProfile from "./EditProfile";
+import { setCurrentUser } from "../../../reducers/usersReducer";
 
 function getURL( book: Book  ) {
     return `/book/${book.title.replace(/\s+/g, '-').toLowerCase()}`
@@ -18,37 +18,35 @@ function MyProfile() {
     const dispatch = useDispatch();
 
     const { userId } = useParams();
-    // const user = dbUsers.users.find((user) => user.userId === userId); // Local Testing database
-    const currentUser = useSelector((state: any) => state.users.currentUser);
-    console.log("MyProfile currentUser: " + JSON.stringify(currentUser));
+    const [currentUser, setCurrentUser] = useState<User>();
+    useEffect(() => {
+        const fetchProfile = async () => {
+            const userSession = await client.profile();
+            setCurrentUser(userSession);
+        }
+        fetchProfile();
+    }, [])
 
-    // if (!user) {
-    //     return <div>User not found</div>;
-    // }
-    // const findClubById = (clubId: ObjectId) => {
-    //     return dbBookclubs.bookclubs.find(club => club.clubId === clubId);
-    // };
-    // const findBookbyId = (bookId: ObjectId) => {
-    //     return dbBooks.books.find(book => book.bookId === bookId);
-    // };
+    const findClubById = async (clubId: ObjectId) => {
+        const allClubs = await client.getClubs();
+        console.log("findClubById getClubs: " + JSON.stringify(allClubs));
+        return allClubs?.find((club: any) => club.clubId === clubId); // FIX
+    };
+    findClubById('660593f3aceb52dac7be9f68');
+    const findBookbyId = (bookId: ObjectId) => {
+        return dbBooks.books.find(book => book.bookId === bookId);
+    };
     const signout = async () => {
         console.log("currentUser before signout: " + JSON.stringify(currentUser));
         await client.signout();
-        dispatch(setCurrentUser(null));
         navigate("/login");
     };
 
-    // const [currentUserSession, setCurrentUserSession] = useState<User | null>(null);
-    // const fetchProfile = async () => {
-    //     const currentUserSession = await client.profile();
-    //     // setCurrentUserSession(currentUserSession);
-    //     dispatch(setCurrentUser(currentUser));
-    // }
-    // useEffect(() => {
-    //     fetchProfile();
-    // }, []);
-
-    // console.log("fetchProfile currentUserSession: " + currentUserSession);
+    console.log("MyProfile currentUser: " + JSON.stringify(currentUser));
+    if (!currentUser || currentUser?._id !== userId) {
+        // Display the public profile
+        navigate(`/profile/${userId}`);
+    }
 
     return (
         <div>
@@ -58,7 +56,7 @@ function MyProfile() {
                     <h2>Profile</h2>
                     <br />
                     <div className="profile-avatar">
-                        <img src={require(`../images/avatar.jpeg`)} alt="Avatar" />
+                        <img src={require(`../../images/avatar.jpeg`)} alt="Avatar" />
                     </div>
                     <div className="profile-name">
                         <h3>
@@ -87,7 +85,7 @@ function MyProfile() {
                         </div>
                     </div>
                 </div>
-                {/* <div className="col-md-9">
+                <div className="col-md-9">
                     <div className="row align-items-center">
                         <div className="col-md-8 bookclub-section-title">
                             <h4>My BookClubs</h4>
@@ -96,14 +94,14 @@ function MyProfile() {
                             <button className="btn btn-primary">Add BookClub</button>
                         </div>
                         <div className="d-flex flex-wrap bookclub-pfp">
-                            {user.bookClubs.map((clubId: ObjectId) => {
+                            {/* {currentUser?.bookClubs.map((clubId: ObjectId) => {
                                 const club = findClubById(clubId);
                                 if (club) {
                                     return (
                                         <div key={club.clubId}>
                                             <Link to={`/bookclub/${club.clubId}`}>
                                                 <h5>{club.name}</h5>
-                                                <img src={require(`../images/${club.clubImage}`)} alt={club.name} className="book-cover" />
+                                                <img src={require(`../../images/${club.clubImage}`)} alt={club.name} className="book-cover" />
                                             </Link>
                                             <p>Members: {club.members.length}</p>
                                         </div>
@@ -115,7 +113,7 @@ function MyProfile() {
                                         </div>
                                     );
                                 }
-                            })}
+                            })} */}
                         </div>
                     </div>
                     <div className="row align-items-center">
@@ -126,13 +124,13 @@ function MyProfile() {
                             <button className="btn btn-primary">Add Book</button>
                         </div>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {user.booksRead.map((bookId: ObjectId) => {
+                            {/* {currentUser?.booksRead.map((bookId: ObjectId) => {
                                 const book = findBookbyId(bookId);
                                 if (book) {
                                     return (
                                         <div key={book.bookId} className="book">
                                             <Link to={`/book/${book.bookId}`}>
-                                                <img src={require(`../images/${book.coverImage}`)}
+                                                <img src={require(`../../images/${book.coverImage}`)}
                                                     alt={book.title} />
                                                 <h5>{book.title}</h5>
                                                 <p>{book.author}</p>
@@ -146,7 +144,7 @@ function MyProfile() {
                                         </div>
                                     );
                                 }
-                            })}
+                            })} */}
                         </div>
                     </div>
                     <div className="row align-items-center">
@@ -157,13 +155,13 @@ function MyProfile() {
                             <button className="btn btn-primary">Add Book</button>
                         </div>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {user.wishlist.map((bookId: ObjectId) => {
+                            {/* {currentUser?.wishlist.map((bookId: ObjectId) => {
                                 const book = findBookbyId(bookId);
                                 if (book) {
                                     return (
                                         <div key={book.bookId} className="book">
                                             <Link to={`/book/${book.bookId}`}>
-                                                <img src={require(`../images/${book.coverImage}`)}
+                                                <img src={require(`../../images/${book.coverImage}`)}
                                                     alt={book.title} />
                                                 <h5>{book.title}</h5>
                                                 <p>{book.author}</p>
@@ -177,10 +175,10 @@ function MyProfile() {
                                         </div>
                                     );
                                 }
-                            })}
+                            })} */}
                         </div>
                     </div>
-                </div> */}
+                </div>
                 <button onClick={signout}>Logout</button>
             </div>
         </div>
