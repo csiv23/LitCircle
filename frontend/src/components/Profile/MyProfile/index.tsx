@@ -22,11 +22,12 @@ function MyProfile() {
     let currentUser = useSelector((state: any) => state.users.currentUser);
     console.log("MyProfile currentUser: " + JSON.stringify(currentUser));
 
-    if (!currentUser) {
-        navigate("/login");
-    } else if (currentUser?._id !== userId) {
-        navigate(`/myProfile/${currentUser?._id}`);
-    }
+    useEffect(() => {
+        if (!currentUser || currentUser?._id !== userId) {
+            // Display the public profile
+            navigate(`/profile/${userId}`);
+        }
+    }, [])
 
     // if (!user) {
     //     return <div>User not found</div>;

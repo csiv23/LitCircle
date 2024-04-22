@@ -1,5 +1,5 @@
 import './index.css';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { User, Book, Club, ObjectId } from "../types";
 import Header from '../Header';
 import { useState, useEffect } from 'react';
@@ -7,8 +7,10 @@ import * as mongooseClient from "../../mongooseClient";
 import CurrentBook from './currentBook';
 import BooksList from './BooksList';
 import ClubMembersList from './ClubMembersList';
+import { useDispatch, useSelector } from 'react-redux';
 
 function BookClubs() {
+    const navigate = useNavigate();
     const { clubId } = useParams();
     const [club, setClub] = useState<any>({ _id: "" });
     const [clubOrganizer, setClubOrganizer] = useState<any>({ _id: "" });
@@ -23,6 +25,7 @@ function BookClubs() {
     const [booksRead, setBooksRead] = useState([] as Book[]);
     const [wishlist, setWishlist] = useState([] as Book[]);
     const [clubMembers, setClubMembers] = useState([] as User[]);
+    const currentUser = useSelector((state: any) => state.users.currentUser);
 
     const findClubById = async (clubId: ObjectId) => {
         const response = await mongooseClient.getBookClubById(clubId);
@@ -65,6 +68,9 @@ function BookClubs() {
     }
 
     useEffect(() => {
+        if (!currentUser) {
+            navigate("/login");
+        }
         if (!clubId) return;
         findClubById(clubId);
         findOrganizer();
