@@ -32,18 +32,22 @@ function MyProfile() {
     // if (!user) {
     //     return <div>User not found</div>;
     // }
-    // const findClubById = (clubId: ObjectId) => {
-    //     return dbBookclubs.bookclubs.find(club => club.clubId === clubId);
-    // };
-    // const findBookbyId = (bookId: ObjectId) => {
-    //     return dbBooks.books.find(book => book.bookId === bookId);
-    // };
+    const findClubById = async (clubId: ObjectId) => {
+        const allClubs = await client.getClubs();
+        console.log("findClubById getClubs: " + JSON.stringify(allClubs));
+        return allClubs?.find((club: any) => club.clubId === clubId); // FIX
+    };
+    findClubById('660593f3aceb52dac7be9f68');
+    const findBookbyId = (bookId: ObjectId) => {
+        return dbBooks.books.find(book => book.bookId === bookId);
+    };
     const signout = async () => {
         console.log("currentUser before signout: " + JSON.stringify(currentUser));
         await client.signout();
         dispatch(setCurrentUser(null));
         navigate("/login");
     };
+    console.log("currentUser?.bookClubs: " + JSON.stringify(currentUser?.bookClubs))
 
     return (
         <div>
@@ -82,7 +86,7 @@ function MyProfile() {
                         </div>
                     </div>
                 </div>
-                {/* <div className="col-md-9">
+                <div className="col-md-9">
                     <div className="row align-items-center">
                         <div className="col-md-8 bookclub-section-title">
                             <h4>My BookClubs</h4>
@@ -91,14 +95,14 @@ function MyProfile() {
                             <button className="btn btn-primary">Add BookClub</button>
                         </div>
                         <div className="d-flex flex-wrap bookclub-pfp">
-                            {user.bookClubs.map((clubId: ObjectId) => {
+                            {/* {currentUser?.bookClubs.map((clubId: ObjectId) => {
                                 const club = findClubById(clubId);
                                 if (club) {
                                     return (
                                         <div key={club.clubId}>
                                             <Link to={`/bookclub/${club.clubId}`}>
                                                 <h5>{club.name}</h5>
-                                                <img src={require(`../images/${club.clubImage}`)} alt={club.name} className="book-cover" />
+                                                <img src={require(`../../images/${club.clubImage}`)} alt={club.name} className="book-cover" />
                                             </Link>
                                             <p>Members: {club.members.length}</p>
                                         </div>
@@ -110,7 +114,7 @@ function MyProfile() {
                                         </div>
                                     );
                                 }
-                            })}
+                            })} */}
                         </div>
                     </div>
                     <div className="row align-items-center">
@@ -121,13 +125,13 @@ function MyProfile() {
                             <button className="btn btn-primary">Add Book</button>
                         </div>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {user.booksRead.map((bookId: ObjectId) => {
+                            {/* {currentUser?.booksRead.map((bookId: ObjectId) => {
                                 const book = findBookbyId(bookId);
                                 if (book) {
                                     return (
                                         <div key={book.bookId} className="book">
                                             <Link to={`/book/${book.bookId}`}>
-                                                <img src={require(`../images/${book.coverImage}`)}
+                                                <img src={require(`../../images/${book.coverImage}`)}
                                                     alt={book.title} />
                                                 <h5>{book.title}</h5>
                                                 <p>{book.author}</p>
@@ -141,7 +145,7 @@ function MyProfile() {
                                         </div>
                                     );
                                 }
-                            })}
+                            })} */}
                         </div>
                     </div>
                     <div className="row align-items-center">
@@ -152,13 +156,13 @@ function MyProfile() {
                             <button className="btn btn-primary">Add Book</button>
                         </div>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {user.wishlist.map((bookId: ObjectId) => {
+                            {/* {currentUser?.wishlist.map((bookId: ObjectId) => {
                                 const book = findBookbyId(bookId);
                                 if (book) {
                                     return (
                                         <div key={book.bookId} className="book">
                                             <Link to={`/book/${book.bookId}`}>
-                                                <img src={require(`../images/${book.coverImage}`)}
+                                                <img src={require(`../../images/${book.coverImage}`)}
                                                     alt={book.title} />
                                                 <h5>{book.title}</h5>
                                                 <p>{book.author}</p>
@@ -172,10 +176,10 @@ function MyProfile() {
                                         </div>
                                     );
                                 }
-                            })}
+                            })} */}
                         </div>
                     </div>
-                </div> */}
+                </div>
                 <button onClick={signout}>Logout</button>
             </div>
         </div>

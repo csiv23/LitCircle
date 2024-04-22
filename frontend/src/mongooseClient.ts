@@ -306,6 +306,11 @@ export const searchBookclubs = async (name : string) => {
   return response.map(cleanClub);
 }
 
+export const getClubs = async () => {
+  const response = await mongooseGet('clubs');
+  return response.map(cleanClub);
+}
+
 // signin only requires email and password
 export const signin = async (credentials: any) => {
   const response = await axios.post(`${USERS_API_URL}/login`, credentials);
