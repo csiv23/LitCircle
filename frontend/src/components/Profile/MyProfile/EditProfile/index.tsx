@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function EditProfile() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const { userId } = useParams();
     const [currentUser, setCurrentUser] = useState<User>(
         {
@@ -30,13 +29,11 @@ export default function EditProfile() {
             setCurrentUser(userSession);
         }
         fetchProfile();
-        // console.log("EditProfile currentUser: " + JSON.stringify(currentUser));
     }, [])
 
     // Updates the user's username and password
     const updateProfile = async () => {
         await client.updateUserProfile(userId, currentUser.username, currentUser.password);
-        // dispatch(setCurrentUser(updatedUser));
         navigate(`/myProfile/${userId}`);
     }
 
