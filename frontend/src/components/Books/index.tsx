@@ -12,17 +12,74 @@ import { useSelector } from "react-redux";
 export default function Books() {
     const { bookId } = useParams<string>();
     const [book, setBook] = useState<any>({});
+    const [bookInBooksRead, setBookInBooksRead] = useState(false);
+    const [bookInWishlist, setBookInWishlist] = useState(false);
+    const [userClubsWithoutRecs, setUserClubsWithoutRecs] = useState([] as Club[]);
+    const [clubsReading, setClubsReading] = useState([] as Club[]);
+    const currentUser = useSelector((state: any) => state.users.currentUser);
+
     const findBook = async (id: string) => {
       const googleBookData = await client.getBookDetails(id);
       console.log(googleBookData);
-      const bookId = await mongooseClient.createBook(googleBookData);
-      console.log(bookId);
+      const mongooseBookId = await mongooseClient.createBook(googleBookData);
+      console.log(mongooseBookId);
 
-      const mongooseBookData = await mongooseClient.getBookById(bookId);
+      const mongooseBookData = await mongooseClient.getBookById(mongooseBookId);
       setBook(mongooseBookData as Book);
       console.log(mongooseBookData);
+      
+
+      if (mongooseBookData) {
+        const response = await mongooseClient.getClubsReadingPerBook(mongooseBookData._id);
+        setClubsReading(response);
+
+        if (currentUser) {
+          if (currentUser.booksRead) {
+              setBookInBooksRead(currentUser.booksRead.includes(mongooseBookData._id));
+          }
+  
+          if (currentUser.wishlist) {
+              setBookInWishlist(currentUser.wishlist.includes(mongooseBookData._id));
+          }
+
+          const clubs = await mongooseClient.getUserClubsWithoutBookRec(currentUser._id, mongooseBookData._id);
+          console.log("clubs without recs");
+          console.log(clubs);
+          setUserClubsWithoutRecs(clubs);
+      }
+      }
     };
-    const currentUser = useSelector((state: any) => state.users.currentUser);
+
+  const recommendBookToClub = async (clubId : string) => {
+      if (currentUser) {
+          await mongooseClient.recommendBookToClub(clubId, book._id);
+          setUserClubsWithoutRecs(userClubsWithoutRecs.filter(club=>club._id !== clubId));
+      }
+  }
+
+  const toggleBookInWishlist = async () => {
+      if (currentUser) {
+          if (bookInWishlist) {
+              await mongooseClient.removeFromWishlist(currentUser._id, book._id);
+          }
+          else {  
+              await mongooseClient.addToWishlist(currentUser._id, book._id);
+          }   
+          setBookInWishlist(!bookInWishlist);
+      }
+  }
+
+  const toggleBookInBooksRead = async () => {
+      if (currentUser) {
+          if (bookInWishlist) {
+              await mongooseClient.removeFromBooksRead(currentUser._id, book._id);
+          }
+          else {  
+              await mongooseClient.addToBooksRead(currentUser._id, book._id);
+          }   
+          setBookInBooksRead(!bookInBooksRead);
+      }
+  }
 
     useEffect(() => {
       if (bookId) {
@@ -33,7 +90,16 @@ export default function Books() {
     return (
         <div>
             <Header/>
-            <MongooseBook book={book} currentUser={currentUser}/>
+            <MongooseBook book={book} 
+                          currentUser={currentUser}
+                          clubsReading={clubsReading}
+                          bookInBooksRead={bookInBooksRead}
+                          bookInWishlist={bookInWishlist}
+                          userClubsWithoutRecs={userClubsWithoutRecs}
+                          recommendBookToClub={recommendBookToClub}
+                          toggleBookInBooksRead={toggleBookInBooksRead}
+                          toggleBookInWishlist={toggleBookInWishlist}
+            />
         </div>
 
     );

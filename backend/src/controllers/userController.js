@@ -430,8 +430,7 @@ exports.getUserNextMeetings = async (req, res) => {
 };
 
 exports.getUserClubsWithoutBookRec = async (req, res) => {
-    const { userId } = req.params;
-    const { bookId } = req.body;
+    const { userId, bookId } = req.params;
     console.log('Book ID:', bookId);
 
     try {

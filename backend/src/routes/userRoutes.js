@@ -27,7 +27,7 @@ router.post('/:userId/booksread-delete', removeBookFromBooksRead);
 router.patch('/:userId/booksread', addBookToBooksRead);
 router.delete('/:userId', deleteUser);
 router.get('/:userId/nextmeetings', getUserNextMeetings);
-router.get('/:userId/clubsWithoutRec', getUserClubsWithoutBookRec);
+router.get('/:userId/clubsWithoutRec/:bookId', getUserClubsWithoutBookRec);
 
 
 

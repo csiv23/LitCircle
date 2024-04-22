@@ -375,8 +375,8 @@ export const recommendBookToClub = async (clubId : string, bookId : string) => {
 
 export const getUserClubsWithoutBookRec = async (userId : string, bookId : string) => {
   const response = await mongooseGet(
-    `users/${userId}/clubsWithoutRec`, {bookId : bookId});
-  return response;
+    `users/${userId}/clubsWithoutRec/${bookId}`);
+  return response.map(cleanClub);
 }
 
 
