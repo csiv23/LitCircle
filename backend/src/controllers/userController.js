@@ -332,7 +332,7 @@ exports.profile = async (req, res) => {
             res.sendStatus(401);
             return;
         }
-        console.log("Fetched profile: " + currentUser);
+        console.log("Fetched profile: " + JSON.stringify(currentUser));
         res.json(currentUser);
     } catch (error) {
         console.error("Error fetching profile:", error);

@@ -332,7 +332,7 @@ export const profile = async () => {
   return cleanUser(response.data);
 }
 
-export const updateUserProfile = async (id: string | undefined, username: string, password: string) => {
+export const updateUserProfile = async (id: string | undefined, username: string | undefined, password: string | undefined) => {
   try {
     const response = await axios.patch(`${MONGOOSE_URL}/users/${id}`, {username, password});
     console.log("updateUserProfile: " + response.data);

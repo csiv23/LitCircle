@@ -18,28 +18,15 @@ function MyProfile() {
     const dispatch = useDispatch();
 
     const { userId } = useParams();
-    // const user = dbUsers.users.find((user) => user.userId === userId); // Local Testing database
-    let currentUser = useSelector((state: any) => state.users.currentUser);
-    console.log("MyProfile currentUser: " + JSON.stringify(currentUser));
-
-    const [currentUserSession, setCurrentUserSession] = useState<User>();
-    const fetchProfile = async () => {
-        const userSession = await client.profile();
-        setCurrentUserSession(userSession);
-    }
-
+    const [currentUser, setCurrentUser] = useState<User>();
     useEffect(() => {
-        // if (!currentUser || currentUser?._id !== userId) {
-        //     // Display the public profile
-        //     navigate(`/profile/${userId}`);
-        // }
+        const fetchProfile = async () => {
+            const userSession = await client.profile();
+            setCurrentUser(userSession);
+        }
         fetchProfile();
     }, [])
-    console.log("currentUserSession: " + JSON.stringify(currentUserSession));
 
-    // if (!user) {
-    //     return <div>User not found</div>;
-    // }
     const findClubById = async (clubId: ObjectId) => {
         const allClubs = await client.getClubs();
         console.log("findClubById getClubs: " + JSON.stringify(allClubs));
@@ -52,10 +39,14 @@ function MyProfile() {
     const signout = async () => {
         console.log("currentUser before signout: " + JSON.stringify(currentUser));
         await client.signout();
-        dispatch(setCurrentUser(null));
         navigate("/login");
     };
-    console.log("currentUser?.bookClubs: " + JSON.stringify(currentUser?.bookClubs))
+
+    console.log("MyProfile currentUser: " + JSON.stringify(currentUser));
+    if (!currentUser || currentUser?._id !== userId) {
+        // Display the public profile
+        navigate(`/profile/${userId}`);
+    }
 
     return (
         <div>
@@ -77,7 +68,7 @@ function MyProfile() {
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <span className="mr-2">Username:</span> {currentUserSession?.username}
+                            <span className="mr-2">Username:</span> {currentUser?.username}
                         </div>
                     </div>
                     <div className="row">
