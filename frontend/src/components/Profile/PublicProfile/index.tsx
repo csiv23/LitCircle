@@ -29,8 +29,12 @@ function PublicProfile() {
             }
         }
         const fetchCurrentUser = async () => {
-            const userSession = await client.profile();
-            setCurrentUser(userSession);
+            try {
+                const userSession = await client.profile();
+                setCurrentUser(userSession);
+            } catch (error) {
+                navigate("/login");
+            }
         }
         fetchPublicUser();
         fetchCurrentUser();
