@@ -388,7 +388,6 @@ export const getUserClubsWithoutBookRec = async (userId : string, bookId : strin
   
 }
 
-
 export const followUser = async (userId: string, userIdToFollow: string) => {
   try {
     const response = await axios.patch(`${USERS_API_URL}/${userId}/follow`, {userIdToFollow: userIdToFollow});
