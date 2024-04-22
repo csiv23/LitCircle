@@ -45,10 +45,10 @@ export default function EditProfile() {
             {userId && (
                 <div>
                     Username:
-                    <input value={currentUser?.username} onChange={(e) =>
+                    <input value={currentUser.username} onChange={(e) =>
                         setCurrentUser({...currentUser, username: e.target.value})} />
                     Password:
-                    <input value={currentUser?.password} onChange={(e) =>
+                    <input value={currentUser.password} onChange={(e) =>
                         setCurrentUser({...currentUser, password: e.target.value})} />
                     <br />
                     <br />
