@@ -20,7 +20,7 @@ function PublicProfile() {
     // REMOVE THIS WHEN DONE TESTING
     const user = dbUsers.users.find((user) => user.userId === userId)
 
-    const currentUser = useSelector((state: any) => state.users.currentUser);
+    let currentUser = useSelector((state: any) => state.users.currentUser);
     console.log("PublicProfile. The currentUser is: " + JSON.stringify(currentUser));
     if (currentUser?._id == userId) {
         navigate(`/myProfile/${currentUser?._id}`);
@@ -37,14 +37,17 @@ function PublicProfile() {
         fetchPublicUser();
     }, [currentUser])
 
+    console.log("outside follow currentUser: " + JSON.stringify(currentUser));
+    console.log("outside follow publicUser: " + JSON.stringify(publicUser));
     const follow = async () => {
         if (currentUser) {
             console.log("follow button clicked")
             if (publicUser) {
                 try {
                     client.followUser(currentUser._id, publicUser?._id);
-                    setPublicUser(await client.getUserById(publicUser._id))
-                    dispatch(setCurrentUser(await client.getUserById(currentUser._id)));
+                    // setPublicUser(await client.getUserById(publicUser._id));
+                    currentUser = await client.getUserById(currentUser._id);
+                    dispatch(setCurrentUser(currentUser));
                     // dispatch(setCurrentUser({...currentUser, followers: [...currentUser.followers, ]}))
                 } catch (error) {
                     console.log("PublicProfile failed to follow user");
