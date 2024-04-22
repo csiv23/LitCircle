@@ -22,16 +22,17 @@ export default function BookclubSearch() {
   useEffect(() => {
     fullTextSearch(name);
     const fetchProfile = async () => {
-      const userSession = await client.profile();
-      setCurrentUser(userSession);
+      try {
+        const userSession = await client.profile();
+        setCurrentUser(userSession);
+      } catch (error) {
+        navigate("/login");
+      }
     }
     fetchProfile();
   }, []);
 
   console.log("BookclubSearch currentUser: " + JSON.stringify(currentUser));
-  if (!currentUser) {
-    navigate("/login");
-  }
 
   return (
     <div>

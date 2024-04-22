@@ -10,16 +10,20 @@ export default function SearchBookclubs() {
   const [currentUser, setCurrentUser] = useState<User>();
   useEffect(() => {
     const fetchProfile = async () => {
-      const userSession = await client.profile();
-      setCurrentUser(userSession);
+      try {
+        const userSession = await client.profile();
+        setCurrentUser(userSession);
+      } catch (error) {
+        navigate("/login");
+      }
     }
     fetchProfile();
   }, [])
   console.log("SearchBookClubs currentUser: " + JSON.stringify(currentUser));
 
-  if (!currentUser) {
-    navigate("/login");
-  }
+  // if (!currentUser) {
+  //   navigate("/login");
+  // }
 
   return (
     <div className="container-fluid">
