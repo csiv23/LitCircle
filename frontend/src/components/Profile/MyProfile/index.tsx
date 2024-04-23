@@ -20,7 +20,8 @@ function MyProfile() {
     const { userId } = useParams();
     const [currentUser, setCurrentUser] = useState<User>();
     const [currentUserClubs, setCurrentUserClubs] = useState<Club[]>([]);
-    const [currentUserBooks, setCurrentUserBooks] = useState<Book[]>([]);
+    const [currentUserBooksRead, setCurrentUserBooksRead] = useState<Book[]>([]);
+    const [currentUserBooksWishlist, setCurrentUserBooksWishlist] = useState<Book[]>([]);
     useEffect(() => {
         fetchProfile();
     }, []);
@@ -28,7 +29,8 @@ function MyProfile() {
     useEffect(() => {
         if (currentUser) {
             fetchUsersClubs();
-            fetchUsersBooks();
+            fetchUsersBooksRead();
+            fetchUsersBooksWishlist();
         }
     }, [currentUser]);
 
@@ -47,13 +49,25 @@ function MyProfile() {
         const commonClubs = allClubs.filter((club: Club) => userBookClubIds.includes(club["_id"]));
         setCurrentUserClubs(commonClubs);
     };
-    const fetchUsersBooks = async () => {
+    const fetchUsersBooksRead = async () => {
         const allBooks = await client.getBooks();
         const userBooksIds: ObjectId[] = [];
         currentUser?.booksRead.map((bookId: ObjectId) => userBooksIds.push(bookId));
         const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book["_id"]));
-        setCurrentUserBooks(commonBooks);
+        setCurrentUserBooksRead(commonBooks);
+    };
+    const fetchUsersBooksWishlist = async () => {
+        console.log("fetchUsersBooksWishlist currentUser:" + JSON.stringify(currentUser))
+        const allBooks = await client.getBooks();
+        const userBooksIds: ObjectId[] = [];
+        console.log("currentUser?.wishlist: " + JSON.stringify(currentUser?.wishlist))
+        currentUser?.wishlist.map((bookId: ObjectId) => {
+            console.log("book: " + JSON.stringify(bookId))
+            userBooksIds.push(bookId)
+        });
+        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book["_id"]));
         console.log("commonBooks: " + JSON.stringify(commonBooks))
+        setCurrentUserBooksWishlist(commonBooks);
     };
     const signout = async () => {
         console.log("currentUser before signout: " + JSON.stringify(currentUser));
@@ -144,7 +158,7 @@ function MyProfile() {
                             <button className="btn btn-primary">Add Book</button>
                         </div>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {currentUserBooks?.map((book: Book, index) => {
+                            {currentUserBooksRead?.map((book: Book, index) => {
                                 if (book) {
                                     return (
                                         <div key={index} className="book">
@@ -174,14 +188,13 @@ function MyProfile() {
                             <button className="btn btn-primary">Add Book</button>
                         </div>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {/* {currentUser?.wishlist.map((bookId: ObjectId) => {
-                                const book = findBookbyId(bookId);
+                            {currentUserBooksWishlist?.map((book: Book, index) => {
                                 if (book) {
                                     return (
-                                        <div key={book.bookId} className="book">
-                                            <Link to={`/book/${book.bookId}`}>
-                                                <img src={require(`../../images/${book.coverImage}`)}
-                                                    alt={book.title} />
+                                        <div key={index} className="book">
+                                            <Link to={`/book/${book._id}`}>
+                                                {/* <img src={require(`../../images/${book.coverImage}`)}
+                                                    alt={book.title} /> */}
                                                 <h5>{book.title}</h5>
                                                 <p>{book.author}</p>
                                             </Link>
@@ -189,12 +202,12 @@ function MyProfile() {
                                     );
                                 } else {
                                     return (
-                                        <div key={bookId}>
-                                            <p>Book with ID {bookId} not found.</p>
+                                        <div key={index}>
+                                            <p>Book with ID not found.</p>
                                         </div>
                                     );
                                 }
-                            })} */}
+                            })}
                         </div>
                     </div>
                 </div>
