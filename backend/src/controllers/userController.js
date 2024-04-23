@@ -420,19 +420,24 @@ exports.getUserNextMeetings = async (req, res) => {
             populate: { path: 'NextMeeting' }  // Populate the NextMeeting field of the Club
         });
 
+        console.log(user);
+
         if (!user) {
             return res.status(404).send('User not found');
         }
 
         // Map through the populated BookClubs to extract the next meeting details
-        const nextMeetings = user.BookClubs.map(bookClub => ({
+        const nextMeetings = user.BookClubs.filter(bookClub => bookClub.ClubId.NextMeeting 
+            && bookClub.ClubId.NextMeeting.Date && bookClub.ClubId.NextMeeting.Location);
+
+        const meetingsClean = nextMeetings.map(bookClub => ({
             ClubId: bookClub.ClubId._id,  // Extracting the Club ID
             ClubName: bookClub.ClubId.Name,  // Optional: also provide the club name
             NextMeetingDate: bookClub.ClubId.NextMeeting.Date.toISOString(),  // Extract the next meeting date
             NextMeetingLocation: bookClub.ClubId.NextMeeting.Location  // Extract the meeting location
         }));
 
-        res.json(nextMeetings);  // Send the next meetings info as a response
+        res.json(meetingsClean);  // Send the next meetings info as a response
     } catch (error) {
         console.error("Error fetching user's next meetings:", error);
         res.status(500).send('Server error');
