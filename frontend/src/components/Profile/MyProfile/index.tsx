@@ -20,7 +20,7 @@ function MyProfile() {
     const { userId } = useParams();
     const [currentUser, setCurrentUser] = useState<User>();
     const [currentUserClubs, setCurrentUserClubs] = useState<Club[]>([]);
-
+    const [currentUserBooks, setCurrentUserBooks] = useState<Book[]>([]);
     useEffect(() => {
         fetchProfile();
     }, []);
@@ -28,6 +28,7 @@ function MyProfile() {
     useEffect(() => {
         if (currentUser) {
             fetchUsersClubs();
+            fetchUsersBooks();
         }
     }, [currentUser]);
 
@@ -40,15 +41,19 @@ function MyProfile() {
         }
     }
     const fetchUsersClubs = async () => {
-        console.log("findClubById currentUser: " + JSON.stringify(currentUser));
         const allClubs = await client.getClubs();
         const userBookClubIds: ObjectId[] = [];
-        currentUser?.bookClubs.map((bookClub: any) => userBookClubIds.push(bookClub["_id"]))
+        currentUser?.bookClubs.map((bookClub: any) => userBookClubIds.push(bookClub["_id"]));
         const commonClubs = allClubs.filter((club: Club) => userBookClubIds.includes(club["_id"]));
         setCurrentUserClubs(commonClubs);
     };
-    const findBookbyId = (bookId: ObjectId) => {
-        return dbBooks.books.find(book => book.bookId === bookId);
+    const fetchUsersBooks = async () => {
+        const allBooks = await client.getBooks();
+        const userBooksIds: ObjectId[] = [];
+        currentUser?.booksRead.map((bookId: ObjectId) => userBooksIds.push(bookId));
+        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book["_id"]));
+        setCurrentUserBooks(commonBooks);
+        console.log("commonBooks: " + JSON.stringify(commonBooks))
     };
     const signout = async () => {
         console.log("currentUser before signout: " + JSON.stringify(currentUser));
@@ -111,7 +116,6 @@ function MyProfile() {
                         </div>
                         <div className="d-flex flex-wrap bookclub-pfp">
                             {currentUserClubs?.map((club: Club, index) => {
-                                console.log("index: " + index);
                                 if (club) {
                                     return (
                                         <div key={index}>
@@ -140,14 +144,13 @@ function MyProfile() {
                             <button className="btn btn-primary">Add Book</button>
                         </div>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {/* {currentUser?.booksRead.map((bookId: ObjectId) => {
-                                const book = findBookbyId(bookId);
+                            {currentUserBooks?.map((book: Book, index) => {
                                 if (book) {
                                     return (
-                                        <div key={book.bookId} className="book">
-                                            <Link to={`/book/${book.bookId}`}>
-                                                <img src={require(`../../images/${book.coverImage}`)}
-                                                    alt={book.title} />
+                                        <div key={index} className="book">
+                                            <Link to={`/book/${book._id}`}>
+                                                {/* <img src={require(`../../images/${book.coverImageUrl}`)}
+                                                    alt={book.title} /> */}
                                                 <h5>{book.title}</h5>
                                                 <p>{book.author}</p>
                                             </Link>
@@ -155,12 +158,12 @@ function MyProfile() {
                                     );
                                 } else {
                                     return (
-                                        <div key={bookId}>
-                                            <p>Book with ID {bookId} not found.</p>
+                                        <div key={index}>
+                                            <p>Book with ID not found.</p>
                                         </div>
                                     );
                                 }
-                            })} */}
+                            })}
                         </div>
                     </div>
                     <div className="row align-items-center">

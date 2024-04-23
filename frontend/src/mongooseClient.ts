@@ -267,6 +267,11 @@ export async function notImplemented() {
   return cleanUser(response);
  }
 
+export const getBooks = async () => {
+  const response = await mongooseGet(`books`);
+  return response.map(cleanBookObj);
+}
+
   // implement this 
   export const getBookById = async (bookId : ObjectId) => {
     const response = await mongooseGet(`books/${bookId}`);
