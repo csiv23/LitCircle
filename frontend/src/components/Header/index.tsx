@@ -1,14 +1,31 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./index.css";
+import { useEffect, useState } from "react";
+import { User } from "../types";
+import * as client from "../../mongooseClient";
 
 function Header() {
+    const navigate = useNavigate();
+    const { pathname } = useLocation();
+    const [currentUser, setCurrentUser] = useState<User>();
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const userSession = await client.profile();
+                setCurrentUser(userSession);
+            } catch (error) {
+                navigate("/login");
+            }
+        }
+        fetchProfile();
+    }, [])
     const links = [
         { label: "Homepage", url: "home", icon: "litcircle-logo.png" },
         { label: "Search Bookclubs", url: "search-clubs" },
         { label: "Search Books", url: "search-books" },
-        { label: "Profile", url: "profile/0" }
+        { label: "Profile", url: `profile/${currentUser?._id}` }
     ];
-    const { pathname } = useLocation();
+    
     return(
         <div>
             <ul className="header-row">

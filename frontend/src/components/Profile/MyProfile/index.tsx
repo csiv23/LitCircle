@@ -57,16 +57,10 @@ function MyProfile() {
         setCurrentUserBooksRead(commonBooks);
     };
     const fetchUsersBooksWishlist = async () => {
-        console.log("fetchUsersBooksWishlist currentUser:" + JSON.stringify(currentUser))
         const allBooks = await client.getBooks();
         const userBooksIds: ObjectId[] = [];
-        console.log("currentUser?.wishlist: " + JSON.stringify(currentUser?.wishlist))
-        currentUser?.wishlist.map((bookId: ObjectId) => {
-            console.log("book: " + JSON.stringify(bookId))
-            userBooksIds.push(bookId)
-        });
+        currentUser?.wishlist.map((bookId: ObjectId) => userBooksIds.push(bookId));
         const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book["_id"]));
-        console.log("commonBooks: " + JSON.stringify(commonBooks))
         setCurrentUserBooksWishlist(commonBooks);
     };
     const signout = async () => {
@@ -80,8 +74,6 @@ function MyProfile() {
         // Display the public profile
         navigate(`/profile/${userId}`);
     }
-
-    console.log("currentUserClubs: " + JSON.stringify(currentUserClubs));
 
     return (
         <div>
