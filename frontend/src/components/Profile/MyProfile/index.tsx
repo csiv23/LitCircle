@@ -23,8 +23,13 @@ function MyProfile() {
 
     useEffect(() => {
         fetchProfile();
-        findClubById();
-    }, [])
+    }, []);
+    
+    useEffect(() => {
+        if (currentUser) {
+            fetchUsersClubs();
+        }
+    }, [currentUser]);
 
     const fetchProfile = async () => {
         try {
@@ -34,7 +39,7 @@ function MyProfile() {
             navigate("/login");
         }
     }
-    const findClubById = async () => {
+    const fetchUsersClubs = async () => {
         console.log("findClubById currentUser: " + JSON.stringify(currentUser));
         const allClubs = await client.getClubs();
         const userBookClubIds: ObjectId[] = [];
@@ -112,7 +117,7 @@ function MyProfile() {
                                         <div key={index}>
                                             <Link to={`/bookclub/${club._id}`}>
                                                 <h5>{club.name}</h5>
-                                                <img src={require(`../../images/${club.imageUrl}`)} alt={club.name} className="book-cover" />
+                                                <img src={require(`../../images/friends.jpeg`)} alt={club.name} className="book-cover" />
                                             </Link>
                                             <p>Members: {club.members.length}</p>
                                         </div>
