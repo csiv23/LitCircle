@@ -14,20 +14,13 @@ function getURL( book: Book  ) {
 
 function PublicProfile() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const { userId } = useParams();
 
     // REMOVE THIS WHEN DONE TESTING
     const user = dbUsers.users.find((user) => user.userId === userId)
 
-    // let currentUser = useSelector((state: any) => state.users.currentUser);
     const [currentUser, setCurrentUser] = useState<User>();
-    // console.log("PublicProfile. The currentUser is: " + JSON.stringify(currentUser));
-    if (currentUser?._id == userId) {
-        navigate(`/myProfile/${currentUser?._id}`);
-    }
-    // Get public profile user
-    const [publicUser, setPublicUser] = useState<User | null>(null);
+    const [publicUser, setPublicUser] = useState<User>();
     useEffect(() => {
         const fetchPublicUser = async () => {
             if (userId) {
@@ -36,25 +29,25 @@ function PublicProfile() {
             }
         }
         const fetchCurrentUser = async () => {
-            const userSession = await client.profile();
-            setCurrentUser(userSession);
+            try {
+                const userSession = await client.profile();
+                setCurrentUser(userSession);
+            } catch (error) {
+                navigate("/login");
+            }
         }
         fetchPublicUser();
         fetchCurrentUser();
     }, [])
-    
-    console.log("PublicProfile. The currentUser is: " + JSON.stringify(currentUser));
 
     const follow = async () => {
         if (currentUser) {
             console.log("follow button clicked")
             if (publicUser) {
                 try {
-                    client.followUser(currentUser._id, publicUser?._id);
-                    // setPublicUser(await client.getUserById(publicUser._id));
-                    // currentUser = await client.getUserById(currentUser._id);
-                    // dispatch(setCurrentUser(currentUser));
-                    // dispatch(setCurrentUser({...currentUser, followers: [...currentUser.followers, ]}))
+                    await client.followUser(currentUser._id, publicUser?._id);
+                    setPublicUser(await client.getUserById(publicUser._id));
+                    setCurrentUser(await client.profile());
                 } catch (error) {
                     console.log("PublicProfile failed to follow user");
                 }
@@ -78,6 +71,12 @@ function PublicProfile() {
         return dbBooks.books.find(book => book.bookId === bookId);
     };
 
+    if (currentUser?._id == userId) {
+        navigate(`/myProfile/${currentUser?._id}`);
+    }
+
+    console.log("PublicProfile. currentUser: " + JSON.stringify(currentUser));
+    console.log("PublicProfile. publicUser: " + JSON.stringify(publicUser));
     return (
         <div>
             <Header />
@@ -98,7 +97,7 @@ function PublicProfile() {
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <span className="mr-2">Followers:</span> {user.followers.length}
+                            <span className="mr-2">Followers:</span> {publicUser?.followers.length}
                         </div>
                         <div className="col-sm-6">
                             <span className="mr-2">Following:</span> {user.following.length}

@@ -7,7 +7,6 @@ import * as mongooseClient from "../../mongooseClient";
 import CurrentBook from './currentBook';
 import BooksList from './BooksList';
 import ClubMembersList from './ClubMembersList';
-import { useDispatch, useSelector } from 'react-redux';
 
 function BookClubs() {
     const navigate = useNavigate();
@@ -25,7 +24,7 @@ function BookClubs() {
     const [booksRead, setBooksRead] = useState([] as Book[]);
     const [wishlist, setWishlist] = useState([] as Book[]);
     const [clubMembers, setClubMembers] = useState([] as User[]);
-    const currentUser = useSelector((state: any) => state.users.currentUser);
+    const [currentUser, setCurrentUser] = useState<User>();
 
     const findClubById = async (clubId: ObjectId) => {
         const response = await mongooseClient.getBookClubById(clubId);
@@ -67,10 +66,12 @@ function BookClubs() {
         setClubMembers(response);
     }
 
+    const fetchProfile = async () => {
+        const userSession = await mongooseClient.profile();
+        setCurrentUser(userSession);
+    }
+
     useEffect(() => {
-        if (!currentUser) {
-            navigate("/login");
-        }
         if (!clubId) return;
         findClubById(clubId);
         findOrganizer();
@@ -78,7 +79,12 @@ function BookClubs() {
         getBooksRead();
         getWishlist();
         getMembers();
+        fetchProfile();
     }, []);
+
+    if (!currentUser) {
+        navigate("/login");
+    }
 
     return (
         <div className="club-font">

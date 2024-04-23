@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function EditProfile() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const { userId } = useParams();
     const [currentUser, setCurrentUser] = useState<User>(
         {
@@ -26,17 +25,19 @@ export default function EditProfile() {
     );
     useEffect(() => {
         const fetchProfile = async () => {
-            const userSession = await client.profile();
-            setCurrentUser(userSession);
+            try {
+                const userSession = await client.profile();
+                setCurrentUser(userSession);
+            } catch (error) {
+                navigate("/login");
+            }
         }
         fetchProfile();
-        // console.log("EditProfile currentUser: " + JSON.stringify(currentUser));
     }, [])
 
     // Updates the user's username and password
     const updateProfile = async () => {
         await client.updateUserProfile(userId, currentUser.username, currentUser.password);
-        // dispatch(setCurrentUser(updatedUser));
         navigate(`/myProfile/${userId}`);
     }
 
@@ -48,10 +49,10 @@ export default function EditProfile() {
             {userId && (
                 <div>
                     Username:
-                    <input value={currentUser?.username} onChange={(e) =>
+                    <input value={currentUser.username} onChange={(e) =>
                         setCurrentUser({...currentUser, username: e.target.value})} />
                     Password:
-                    <input value={currentUser?.password} onChange={(e) =>
+                    <input value={currentUser.password} onChange={(e) =>
                         setCurrentUser({...currentUser, password: e.target.value})} />
                     <br />
                     <br />
