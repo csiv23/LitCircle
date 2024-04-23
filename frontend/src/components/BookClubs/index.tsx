@@ -13,6 +13,7 @@ import Members from './Members/ClubMembersList';
 import NextMeeting from './NextMeeting';
 import BooksRead from './BooksRead';
 import Wishlist from './Wishlist';
+
 function BookClubs() {
     const navigate = useNavigate();
     const { clubId } = useParams();
@@ -121,12 +122,21 @@ function BookClubs() {
         };
     }
 
+    const fetchProfile = async () => {
+        const userSession = await mongooseClient.profile();
+        setCurrentUser(userSession);
+    }
+
     useEffect(() => {
         if (clubId) {
             console.log(clubId);
             setup(clubId);
         }
     }, [clubId]);
+
+    if (!currentUser) {
+        navigate("/login");
+    }
 
     return (
         <div className="club-font">
