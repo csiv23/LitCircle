@@ -4,13 +4,14 @@ import { User, Book, Club, ObjectId } from "../types";
 import Header from '../Header';
 import { useState, useEffect } from 'react';
 import * as mongooseClient from "../../mongooseClient";
-import CurrentBook from './currentBook';
-import BooksList from './BooksList';
+import CurrentlyReading from './CurrentlyReading';
 import { useDispatch, useSelector } from 'react-redux';
 import ClubNav from './ClubNav';
 import About from './About';
 import Login from '../Login';
 import Members from './Members/ClubMembersList';
+import NextMeeting from './NextMeeting';
+import SearchableBooksList from './BooksList';
 
 function BookClubs() {
     const navigate = useNavigate();
@@ -63,6 +64,16 @@ function BookClubs() {
             avatar: "",
         }
     );
+    const [currBook, setCurrBook] = useState<Book>({  _id: "",
+    googleBooksId: "",
+    title: "Untitled",
+    author: "N/A",
+    coverImageUrl: "",
+    description: "N/A",
+    clubsReading: [],
+    });
+    const [booksRead, setBooksRead] = useState([] as Book[]);
+    const [wishlist, setWishlist] = useState([] as Book[]);
 
     const leaveClub = async () => {
         if (clubId && currentUser && currentUser._id) {
@@ -78,6 +89,7 @@ function BookClubs() {
         if (userSession) {
             const currentClub = await mongooseClient.getBookClubById(clubId);
             setClub(currentClub);
+            console.log(currentClub)
 
             const currentMembers = await mongooseClient.getMembersByClub(clubId);
             setClubMembers(currentMembers);
@@ -85,6 +97,14 @@ function BookClubs() {
             const currentOrganizer = await mongooseClient.getClubOrganizer(clubId);
             setClubOrganizer(currentOrganizer);
 
+            const currentBook = await mongooseClient.getClubCurrentBook(clubId);
+            setCurrBook(currentBook);
+
+            const clubBooksRead = await mongooseClient.getBooksReadByClub(clubId);
+            setBooksRead(clubBooksRead);
+
+            const response = await mongooseClient.getWishlistByClub(clubId);
+            setWishlist(response);
         }
         else {
             navigate("/login");
@@ -95,9 +115,7 @@ function BookClubs() {
         if (clubId) {
             setup(clubId);
         }
-
-        
-    }, []);
+    }, [clubId]);
 
     return (
         <div className="club-font">
@@ -117,10 +135,26 @@ function BookClubs() {
                             organizer={clubOrganizer}
                             leaveClub={leaveClub}
                         />} />
-                        {/* <Route path="currently-reading" element={<CurrentlyReading/>} />
-                        <Route path="next-meeting" element={<Meetings/>} />
-                        <Route path="books-read" element={<BooksRead/>} />
-                        <Route path="wishlist" element={<Wishlist/>} /> */}
+                        <Route path="currently-reading" 
+                        element={<CurrentlyReading
+                            currentBook={currBook}
+                            club={club}
+                        />} />
+                        <Route path="next-meeting" 
+                        element={<NextMeeting
+                            currentBook={currBook}
+                            club={club}
+                            meeting={club.nextMeeting}
+                        />} />
+                        <Route path="books-read" 
+                        element={<SearchableBooksList
+                            booksList={booksRead}
+                            club={club} 
+                        />} />
+                        <Route path="wishlist" element={<SearchableBooksList
+                            booksList={wishlist}
+                            club={club} 
+                        />} /> 
                     </Routes>
                         {/* <div className="col-md-11 club-container">
                             <div className="d-flex justify-content-between align-items-center">

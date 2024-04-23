@@ -131,7 +131,7 @@ function cleanClub (clubData : any) : Club {
     currentBook: "",
     nextMeeting: {
       meetingDate: new Date(),
-      location: ""
+      location: "No location specified"
     },
     organizer: "",
     imageUrl: ""

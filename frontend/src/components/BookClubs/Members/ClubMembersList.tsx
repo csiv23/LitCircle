@@ -31,6 +31,7 @@ function Members(
                     { organizer && organizer._id && organizer._id === user._id &&
                         <h4>Club Admin</h4>
                     }  
+                </Link>
                     <p>{user.username}</p>
                     {/* TODO: ADD ONCLICK FOR FOLLOWING*/}
                     { currentUser && currentUser._id && user._id !== currentUser._id &&
@@ -50,14 +51,14 @@ function Members(
                             Leave Club
                         </button>
                     }    
-                </Link>
+                
             </div>
         );
     }
 
     const renderUsers = (users : User[]) => {
         const currentUserInUsers = users.find(user => user._id === currentUser._id);
-        const organizerInUsers = users.find(user => user._id === organizer._id);
+        const organizerInUsers = users.find(user => user._id === organizer._id && user._id !== currentUser._id);
         const restMembers = users.filter(user => user._id !== currentUser._id && user._id !== organizer._id);
         
         return (
@@ -70,6 +71,7 @@ function Members(
         )
     }
 
+    
     return (
     <div className="d-flex flex-wrap">
     <div>

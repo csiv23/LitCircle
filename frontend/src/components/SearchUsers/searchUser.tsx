@@ -13,10 +13,11 @@ export default function UserSearch(
 ) {
     const [search, setSearch] = useState("");
     const [results, setResults] = useState(users);
+    console.log(users);
 
     const searchUsers = (userQuery : string) : User[] => {
         if (users && users.length > 0) {
-            return results.filter((user : User) => {
+            return users.filter((user : User) => {
                 return user.username.toLowerCase().startsWith(userQuery.toLowerCase());
             })
         }
@@ -25,6 +26,8 @@ export default function UserSearch(
     }
 
     const fullTextSearch = async (text="") => {
+        setSearch(text);
+
         if (text !== "") {
          const results = searchUsers(text);
          setResults(results);
@@ -37,6 +40,7 @@ export default function UserSearch(
 
     useEffect(() => {
         fullTextSearch(search);
+        console.log("rerendered");
      }, []);
     
      return (
