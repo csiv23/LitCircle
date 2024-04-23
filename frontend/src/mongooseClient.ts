@@ -397,3 +397,11 @@ export const followUser = async (userId: string, userIdToFollow: string) => {
     console.log("Already following this user!")
   }
 }
+
+export const leaveClub = async (clubId : string, userId : string) => {
+  const response = await mongoosePost(
+    `clubs/${clubId}/leave`,
+    { userId : userId}
+  );
+  return response; 
+}

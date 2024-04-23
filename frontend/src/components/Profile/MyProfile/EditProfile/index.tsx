@@ -28,6 +28,7 @@ export default function EditProfile() {
         const fetchProfile = async () => {
             const userSession = await client.profile();
             setCurrentUser(userSession);
+
         }
         fetchProfile();
         // console.log("EditProfile currentUser: " + JSON.stringify(currentUser));
@@ -39,6 +40,7 @@ export default function EditProfile() {
         // dispatch(setCurrentUser(updatedUser));
         navigate(`/myProfile/${userId}`);
     }
+
 
 
     console.log("EditProfile currentUser: " + JSON.stringify(currentUser));

@@ -49,7 +49,7 @@ exports.createClub = async (req, res) => {
             Wishlist: [],
             CurrentBook: null,
             Organizer,
-            ImageUrl,
+            ImageUrl: "",
         });
 
         await newClub.save();
