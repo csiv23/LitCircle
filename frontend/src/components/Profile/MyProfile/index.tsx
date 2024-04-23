@@ -19,24 +19,29 @@ function MyProfile() {
 
     const { userId } = useParams();
     const [currentUser, setCurrentUser] = useState<User>();
+    const [currentUserClubs, setCurrentUserClubs] = useState<Club[]>([]);
+
     useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const userSession = await client.profile();
-                setCurrentUser(userSession);
-            } catch (error) {
-                navigate("/login");
-            }
-        }
         fetchProfile();
+        findClubById();
     }, [])
 
-    const findClubById = async (clubId: ObjectId) => {
+    const fetchProfile = async () => {
+        try {
+            const userSession = await client.profile();
+            setCurrentUser(userSession);
+        } catch (error) {
+            navigate("/login");
+        }
+    }
+    const findClubById = async () => {
+        console.log("findClubById currentUser: " + JSON.stringify(currentUser));
         const allClubs = await client.getClubs();
-        console.log("findClubById getClubs: " + JSON.stringify(allClubs));
-        return allClubs?.find((club: any) => club.clubId === clubId); // FIX
+        const userBookClubIds: ObjectId[] = [];
+        currentUser?.bookClubs.map((bookClub: any) => userBookClubIds.push(bookClub["_id"]))
+        const commonClubs = allClubs.filter((club: Club) => userBookClubIds.includes(club["_id"]));
+        setCurrentUserClubs(commonClubs);
     };
-    findClubById('660593f3aceb52dac7be9f68');
     const findBookbyId = (bookId: ObjectId) => {
         return dbBooks.books.find(book => book.bookId === bookId);
     };
@@ -51,6 +56,8 @@ function MyProfile() {
         // Display the public profile
         navigate(`/profile/${userId}`);
     }
+
+    console.log("currentUserClubs: " + JSON.stringify(currentUserClubs));
 
     return (
         <div>
@@ -98,26 +105,26 @@ function MyProfile() {
                             <button className="btn btn-primary">Add BookClub</button>
                         </div>
                         <div className="d-flex flex-wrap bookclub-pfp">
-                            {/* {currentUser?.bookClubs.map((clubId: ObjectId) => {
-                                const club = findClubById(clubId);
+                            {currentUserClubs?.map((club: Club, index) => {
+                                console.log("index: " + index);
                                 if (club) {
                                     return (
-                                        <div key={club.clubId}>
-                                            <Link to={`/bookclub/${club.clubId}`}>
+                                        <div key={index}>
+                                            <Link to={`/bookclub/${club._id}`}>
                                                 <h5>{club.name}</h5>
-                                                <img src={require(`../../images/${club.clubImage}`)} alt={club.name} className="book-cover" />
+                                                <img src={require(`../../images/${club.imageUrl}`)} alt={club.name} className="book-cover" />
                                             </Link>
                                             <p>Members: {club.members.length}</p>
                                         </div>
                                     );
                                 } else {
                                     return (
-                                        <div key={clubId}>
-                                            <p>Club with ID {clubId} not found.</p>
+                                        <div key={index}>
+                                            <p>Club with ID not found.</p>
                                         </div>
                                     );
                                 }
-                            })} */}
+                            })}
                         </div>
                     </div>
                     <div className="row align-items-center">
