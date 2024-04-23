@@ -41,9 +41,6 @@ export default function MongooseBookSearch(
     
      return (
     <div>
-        <div>
-            <p>{books.length} Books</p>
-        </div>
       <input type="text" value={search}
         onChange={(e) =>
             setSearch(e.target.value)}/>

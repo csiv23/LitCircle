@@ -11,8 +11,8 @@ import About from './About';
 import Login from '../Login';
 import Members from './Members/ClubMembersList';
 import NextMeeting from './NextMeeting';
-import SearchableBooksList from './BooksList';
-
+import BooksRead from './BooksRead';
+import Wishlist from './Wishlist';
 function BookClubs() {
     const navigate = useNavigate();
     const { clubId } = useParams();
@@ -82,6 +82,16 @@ function BookClubs() {
         }   
     }
 
+    const addToWishlist = async (book : Book) => {
+        if (clubId) {
+            const mongooseBookId = await mongooseClient.createBook(book);
+            // const mongooseBookData = await mongooseClient.getBookById(mongooseBookId);
+            await mongooseClient.addToClubWishlist(clubId, mongooseBookId);
+            const response = await mongooseClient.getWishlistByClub(clubId);
+            setWishlist(response);
+        }
+    }
+
     const setup = async (clubId : ObjectId) => {
         const userSession = await mongooseClient.profile();
         setCurrentUser(userSession);
@@ -113,6 +123,7 @@ function BookClubs() {
 
     useEffect(() => {
         if (clubId) {
+            console.log(clubId);
             setup(clubId);
         }
     }, [clubId]);
@@ -147,13 +158,14 @@ function BookClubs() {
                             meeting={club.nextMeeting}
                         />} />
                         <Route path="books-read" 
-                        element={<SearchableBooksList
-                            booksList={booksRead}
+                        element={<BooksRead
+                            books={booksRead}
                             club={club} 
                         />} />
-                        <Route path="wishlist" element={<SearchableBooksList
-                            booksList={wishlist}
-                            club={club} 
+                        <Route path="wishlist" element={<Wishlist
+                            books={wishlist}
+                            club={club}
+                            addToWishlist={addToWishlist}
                         />} /> 
                     </Routes>
                         {/* <div className="col-md-11 club-container">

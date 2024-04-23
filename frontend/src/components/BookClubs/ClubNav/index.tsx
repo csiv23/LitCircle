@@ -1,7 +1,19 @@
-import { Club } from "../../types";
-import { Link, useLocation } from "react-router-dom";
+import { Club, ObjectId, User } from "../../types";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import * as mongooseClient from "../../../mongooseClient";
 
-export default function ClubNav({club} : {club : Club}) {
+export default function ClubNav(
+    {
+        club 
+    }
+    : 
+    {
+        club : Club
+    }
+
+) {
+
     const links = [
         {
            label: "About Our Club",
@@ -28,8 +40,7 @@ export default function ClubNav({club} : {club : Club}) {
             link: "wishlist"
         },
     ]
-    const pathname = useLocation();
-    console.log(pathname)
+
 
     return (
     <div className="col-md-3 club-column">

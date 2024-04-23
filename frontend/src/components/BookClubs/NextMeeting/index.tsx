@@ -1,17 +1,25 @@
 import { Book, Club, ClubMeeting } from "../../types";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import {  } from "react-router-dom";
 
 export default function NextMeeting(
     {currentBook, club, meeting} 
     : 
     {currentBook : Book, club : Club, meeting : ClubMeeting}) {
+
+    const { clubId } = useParams();
+    console.log(clubId);
+    console.log(meeting)
+
+
+
     return (
     <div>
         <div>
             <h4>Next Meeting</h4>
             <p>{meeting.meetingDate.toLocaleString('en-us', {  weekday: 'long' })}
-                {meeting.meetingDate.toLocaleDateString()}
-                {meeting.meetingDate.toLocaleTimeString()}
+                {meeting.meetingDate.toLocaleString()}
+                {/* {meeting.meetingDate.toLocaleTimeString()} */}
             </p>
         </div>
         <div key={currentBook._id} className="book">

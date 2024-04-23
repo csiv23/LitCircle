@@ -23,6 +23,8 @@ exports.getClub = async (req, res) => {
             // Since validateClubExists sends the response, just return here.
             return;
         }
+
+        club.NextMeeting.Date = club.NextMeeting.Date.toISOString()
         res.json(club);
     } catch (error) {
         console.error("Error fetching club by ID:", error);
@@ -358,7 +360,7 @@ exports.addBookToWishlist = async (req, res) => {
         // Check if the book is already in the wishlist
         const isInWishlist = club.Wishlist.some(b => b.toString() === bookId);
         if (isInWishlist) {
-            return res.status(400).json({ message: 'Book is already in the wishlist.' });
+            return res.status(200).json({ message: 'Book is already in the wishlist.' });
         }
 
         // Add the book to the wishlist

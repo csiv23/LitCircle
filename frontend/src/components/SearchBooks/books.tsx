@@ -1,7 +1,8 @@
 import * as client from "../../mongooseClient";
 import { Link } from "react-router-dom";
+import { Book } from "../types";
 export default function GoogleBooks(
-  { books }: { books: any[] }) {
+  { books }: { books: Book[] }) {
 
  return (
    <div className="table-responsive">

@@ -50,8 +50,7 @@ export const searchBooks = async (title: string) => {
       .get(url);
 
     response.data.items = response.data.items.map(cleanBookObj);
-    console.log(response);
-    return response.data;
+    return response.data.items;
 };  
 
 export const getBookDetails= async (volumeId: string) => {

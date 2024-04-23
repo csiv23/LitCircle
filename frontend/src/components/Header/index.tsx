@@ -6,7 +6,7 @@ function Header() {
         { label: "Homepage", url: "home", icon: "litcircle-logo.png" },
         { label: "Search Bookclubs", url: "search-clubs" },
         { label: "Search Books", url: "search-books" },
-        { label: "Profile", url: "profile/0" }
+        { label: "Profile", url: "login" }
     ];
     const { pathname } = useLocation();
     return(

@@ -8,11 +8,9 @@ import MongooseBookSearch from "../../MongooseSearchBooks";
 function SearchableBooksList(
 { 
     booksList,
-    club
 } : 
 { 
     booksList: Book[],
-    club : Club
 }) 
 {   
     const renderBook = (book : Book) => {
@@ -39,20 +37,9 @@ function SearchableBooksList(
     }
 
     return (
-    <div className="d-flex flex-wrap">
-    <div>
-    {(club.imageUrl && club.imageUrl !== "") ? 
-                <img src={club.imageUrl} alt={club.imageUrl} className="book-cover" /> 
-                : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
-    </div>
-    <div>
-        <h4>Books We've Read</h4>
         <MongooseBookSearch books={booksList} renderBooks={renderBooks}/>
-    </div>
-
-    
-    </div>
     )
 }
 
 export default SearchableBooksList;
+

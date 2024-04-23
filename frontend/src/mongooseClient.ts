@@ -173,9 +173,14 @@ function cleanClub (clubData : any) : Club {
 
 
   if (clubData.NextMeeting 
-    && clubData.NextMeeting.meetingDate
-    && clubData.NextMeeting.location ) {
-    clubClean.nextMeeting = clubData.NextMeeting;
+    && clubData.NextMeeting.Date
+    && clubData.NextMeeting.Location ) {
+      console.log(clubData.NextMeeting.Date);
+    clubClean.nextMeeting = {
+      
+      location: clubData.NextMeeting.Location,
+      meetingDate: new Date(clubData.NextMeeting.Date)
+    }
   }
 
   if (clubData.Organizer) {
@@ -355,6 +360,11 @@ export const updateUserProfile = async (id: string | undefined, username: string
     throw error;
   }
 };
+
+export const addToClubWishlist = async (clubId : string, bookId : string) => {
+  const response = await mongoosePost(`clubs/${clubId}/wishlist`, {bookId : bookId})
+  return response;
+}
 
 export const addToWishlist = async (userId : string, bookId : string) => {
   const response = await mongoosePatch(`users/${userId}/wishlist`, {bookId : bookId})
