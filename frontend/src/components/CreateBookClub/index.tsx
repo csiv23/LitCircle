@@ -52,7 +52,7 @@ function CreateBookClub() {
             alert('Club created successfully!');
             console.log("resonse is");
             console.log(response);
-            navigate(`/club/${response.clubID}`); // Navigate to the newly created club's page
+            navigate(`/bookclub/${response.clubID}`); // Navigate to the newly created club's page
         } catch (error: any) {
             console.error('Error creating club:', error.message);
             alert('Failed to create club. Please check the console for more details.');
