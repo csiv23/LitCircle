@@ -131,7 +131,7 @@ function cleanClub (clubData : any) : Club {
     currentBook: "",
     nextMeeting: {
       meetingDate: new Date(),
-      location: ""
+      location: "No location specified"
     },
     organizer: "",
     imageUrl: ""
@@ -176,6 +176,14 @@ function cleanClub (clubData : any) : Club {
     && clubData.NextMeeting.NextMeetingDate
     && clubData.NextMeeting.NextMeetingLocation ) {
     clubClean.nextMeeting = clubData.NextMeeting;
+    && clubData.NextMeeting.Date
+    && clubData.NextMeeting.Location ) {
+      console.log(clubData.NextMeeting.Date);
+    clubClean.nextMeeting = {
+      
+      location: clubData.NextMeeting.Location,
+      meetingDate: new Date(clubData.NextMeeting.Date)
+    }
   }
 
   if (clubData.Organizer) {
@@ -267,6 +275,11 @@ export async function notImplemented() {
   return cleanUser(response);
  }
 
+export const getBooks = async () => {
+  const response = await mongooseGet(`books`);
+  return response.map(cleanBookObj);
+}
+
   // implement this 
   export const getBookById = async (bookId : ObjectId) => {
     const response = await mongooseGet(`books/${bookId}`);
@@ -356,6 +369,11 @@ export const updateUserProfile = async (id: string | undefined, username: string
   }
 };
 
+export const addToClubWishlist = async (clubId : string, bookId : string) => {
+  const response = await mongoosePost(`clubs/${clubId}/wishlist`, {bookId : bookId})
+  return response;
+}
+
 export const addToWishlist = async (userId : string, bookId : string) => {
   const response = await mongoosePatch(`users/${userId}/wishlist`, {bookId : bookId})
   return cleanUser(response);
@@ -388,7 +406,6 @@ export const getUserClubsWithoutBookRec = async (userId : string, bookId : strin
   
 }
 
-
 export const followUser = async (userId: string, userIdToFollow: string) => {
   try {
     const response = await axios.patch(`${USERS_API_URL}/${userId}/follow`, {userIdToFollow: userIdToFollow});
@@ -412,4 +429,12 @@ export const getUserNextMeetings = async (userId: string) => {
   const response = await mongooseGet(`users/${userId}/nextmeetings`);
   return response;  
 };
+
+export const leaveClub = async (clubId : string, userId : string) => {
+  const response = await mongoosePost(
+    `clubs/${clubId}/leave`,
+    { userId : userId}
+  );
+  return response; 
+}
 

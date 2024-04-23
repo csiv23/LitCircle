@@ -1,10 +1,26 @@
-import { Book, Club, ObjectId } from "../types";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Book, Club, ObjectId, User } from "../types";
+import { Link, useNavigate } from "react-router-dom";
+import * as client from "../../mongooseClient";
 
 function BookclubResults(
 { clubs } : 
 { clubs: any[] }
 ) {
+    const navigate = useNavigate();
+    const [currentUser, setCurrentUser] = useState<User>();
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const userSession = await client.profile();
+                setCurrentUser(userSession);
+            } catch (error) {
+                navigate("/login");
+            }
+        }
+        fetchProfile();
+    }, [])
+    console.log("BookclubResults currentUser: " + JSON.stringify(currentUser));
 
     return (<div className="">
     {clubs.map((club: Club) => {

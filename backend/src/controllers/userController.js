@@ -166,6 +166,8 @@ exports.followUser = async (req, res) => {
             { $push: { Followers: userId } },
             { new: true }
         );
+        const updatedUser = await User.findById(userId);
+        req.session["currentUser"] = updatedUser;
         res.status(204).send();
     } catch (error) {
         console.error("Error following user:", error);
