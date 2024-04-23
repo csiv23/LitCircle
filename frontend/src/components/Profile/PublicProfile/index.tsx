@@ -52,7 +52,23 @@ function PublicProfile() {
                     console.log("PublicProfile failed to follow user");
                 }
             }
-            // Dispatch setCurrentUser to update the currentUser
+        } else {
+            navigate("/login");
+        }
+    }
+
+    const unfollow = async () => {
+        if (currentUser) {
+            console.log("unfollow button clicked")
+            if (publicUser) {
+                try {
+                    await client.unfollowUser(currentUser._id, publicUser?._id);
+                    setPublicUser(await client.getUserById(publicUser._id));
+                    setCurrentUser(await client.profile());
+                } catch (error) {
+                    console.log("PublicProfile failed to follow user");
+                }
+            }
         } else {
             navigate("/login");
         }
@@ -110,7 +126,7 @@ function PublicProfile() {
                     </div>
                     <div>
                         <button onClick={follow}>Follow</button>
-                        <button>Unfollow</button>
+                        <button onClick={unfollow}>Unfollow</button>
                     </div>
                 </div>
                 <div className="col-md-9">
