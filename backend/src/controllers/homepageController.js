@@ -20,6 +20,11 @@ exports.getNewFollowers = async (req, res) => {
 
     try {
         // Find the user by ID, retrieve only the last 5 followers
+        /**
+         * Retrieves user information with limited followers.
+         *
+         * @type {User}
+         */
         const user = await User.findById(userId, {
             Followers: { $slice: -5 }  // Retrieves only the last 5 items from the Followers array
         }).populate({

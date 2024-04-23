@@ -19,26 +19,20 @@ function Home() {
         if (userSession && userSession._id) {
           setCurrentUser(userSession);
           const meetings = await client.getUserNextMeetings(userSession._id);
-          setNextMeetings(meetings);
+          if (meetings) {
+            setNextMeetings(meetings);
+          }
           const followers = await client.getNewFollowers(userSession._id);
-          setNewFollowers(followers);
+          if (followers) {
+            setNewFollowers(followers);
+          }
         }
       } catch (error) {
-        if ((error as any).response && (error as any).response.status === 401) {
-          // User is not authenticated, set current user to null
-          setCurrentUser(null);
-          // Fetch recent users instead
-          const recentUsersResponse = await client.getRecentUsers();
-          console.log("Recent Users Response");
-          console.log(recentUsersResponse);
-          setRecentUsers(recentUsersResponse);
-        } else {
-          console.error(
-            "Failed to fetch user profile or additional data:",
-            error
-          );
-          setCurrentUser(null);
-        }
+        console.error("Failed to fetch user profile or additional data:", error);
+        setCurrentUser(null);
+        const recentUsersResponse = await client.getRecentUsers();
+        console.log("Recent Users Response:", recentUsersResponse);
+        setRecentUsers(recentUsersResponse);
       }
     };
 
@@ -70,33 +64,27 @@ function Home() {
           )}
         </div>
       </div>
-      {/* New section for both signed-in content and recent users */}
       {(currentUser || recentUsers.length > 0) && (
         <div className="container mt-5">
-          {/* Display upcoming meetings */}
           {nextMeetings.length > 0 && (
             <div>
               <h4>Upcoming Meetings:</h4>
               <div className="row">
-                {nextMeetings.map((meeting) => (
-                  <div
-                    key={meeting.NextMeetingDate.toString()}
-                    className="col-md-3 mb-3"
-                  >
-                    <div className="card">
-                      <div className="card-body">
-                        <p className="card-text">
-                          Next meeting at {meeting.NextMeetingLocation} on{" "}
-                          {new Date(meeting.NextMeetingDate).toLocaleDateString()}
-                        </p>
+                {nextMeetings.map((meeting, index) => {
+                  const meetingDate = meeting.NextMeetingDate ? new Date(meeting.NextMeetingDate).toLocaleDateString() : "Date not set";
+                  return (
+                    <div key={`meeting-${index}`} className="col-md-3 mb-3">
+                      <div className="card">
+                        <div className="card-body">
+                          <p className="card-text">Next meeting at {meeting.NextMeetingLocation || "location not set"} on {meetingDate}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
-          {/* Display new followers */}
           {newFollowers.length > 0 && (
             <div className="mt-5">
               <h4>New Followers:</h4>
@@ -105,10 +93,7 @@ function Home() {
                   <div key={follower._id} className="col-md-3 mb-3">
                     <div className="card">
                       <div className="card-body">
-                        <Link
-                          to={`/profile/${follower._id}`}
-                          className="card-link"
-                        >
+                        <Link to={`/profile/${follower._id}`} className="card-link">
                           {follower.username}
                         </Link>
                       </div>
@@ -118,7 +103,6 @@ function Home() {
               </div>
             </div>
           )}
-          {/* Display recent users */}
           {recentUsers.length > 0 && (
             <div className="mt-5">
               <h4>Recent Users:</h4>
@@ -127,10 +111,7 @@ function Home() {
                   <div key={user._id} className="col-md-3 mb-3">
                     <div className="card">
                       <div className="card-body">
-                        <Link
-                          to={`/profile/${user._id}`}
-                          className="card-link"
-                        >
+                        <Link to={`/profile/${user._id}`} className="card-link">
                           {user.username}
                         </Link>
                       </div>
@@ -142,7 +123,6 @@ function Home() {
           )}
         </div>
       )}
-      {/* Buttons section */}
       <div className="home-search mt-5">
         <Link to="/search-clubs">
           <button className="btn btn-primary mr-2">Join a Club</button>
