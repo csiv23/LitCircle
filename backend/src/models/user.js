@@ -30,6 +30,10 @@ const userSchema = new Schema({
         type: String,
         required: false
     },
+    JoinDate: {
+        type: Date,
+        default: Date.now
+    },
     Following: [{
         type: Schema.Types.ObjectId,
         ref: 'User'

@@ -1,11 +1,10 @@
 import axios from "axios";
 import { Book } from "../types";
 
-
 const API_KEY = process.env.REACT_APP_BOOKS_API_KEY
 // for local usage until we can change env on netlify. 
-const GOOGLE_BOOKS_URL = process.env.REACT_APP_GOOGLE_BOOKS_URL
-// const GOOGLE_BOOKS_URL = "https://litcircle.onrender.com/google-books-api/books/v1"
+// const GOOGLE_BOOKS_URL = process.env.REACT_APP_GOOGLE_BOOKS_URL <- uncomment this 
+const GOOGLE_BOOKS_URL = "https://litcircle.onrender.com/google-books-api/books/v1" // get rid of this
 axios.defaults.withCredentials = true;
 
 function cleanBookObj (bookData: any) : Book {

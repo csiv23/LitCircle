@@ -6,6 +6,7 @@ const connectToMongoDB = require('./database/dbConnect'); // Require the databas
 const userRoutes = require('./routes/userRoutes');
 const clubRoutes = require('./routes/clubRoutes');
 const bookRoutes = require('./routes/bookRoutes');
+const homepageRoutes = require('./routes/homepageRoutes');
 
 const server = express();
 // Connect to MongoDB
@@ -54,6 +55,9 @@ server.use('/api/clubs', clubRoutes);
 
 // Use book routes
 server.use('/api/books', bookRoutes);
+
+// Use homepage routes
+server.use('/api/homepage', homepageRoutes);
 
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {

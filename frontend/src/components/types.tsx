@@ -32,6 +32,11 @@ type ClubMeeting = {
     location: string
 }
 
+type NextMeeting = {
+    NextMeetingDate: Date,
+    NextMeetingLocation: string
+}
+
 type Club = {
     _id: ObjectId;
     name: string;
@@ -75,5 +80,5 @@ const MemberComponent: MemberType = ({ username, profilePictureUrl }) => {
 }
 
 export { Role };
-export type { ObjectId, User, PurchaseLink, Book, Club, Member, ClubMeeting, };
+export type { ObjectId, User, PurchaseLink, Book, Club, Member, ClubMeeting, NextMeeting};
 // export { BookComponent, ClubComponent, MemberComponent };
