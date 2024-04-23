@@ -42,33 +42,48 @@ exports.getClub = async (req, res) => {
  * It checks if the organizer exists before creating the club.
  */
 exports.createClub = async (req, res) => {
-    const { Name, Description, Organizer } = req.body;
+    const { name, description, organizer, imageUrl } = req.body;
+
+    // Validate required fields are not empty
+    if (!name || !description || !organizer) {
+        return res.status(400).json({ error: 'Missing required fields. Name, description, and organizer are required.' });
+    }
 
     try {
-        const organizer = await validateUserExists(Organizer);
-        if (!organizer) return; // Already handled in validateUserExists
+        // Check if the organizer exists using the organizer ID provided
+        const organizerExists = await validateUserExists(organizer);
+        if (!organizerExists) {
+            // If the organizer doesn't exist, return a 404 error
+            return res.status(404).json({ error: 'Organizer not found. You must specify a valid organizer ID.' });
+        }
 
+        // Create a new club with the provided data
         const newClub = new Club({
-            Name,
-            Description,
-            Members: [Organizer], // Initial member is the organizer
+            Name: name,
+            Description: description,
+            Members: [organizer], // Initialize with the organizer as the first member
             BooksRead: [],
             Wishlist: [],
             CurrentBook: null,
-            Organizer,
-            ImageUrl: "",
+            Organizer: organizer,
+            ImageUrl: imageUrl || "" // Use an empty string as default if no image URL is provided
         });
 
+        // Save the new club to the database
         await newClub.save();
-        organizer.BookClubs.push({ ClubId: newClub._id, IsLeader: true, JoinDate: new Date() });
-        await organizer.save();
 
-        res.json({ message: "Club created successfully", clubID: newClub.id });
+        // Update the organizer's document to include the new club
+        organizerExists.BookClubs.push({ ClubId: newClub._id, IsLeader: true, JoinDate: new Date() });
+        await organizerExists.save();
+
+        // Respond with success message and the ID of the newly created club
+        res.json({ message: "Club created successfully", clubID: newClub._id });
     } catch (error) {
         console.error("Error creating new club:", error);
-        res.status(500).json({ error: 'Internal server error while creating a new club.' });
+        res.status(500).json({ error: 'Internal server error while creating a new club.', details: error.message });
     }
 };
+
 
 /**
  * Updates the specified club's information based on the data provided in the request body.

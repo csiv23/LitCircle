@@ -14,9 +14,15 @@ import EditProfile from './components/Profile/MyProfile/EditProfile';
 import GoogleAPI from './components/SearchBooks';
 import Home from './components/Home';
 import SearchBookclubs from './components/SearchBookclubs';
+import CreateBookClub from './components/CreateBookClub';
+
+/**
+ * The main component of the application.
+ *
+ * @returns The JSX element representing the application.
+ */
 function App() {
   return (
-
     <div>
       <HashRouter>
         <Routes>
@@ -30,6 +36,7 @@ function App() {
           <Route path="search-books/*" element={<GoogleAPI />} />
           <Route path="search-clubs/*" element={<SearchBookclubs />} />
           <Route path="book/:bookId" element={<Books />} />
+          <Route path="create-club" element={<CreateBookClub />} />
         </Routes>
       </HashRouter>
     </div>
