@@ -23,6 +23,8 @@ exports.getClub = async (req, res) => {
             // Since validateClubExists sends the response, just return here.
             return;
         }
+
+        club.NextMeeting.Date = club.NextMeeting.Date.toISOString()
         res.json(club);
     } catch (error) {
         console.error("Error fetching club by ID:", error);
@@ -49,7 +51,7 @@ exports.createClub = async (req, res) => {
             Wishlist: [],
             CurrentBook: null,
             Organizer,
-            ImageUrl,
+            ImageUrl: "",
         });
 
         await newClub.save();
@@ -92,21 +94,33 @@ exports.updateClubInfo = async (req, res) => {
  * Adds a user to a club's member list based on the user ID provided in the request body.
  */
 exports.joinClub = async (req, res) => {
+    const { clubId } = req.params; // Extract the clubId from the URL parameter
+    const { userId } = req.body; 
     try {
-        const club = await validateClubExists(req.params.clubId, res);
+        const club = await validateClubExists(clubId, res);
         // If validation failed and response is handled, stop further execution.
         if (!club) return;
 
-        const user = await validateUserExists(req.body.userId, res);
+        const user = await validateUserExists(userId, res);
         // If validation failed and response is handled, stop further execution.
         if (!user) return;
 
-        if (club.Members.map(member => member.toString()).includes(req.body.userId)) {
+        if (club.Members.map(member => member.toString()).includes(userId)) {
             return res.status(400).json({ message: 'User already a member of the club' });
         }
 
-        club.Members.push(req.body.userId);
+        club.Members.push(userId);
         await club.save();
+
+        const alreadyJoined = user.BookClubs.some(club => club.ClubId.toString() === clubId);
+        if (!alreadyJoined) {
+            user.BookClubs.push({
+                ClubId: clubId,
+                IsLeader: false,
+                JoinDate: new Date()  // Sets the current date
+            });
+            await user.save();
+        }
 
         res.json({ message: 'User added to club successfully', club });
     } catch (error) {
@@ -120,13 +134,19 @@ exports.joinClub = async (req, res) => {
  * Removes a user from a club's member list based on the user ID provided in the request body.
  */
 exports.leaveClub = async (req, res) => {
+    const { clubId } = req.params; // Extract the clubId from the URL parameter
+    const { userId } = req.body; 
+
     try {
-        const club = await validateClubExists(req.params.clubId, res);
-        const user = await validateUserExists(req.body.userId, res);
+        const club = await validateClubExists(clubId, res);
+        const user = await validateUserExists(userId, res);
         if (!club || !user) return; // Already handled in validate*
 
-        club.Members = club.Members.filter(member => member.toString() !== req.body.userId);
+        club.Members = club.Members.filter(member => member.toString() !== userId);
         await club.save();
+
+        user.BookClubs = user.BookClubs.filter(bookclub => bookclub.ClubId !== clubId);
+        await user.save();
 
         res.json({ message: 'User removed from club successfully' });
     } catch (error) {
@@ -340,7 +360,7 @@ exports.addBookToWishlist = async (req, res) => {
         // Check if the book is already in the wishlist
         const isInWishlist = club.Wishlist.some(b => b.toString() === bookId);
         if (isInWishlist) {
-            return res.status(400).json({ message: 'Book is already in the wishlist.' });
+            return res.status(200).json({ message: 'Book is already in the wishlist.' });
         }
 
         // Add the book to the wishlist

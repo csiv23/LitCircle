@@ -75,5 +75,5 @@ const MemberComponent: MemberType = ({ username, profilePictureUrl }) => {
 }
 
 export { Role };
-export type { ObjectId, User, PurchaseLink, Book, Club, Member };
+export type { ObjectId, User, PurchaseLink, Book, Club, Member, ClubMeeting, };
 // export { BookComponent, ClubComponent, MemberComponent };

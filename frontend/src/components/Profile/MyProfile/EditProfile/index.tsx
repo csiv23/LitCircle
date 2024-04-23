@@ -42,6 +42,7 @@ export default function EditProfile() {
     }
 
 
+
     console.log("EditProfile currentUser: " + JSON.stringify(currentUser));
     return (
         <div>
