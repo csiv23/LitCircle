@@ -428,7 +428,7 @@ exports.getUserNextMeetings = async (req, res) => {
         const nextMeetings = user.BookClubs.map(bookClub => ({
             ClubId: bookClub.ClubId._id,  // Extracting the Club ID
             ClubName: bookClub.ClubId.Name,  // Optional: also provide the club name
-            NextMeetingDate: bookClub.ClubId.NextMeeting.Date,  // Extract the next meeting date
+            NextMeetingDate: bookClub.ClubId.NextMeeting.Date.toISOString(),  // Extract the next meeting date
             NextMeetingLocation: bookClub.ClubId.NextMeeting.Location  // Extract the meeting location
         }));
 

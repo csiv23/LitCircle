@@ -16,6 +16,7 @@ function Home() {
     const fetchProfileAndRelatedData = async () => {
       try {
         const userSession = await client.profile();
+        console.log(userSession);
         if (userSession && userSession._id) {
           setCurrentUser(userSession);
           const meetings = await client.getUserNextMeetings(userSession._id);

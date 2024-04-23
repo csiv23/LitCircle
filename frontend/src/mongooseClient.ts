@@ -173,9 +173,6 @@ function cleanClub (clubData : any) : Club {
 
 
   if (clubData.NextMeeting 
-    && clubData.NextMeeting.NextMeetingDate
-    && clubData.NextMeeting.NextMeetingLocation ) {
-    clubClean.nextMeeting = clubData.NextMeeting;
     && clubData.NextMeeting.Date
     && clubData.NextMeeting.Location ) {
       console.log(clubData.NextMeeting.Date);
@@ -427,6 +424,7 @@ export const getNewFollowers = async (userId: string) => {
 
 export const getUserNextMeetings = async (userId: string) => {
   const response = await mongooseGet(`users/${userId}/nextmeetings`);
+  console.log(response);
   return response;  
 };
 
@@ -437,4 +435,3 @@ export const leaveClub = async (clubId : string, userId : string) => {
   );
   return response; 
 }
-

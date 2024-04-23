@@ -23,9 +23,14 @@ exports.getClub = async (req, res) => {
             // Since validateClubExists sends the response, just return here.
             return;
         }
-
-        club.NextMeeting.Date = club.NextMeeting.Date.toISOString()
-        res.json(club);
+        
+        res.json( {
+            ...club,
+            NextMeeting: {
+                ...club.NextMeeting,
+                Date: club.NextMeeting.Date.toISOString()
+            }
+        });
     } catch (error) {
         console.error("Error fetching club by ID:", error);
         res.status(500).json({ error: 'Internal server error while fetching the club by ID.' });
