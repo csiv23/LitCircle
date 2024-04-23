@@ -173,8 +173,8 @@ function cleanClub (clubData : any) : Club {
 
 
   if (clubData.NextMeeting 
-    && clubData.NextMeeting.meetingDate
-    && clubData.NextMeeting.location ) {
+    && clubData.NextMeeting.NextMeetingDate
+    && clubData.NextMeeting.NextMeetingLocation ) {
     clubClean.nextMeeting = clubData.NextMeeting;
   }
 
@@ -397,3 +397,19 @@ export const followUser = async (userId: string, userIdToFollow: string) => {
     console.log("Already following this user!")
   }
 }
+
+export const getRecentUsers = async () => {
+  const response = await mongooseGet('homepage/recent-users');
+  return response.map(cleanUser);
+};
+
+export const getNewFollowers = async (userId: string) => {
+  const response = await mongooseGet(`homepage/${userId}/newfollowers`);
+  return response.map(cleanUser);
+};
+
+export const getUserNextMeetings = async (userId: string) => {
+  const response = await mongooseGet(`users/${userId}/nextmeetings`);
+  return response;  
+};
+
