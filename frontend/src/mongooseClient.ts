@@ -417,7 +417,7 @@ export const unfollowUser = async (userId: string, userIdToUnfollow: string) => 
     const response = await axios.patch(`${USERS_API_URL}/${userId}/unfollow`, {userIdToFollow: userIdToUnfollow});
     return cleanUser(response.data);
   } catch (error) {
-    console.log("Already following this user!")
+    console.log("Already unfollowed this user!")
   }
 }
 
