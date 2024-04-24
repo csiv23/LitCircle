@@ -1,6 +1,6 @@
-import { Club, Book } from "../../types";
-import SearchableBooksList from "../BooksList";
-import GoogleBooksSearch from "../../SearchBooks/search";
+import { Club, Book } from "../../../types";
+import SearchableBooksList from "../../../BookClubs/BooksList";
+import GoogleBooksSearch from "../../../SearchBooks/search";
 
 export default function Wishlist(
     {books, club, addToWishlist}
