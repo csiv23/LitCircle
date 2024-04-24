@@ -10,6 +10,22 @@ const axiosWithCredentials = axios.create({
   withCredentials: true,
 });
 
+type MongooseClub = {
+  _id : string,
+  Name : string,
+  Description : string,
+  Members : string[],
+  BooksRead : string[],
+  Wishlist : string[],
+  CurrentBook : string,
+  NextMeeting : {
+    Date : string,
+    Location : string
+  },
+  ImageUrl : string,
+  Organizer : string
+}
+
 function cleanBookObj (bookData: any) : Book {
   let bookClean = {
     _id: "",
@@ -155,7 +171,7 @@ function cleanClub (clubData : any) : Club {
   }
 
   if (clubData.BooksRead) {
-    clubClean.booksRead = clubData.Wishlist;
+    clubClean.booksRead = clubData.BooksRead;
   }
 
   if (clubData.Wishlist) {
@@ -189,6 +205,75 @@ function cleanClub (clubData : any) : Club {
 
   return clubClean;
 }
+
+function cleanClubMongoose(clubData : Club) : MongooseClub {
+  let currentDate = new Date();
+  let clubClean : MongooseClub = {
+    _id: "",
+    Name: "",
+    Description: "",
+    Members: [],
+    BooksRead: [],
+    Wishlist: [],
+    CurrentBook: "",
+    NextMeeting: {
+      Date: "",
+      Location: "No location specified"
+    },
+    Organizer: "",
+    ImageUrl: ""
+  }
+
+  if (clubData._id) {
+    clubClean._id = clubData._id;
+  }
+
+  if (clubData.name) {
+    clubClean.Name = clubData.name;
+  }
+
+  // TODO: EMBED HTML FROM DESCRIPTION? 
+  if (clubData.description) {
+    clubClean.Description = clubData.description;
+  }
+
+  if (clubData.members) {
+    clubClean.Members = clubData.members;
+  }
+
+  if (clubData.booksRead) {
+    clubClean.BooksRead = clubData.booksRead;
+  }
+
+  if (clubData.wishlist) {
+    clubClean.Wishlist = clubData.wishlist;
+  }
+
+  if (clubData.currentBook) {
+    clubClean.CurrentBook = clubData.currentBook;
+  }
+
+  if (clubData.imageUrl) {
+    clubClean.ImageUrl = clubData.imageUrl;
+  }
+
+
+  if (clubData.nextMeeting 
+    && clubData.nextMeeting.meetingDate
+    && clubData.nextMeeting.location ) {
+    clubClean.NextMeeting = {
+      Location: clubData.nextMeeting.location,
+      Date: clubData.nextMeeting.meetingDate.toISOString()
+    }
+  }
+
+  if (clubData.organizer) {
+    clubClean.Organizer = clubData.organizer;
+  }
+
+  return clubClean;
+}
+
 
 export async function mongooseGet(uri : string, body = {}) {
   const url = `${MONGOOSE_URL}/${uri}`;
@@ -453,4 +538,11 @@ export const joinClub = async (clubId : string, userId : string) => {
     { userId : userId}
   );
   return response; 
+}
+
+export const updateClub = async (club : Club) => {
+  const clubMongoose = cleanClubMongoose(club);
+
+  const updatedClub = await mongoosePatch(`clubs/${club._id}`, {data: clubMongoose});
+  return cleanClub(updatedClub.club);
 }

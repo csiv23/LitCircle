@@ -103,6 +103,12 @@ function BookClubs() {
         }
     }
 
+    const updateClub = async () => {
+        console.log(club);
+        const updatedClub = await mongooseClient.updateClub(club);
+        setClub(updatedClub);
+    }
+
     const setup = async (clubId : ObjectId) => {
         const userSession = await mongooseClient.profile();
         setCurrentUser(userSession);
@@ -165,7 +171,11 @@ function BookClubs() {
                     <div className="row align-items-center">
                     <Routes>
                         <Route path="/" element={<Navigate to="about" />} />
-                        <Route path="about" element={<About club={club}/>} />
+                        <Route path="about" element={<About 
+                            club={club} 
+                            currentUser={currentUser}
+                            setClub={setClub}
+                            updateClub={updateClub}/>} />
                         <Route path="members" 
                         element={<Members
                             members={clubMembers}

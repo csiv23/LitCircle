@@ -79,19 +79,35 @@ exports.createClub = async (req, res) => {
  */
 exports.updateClubInfo = async (req, res) => {
     try {
+        const { clubId } = req.params;
+
         const club = await validateClubExists(req.params.clubId, res);
         // No need to proceed if club doesn't exist as validateClubExists handles the response
         if (!club) return;
 
-        const updateData = req.body;
+        const clubData = req.body.data;
+    
+        const updateData = (clubData && clubData.NextMeeting && clubData.NextMeeting.Date)
+        ? {
+            ...clubData,
+            NextMeeting : {
+                ...clubData.NextMeeting,
+                Date : new Date(clubData.NextMeeting.Date)
+            }
+        } : clubData;
+
+        console.log(updateData);
+
         if (updateData.Organizer) {
             const organizer = await validateUserExists(updateData.Organizer, res);
             // No need to proceed if organizer doesn't exist as validateUserExists handles the response
             if (!organizer) return;
         }
-
+        
         Object.assign(club, updateData);
         await club.save();
+        
+        console.log(club);
         res.json({ message: 'Club updated successfully', club });
     } catch (error) {
         console.error("Error updating club info:", error);
