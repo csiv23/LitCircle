@@ -8,6 +8,7 @@ import * as client from "../../../mongooseClient";
 import { useEffect, useState } from "react";
 import EditProfile from "./EditProfile";
 import { setCurrentUser } from "../../../reducers/usersReducer";
+import Wishlist from "./Wishlist";
 
 function getURL( book: Book  ) {
     return `/book/${book.title.replace(/\s+/g, '-').toLowerCase()}`
@@ -68,6 +69,22 @@ function MyProfile() {
         await client.signout();
         navigate("/login");
     };
+    const addToWishlist = async (book: Book) => {
+        if (currentUser) {
+            console.log("addToWishlist")
+            try {
+                const mongooseBookId = await client.createBook(book);
+                const updatedUser = await client.addToWishlist(currentUser._id, mongooseBookId);
+                setCurrentUser(updatedUser);
+            } catch {
+                console.log("addToWishlist catch statement");
+                const gotBook = await client.getBookById(book._id);
+                const updatedUser = await client.addToWishlist(currentUser._id, gotBook._id);
+                console.log("addToWishlist updatedUser: " + JSON.stringify(updatedUser));
+                setCurrentUser(updatedUser);
+            }
+        }
+    }
 
     console.log("MyProfile currentUser: " + JSON.stringify(currentUser));
     if (!currentUser || currentUser?._id !== userId) {
@@ -176,8 +193,19 @@ function MyProfile() {
                         <div className="col-md-8">
                             <h4>My Book Wishlist</h4>
                         </div>
+                        <Wishlist 
+                            books={currentUserBooksWishlist}
+                            addToWishlist={addToWishlist}/>
                         <div className="col-md-4 text-right">
-                            <button className="btn btn-primary">Add Book</button>
+                            <button className="btn btn-primary" onClick={() => addToWishlist({
+                                _id: '66285721ae48634f3257c933',
+                                title: 'e',
+                                googleBooksId: 'NKFPEAAAQBAJ',
+                                author: 'Matt Beaumont',
+                                description: 'A Novel',
+                                coverImageUrl: 'http://books.google.com/books/content?id=NKFPEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api',
+                                clubsReading: []
+                            })}>Add Book</button>
                         </div>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
                             {currentUserBooksWishlist?.map((book: Book, index) => {

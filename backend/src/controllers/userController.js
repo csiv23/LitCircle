@@ -87,7 +87,7 @@ exports.registerUser = async (req, res) => {
 
         console.log(user);
         await user.save();
-        req.session["currentUser"] = user; // TODO: Might not work?
+        req.session["currentUser"] = user;
         res.json(user);
     } catch (error) {
         console.error("Error registering user:", error);
@@ -283,11 +283,14 @@ exports.addBookToWishlist = async (req, res) => {
             { $addToSet: { Wishlist: bookId } }, // Use $addToSet to avoid duplicate entries
             { new: true } // Return the updated document
         );
+        console.log("addBookToWishlist updatedUser: " + updatedUser);
 
         if (!updatedUser) {
             return res.status(404).send('User not found');
         }
 
+        req.session["currentUser"] = updatedUser;
+        res.json(updatedUser);
         res.status(200).json(updatedUser);
     } catch (error) {
         console.error("Error adding book to wishlist:", error);
