@@ -1,0 +1,40 @@
+.login {
+    font-family:Georgia, 'Times New Roman', Times, serif;
+}
+
+.login-align {
+    align-items: center;
+}
+
+.signin-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto; 
+    padding: 20px;
+}
+
+.signin-container h2 {
+    text-align: left; /* Align the heading to the left */
+}
+
+.signin-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.signin-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(126, 135, 96);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.signin-container button:hover {
+    background-color: rgb(94, 101, 71);
+}

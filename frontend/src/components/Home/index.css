@@ -57,4 +57,21 @@
     margin: 20px;
     pointer-events: auto;
 }
+
+.home-container {
+    background-color: rgba(244, 228, 210, 0.697);
+    border-radius: 10px;
+    margin: 10px;
+    padding: 10px;
+}
+
+.card {
+    background-color: rgb(240, 233, 225)!important;
+
+}
+
+.card a{
+    text-decoration: none;
+    color: black;
+}
 /* light-yellow color #fae4ba */

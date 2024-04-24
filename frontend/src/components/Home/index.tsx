@@ -65,10 +65,11 @@ function Home() {
           )}
         </div>
       </div>
+      <div className="home-search">
       {(currentUser || recentUsers.length > 0) && (
         <div className="container mt-5">
           {nextMeetings.length > 0 && (
-            <div>
+            <div className="home-container">
               <h4>Upcoming Meetings:</h4>
               <div className="row">
                 {nextMeetings.map((meeting, index) => {
@@ -87,7 +88,7 @@ function Home() {
             </div>
           )}
           {newFollowers.length > 0 && (
-            <div className="mt-5">
+            <div className="home-container">
               <h4>New Followers:</h4>
               <div className="row">
                 {newFollowers.map((follower) => (
@@ -105,7 +106,7 @@ function Home() {
             </div>
           )}
           {recentUsers.length > 0 && (
-            <div className="mt-5">
+            <div className="home-container">
               <h4>Recent Users:</h4>
               <div className="row">
                 {recentUsers.map((user) => (
@@ -124,7 +125,8 @@ function Home() {
           )}
         </div>
       )}
-      <div className="home-search mt-5">
+      </div>
+      <div className="home-search">
         <Link to="/search-clubs">
           <button className="btn btn-primary mr-2">Join a Club</button>
         </Link>

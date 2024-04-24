@@ -111,6 +111,11 @@ function MyProfile() {
                             <span>Email:</span> {currentUser?.email}
                         </div>
                     </div>
+                    <div className="row">
+                        <div className="col-sm-11 profile-desc">
+                            <button onClick={signout} className="btn">Logout</button>
+                        </div>
+                    </div>
                 </div>
                 <div className="col-md-9 profile-bg">
                     <div className="row profile-container">
@@ -149,7 +154,7 @@ function MyProfile() {
                         <div className="col-md-4 text-right">
                             <button className="btn btn-primary">Add Book</button>
                         </div>
-                        <div className="col-lg book-container book-cover d-flex flex-wrap">
+                        <div className="col-lg d-flex flex-wrap">
                             {currentUserBooksRead?.map((book: Book, index) => {
                                 if (book) {
                                     return (
@@ -182,7 +187,7 @@ function MyProfile() {
                         <div className="col-md-4 text-right">
                             <button className="btn btn-primary">Add Book</button>
                         </div>
-                        <div className="col-lg book-container book-cover d-flex flex-wrap">
+                        <div className="col-lg book-container d-flex flex-wrap">
                             {currentUserBooksWishlist?.map((book: Book, index) => {
                                 if (book) {
                                     return (
@@ -209,7 +214,6 @@ function MyProfile() {
                         </div>
                     </div>
                 </div>
-                <button onClick={signout}>Logout</button>
             </div>
         </div>
     );
