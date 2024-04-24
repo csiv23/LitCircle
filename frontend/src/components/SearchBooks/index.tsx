@@ -2,6 +2,7 @@ import GoogleBooksSearch from "./ search";
 import { Routes, Route, Navigate } from "react-router";
 import { Link } from "react-router-dom";
 import { Book } from "../types";
+import Header from "../Header";
 
 export default function GoogleAPI() {
 
@@ -33,12 +34,17 @@ export default function GoogleAPI() {
     }
 
     return (
-        <div className="container-fluid">
-          <h1>Search Books</h1>
-          <Routes>
-       <Route path="/" element={<GoogleBooksSearch renderBooks={renderBooks} searchPath={true}/>} />
-       <Route path="/:title" element={<GoogleBooksSearch renderBooks={renderBooks} searchPath={true}/>} />
-        </Routes>
+      <div>
+          <Header/>
+          <div className="container-fluid search-font club-bg">
+            <div className="club-container">
+              <h2>Search Books</h2>
+              <Routes>
+                <Route path="/" element={<GoogleBooksSearch renderBooks={renderBooks} searchPath={true}/>} />
+                <Route path="/:title" element={<GoogleBooksSearch renderBooks={renderBooks} searchPath={true}/>} />
+              </Routes>
+            </div>
+          </div>
         </div>
       );
      

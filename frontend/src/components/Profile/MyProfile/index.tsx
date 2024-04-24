@@ -132,7 +132,11 @@ function MyProfile() {
                                         <div key={index}>
                                             <Link to={`/bookclub/${club._id}`}>
                                                 <h5>{club.name}</h5>
-                                                <img src={require(`../../../images/BookclubDefault.jpeg`)} alt={club.name} className="book-cover" />
+                                                <div>
+                                                    {(club.imageUrl && club.imageUrl !== "") ? 
+                                                    <img src={club.imageUrl} alt={club.name} className="book-cover" /> 
+                                                    : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
+                                                </div>
                                             </Link>
                                             <p>Members: {club.members.length}</p>
                                         </div>
