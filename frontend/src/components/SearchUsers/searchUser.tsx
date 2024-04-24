@@ -13,7 +13,6 @@ export default function UserSearch(
 ) {
     const [search, setSearch] = useState("");
     const [results, setResults] = useState(users);
-    console.log(users);
 
     const searchUsers = (userQuery : string) : User[] => {
         if (users && users.length > 0) {

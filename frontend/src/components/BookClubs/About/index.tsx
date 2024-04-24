@@ -1,11 +1,11 @@
 import { Club, User } from "../../types";
 
 export default function About(
-    {club, currentUser, updateClub, setClub} 
+    {club, isAdmin, updateClub, setClub} 
     : 
     {
         club : Club,  
-        currentUser : User,
+        isAdmin : boolean,
         updateClub : () => void,
         setClub : (club : Club) => void;
     }) {
@@ -19,22 +19,30 @@ export default function About(
                 {(club.imageUrl && club.imageUrl !== "") ? 
                 <img src={club.imageUrl} alt={club.name} className="book-cover" /> 
                 : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
-                <input value={club.imageUrl} className="form-control inline"
-                    onChange={(e) => {setClub({...club, imageUrl: e.target.value})}}/>
-                <button onClick={updateClub}>Change Image Url</button>
+                {isAdmin && 
+                <><input value={club.imageUrl} className="form-control inline"
+                        onChange={(e) => { setClub({ ...club, imageUrl: e.target.value }); } } />
+                        <button onClick={updateClub}>Save</button></>}
             </div>
             <div className="col-md-11 club-container">
                 <h4>{club.name}</h4>
+                {isAdmin &&
+                <>
                 <input value={club.name} className="form-control inline"
                     onChange={(e) => {setClub({...club, name: e.target.value});
                     }}/>
-                <button onClick={updateClub}>Edit</button>
+                <button onClick={updateClub}>Save</button>
+                </>
+                }
             </div>
             <div className="col-md-11 club-container">
                 <p>{club.description}</p>
-                <input value={club.description} className="form-control inline"
+                {isAdmin &&
+                <>
+                 <input value={club.description} className="form-control inline"
                     onChange={(e) => {setClub({...club, description: e.target.value})}}/>
-                <button onClick={updateClub}>Edit</button>
+                <button onClick={updateClub}>Save</button>
+                </>}
             </div>
         </div>
     );

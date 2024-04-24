@@ -77,12 +77,20 @@ function BookClubs() {
     const [booksRead, setBooksRead] = useState([] as Book[]);
     const [wishlist, setWishlist] = useState([] as Book[]);
     const [userInClub, setUserInClub] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const leaveClub = async () => {
         if (clubId && currentUser && currentUser._id) {
             await mongooseClient.leaveClub(clubId, currentUser._id);
             setUserInClub(false);
             navigate(`/profile/${currentUser._id}`);
+        }   
+    }
+
+    const removeUser = async (userId : string) => {
+        if (clubId) {
+            await mongooseClient.leaveClub(clubId, userId);
+            setClubMembers(clubMembers.filter(user => user._id !== userId));
         }   
     }
 
@@ -123,7 +131,10 @@ function BookClubs() {
 
             const userJoined = currentClub.members.includes(userSession._id)
             setUserInClub(userJoined)
-            console.log("user in club: " + userJoined);
+
+            const userIsAdmin = currentClub.organizer === userSession._id
+            setIsAdmin(userIsAdmin)
+            console.log("user is admin: " + userIsAdmin);
 
             const currentOrganizer = await mongooseClient.getClubOrganizer(clubId);
             setClubOrganizer(currentOrganizer);
@@ -153,7 +164,7 @@ function BookClubs() {
             console.log(clubId);
             setup(clubId);
         }
-    }, [clubId, userInClub]);
+    }, [clubId, userInClub, isAdmin]);
 
     if (!currentUser) {
         navigate("/login");
@@ -172,10 +183,10 @@ function BookClubs() {
                     <Routes>
                         <Route path="/" element={<Navigate to="about" />} />
                         <Route path="about" element={<About 
-                            club={club} 
-                            currentUser={currentUser}
+                            club={club}
                             setClub={setClub}
-                            updateClub={updateClub}/>} />
+                            updateClub={updateClub}
+                            isAdmin={isAdmin}/>} />
                         <Route path="members" 
                         element={<Members
                             members={clubMembers}
@@ -183,6 +194,8 @@ function BookClubs() {
                             currentUser={currentUser}
                             organizer={clubOrganizer}
                             leaveClub={leaveClub}
+                            isAdmin={isAdmin}
+                            removeUser={removeUser}
                         />} />
                         <Route path="currently-reading" 
                         element={<CurrentlyReading
