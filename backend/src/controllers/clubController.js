@@ -115,7 +115,7 @@ exports.joinClub = async (req, res) => {
         if (!user) return;
 
         if (club.Members.map(member => member.toString()).includes(userId)) {
-            return res.status(400).json({ message: 'User already a member of the club' });
+            return res.status(200).json({ message: 'User already a member of the club' });
         }
 
         club.Members.push(userId);

@@ -13,6 +13,7 @@ import Members from './Members/ClubMembersList';
 import NextMeeting from './NextMeeting';
 import BooksRead from './BooksRead';
 import Wishlist from './Wishlist';
+import BookclubJoin from '../BookclubJoin';
 
 function BookClubs() {
     const navigate = useNavigate();
@@ -75,10 +76,12 @@ function BookClubs() {
     });
     const [booksRead, setBooksRead] = useState([] as Book[]);
     const [wishlist, setWishlist] = useState([] as Book[]);
+    const [userInClub, setUserInClub] = useState(false);
 
     const leaveClub = async () => {
         if (clubId && currentUser && currentUser._id) {
             await mongooseClient.leaveClub(clubId, currentUser._id);
+            setUserInClub(false);
             navigate(`/profile/${currentUser._id}`);
         }   
     }
@@ -90,6 +93,13 @@ function BookClubs() {
             await mongooseClient.addToClubWishlist(clubId, mongooseBookId);
             const response = await mongooseClient.getWishlistByClub(clubId);
             setWishlist(response);
+        }
+    }
+
+    const joinClub = async () => {
+        if (clubId && currentUser && currentUser._id) {
+            await mongooseClient.joinClub(clubId, currentUser._id);
+            setUserInClub(true);
         }
     }
 
@@ -105,6 +115,10 @@ function BookClubs() {
             const currentMembers = await mongooseClient.getMembersByClub(clubId);
             setClubMembers(currentMembers);
 
+            const userJoined = currentClub.members.includes(userSession._id)
+            setUserInClub(userJoined)
+            console.log("user in club: " + userJoined);
+
             const currentOrganizer = await mongooseClient.getClubOrganizer(clubId);
             setClubOrganizer(currentOrganizer);
 
@@ -116,6 +130,7 @@ function BookClubs() {
 
             const response = await mongooseClient.getWishlistByClub(clubId);
             setWishlist(response);
+
         }
         else {
             navigate("/login");
@@ -132,7 +147,7 @@ function BookClubs() {
             console.log(clubId);
             setup(clubId);
         }
-    }, [clubId]);
+    }, [clubId, userInClub]);
 
     if (!currentUser) {
         navigate("/login");
@@ -142,6 +157,9 @@ function BookClubs() {
         <div className="club-font">
             <Header />
             <div className="row">
+                { userInClub
+                ? 
+                <div>
                 <ClubNav club={club}/>
                 <div className="col-md-9 club-bg">
                     <div className="row align-items-center">
@@ -178,36 +196,22 @@ function BookClubs() {
                             addToWishlist={addToWishlist}
                         />} /> 
                     </Routes>
-                        {/* <div className="col-md-11 club-container">
-                            <div className="d-flex justify-content-between align-items-center">
-                                <h4 className="m-0">Books We've Read</h4>
-                                <button className="btn btn-primary book-btn">Add Book</button>
-                            </div>
-                            <BooksList books={booksRead} />
-                        </div>
-                    </div>
-                    <div className="row align-items-center">
-                        <div className="col-md-11 club-container">
-                            <div className="d-flex justify-content-between align-items-center">
-                                <h4 className="m-0">Book Wishlist</h4>
-                                <button className="btn btn-primary book-btn">Add Book</button>
-                            </div>
-                            <BooksList books={wishlist} />
-                        </div>
-                    </div>
-                    <div className="row align-items-center">
-                        <div className="col-md-11 club-container">
-                            <h4>Members</h4>
-                            <ClubMembersList members={clubMembers} />
-                        </div> */}
-                    </div> 
                 </div>
+                </div>
+            </div>
+            :
+            <BookclubJoin
+                club={club}
+                currentBook={currBook}
+                booksRead={booksRead}
+                wishlist={wishlist}
+                joinClub={joinClub} /> }
             </div>
         </div>
     );
 }
 
-export default BookClubs;
+export default BookClubs; 
 
 // const [clubOrganizer, setClubOrganizer] = useState<any>({ _id: "" });
 // const [currBook, setCurrBook] = useState<Book>({  _id: "",

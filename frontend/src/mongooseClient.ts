@@ -446,3 +446,11 @@ export const leaveClub = async (clubId : string, userId : string) => {
   );
   return response; 
 }
+
+export const joinClub = async (clubId : string, userId : string) => {
+  const response = await mongoosePost(
+    `clubs/${clubId}/join`,
+    { userId : userId}
+  );
+  return response; 
+}
