@@ -2,7 +2,7 @@ const Club = require('../models/club');
 const User = require('../models/user');
 const Book = require('../models/book');
 
-const { validateBookExists, validateClubExists, validateUserExists } = require('../utilities/dataValidation');
+const { validateBookExists, validateClubExists, validateUserExists, validateBookbyId } = require('../utilities/dataValidation');
 
 // Fetches and returns all clubs
 exports.getClubs = async (req, res) => {
@@ -353,7 +353,7 @@ exports.addBookToWishlist = async (req, res) => {
             return;
         }
 
-        const book = await validateBookExists(bookId, res);
+        const book = await validateBookbyId(bookId, res);
         if (!book) {
             return;
         }
