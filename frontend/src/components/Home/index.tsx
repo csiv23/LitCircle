@@ -29,7 +29,10 @@ function Home() {
           }
         }
       } catch (error) {
-        console.error("Failed to fetch user profile or additional data:", error);
+        console.error(
+          "Failed to fetch user profile or additional data:",
+          error
+        );
         setCurrentUser(null);
         const recentUsersResponse = await client.getRecentUsers();
         console.log("Recent Users Response:", recentUsersResponse);
@@ -72,12 +75,18 @@ function Home() {
               <h4>Upcoming Meetings:</h4>
               <div className="row">
                 {nextMeetings.map((meeting, index) => {
-                  const meetingDate = meeting.NextMeetingDate ? new Date(meeting.NextMeetingDate).toLocaleDateString() : "Date not set";
+                  const meetingDate = meeting.NextMeetingDate
+                    ? new Date(meeting.NextMeetingDate).toLocaleDateString()
+                    : "Date not set";
                   return (
                     <div key={`meeting-${index}`} className="col-md-3 mb-3">
                       <div className="card">
                         <div className="card-body">
-                          <p className="card-text">Next meeting at {meeting.NextMeetingLocation || "location not set"} on {meetingDate}</p>
+                          <p className="card-text">
+                            Next meeting at{" "}
+                            {meeting.NextMeetingLocation || "location not set"}{" "}
+                            on {meetingDate}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -94,7 +103,10 @@ function Home() {
                   <div key={follower._id} className="col-md-3 mb-3">
                     <div className="card">
                       <div className="card-body">
-                        <Link to={`/profile/${follower._id}`} className="card-link">
+                        <Link
+                          to={`/profile/${follower._id}`}
+                          className="card-link"
+                        >
                           {follower.username}
                         </Link>
                       </div>
@@ -128,8 +140,11 @@ function Home() {
         <Link to="/search-clubs">
           <button className="btn btn-primary mr-2">Join a Club</button>
         </Link>
+        <Link to="/create-club">
+          <button className="btn btn-primary">Create a Club</button>{" "}
+        </Link>
         <Link to="/search-books">
-          <button className="btn btn-primary">Find a Book</button>
+          <button className="btn btn-primary mr-2">Find a Book</button>
         </Link>
       </div>
     </div>
