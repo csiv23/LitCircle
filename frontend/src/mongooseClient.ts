@@ -305,7 +305,9 @@ export const getBooks = async () => {
 
  export const getBookClubById = async (clubId : ObjectId) => {
   const response = await mongooseGet(`clubs/${clubId}`);
-  return cleanClub(response);
+  const reformattedClub = response._doc ? {...response._doc, NextMeeting: response.NextMeeting} : response
+
+  return cleanClub(reformattedClub);
 }
 
 export const getClubOrganizer = async (clubId : ObjectId) => {
