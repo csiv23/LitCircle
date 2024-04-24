@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { User } from "../types";
+import '../../index.css';
 
 export default function UserSearch(
     {
@@ -52,11 +53,11 @@ export default function UserSearch(
       <input type="text" value={search}
         onChange={(e) =>
             setSearch(e.target.value)}/>
-      <button
+      <button className="btn"
         onClick={() => fullTextSearch(search)}>
         Search
       </button>
-      <button
+      <button className="btn"
         onClick={() => fullTextSearch("")}>
         Refresh
       </button>

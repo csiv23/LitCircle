@@ -3,6 +3,7 @@ import * as mongooseClient from "../../../mongooseClient"
 import { Link } from "react-router-dom";
 import { useState, useEffect, JSXElementConstructor, Key, ReactElement, ReactNode} from "react";
 import UserSearch from "../../SearchUsers/searchUser";
+import '../index.css';
 
 
 function Members(
@@ -23,19 +24,19 @@ function Members(
 {   
     const renderUser = (user : User) => {
         return (
-            <div key={user._id} className="member">
+            <div key={user._id} className="member book-btn">
                 <Link to={`/profile/${user._id}`}>
                     {(user.avatar && user.avatar !== "") ? 
                     <img src={user.avatar} alt={user.avatar}/> 
                     : <img src={require("../../images/avatar.jpeg")} alt={user.avatar} />}
                     { organizer && organizer._id && organizer._id === user._id &&
-                        <h4>Club Admin</h4>
+                        <h5>Club Admin</h5>
                     }  
                 </Link>
                     <p>{user.username}</p>
                     {/* TODO: ADD ONCLICK FOR FOLLOWING*/}
                     { currentUser && currentUser._id && user._id !== currentUser._id &&
-                        <button >
+                        <button>
                         {
                             (currentUser 
                             && currentUser.following 
@@ -74,18 +75,11 @@ function Members(
     
     return (
     <div className="d-flex flex-wrap">
-    <div>
-    {(club.imageUrl && club.imageUrl !== "") ? 
-                <img src={club.imageUrl} alt={club.imageUrl} className="book-cover" /> 
-                : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
-    </div>
-    <div>
-        <UserSearch 
-            users={members}
-            renderUsers={renderUsers} />
-    </div>
-
-    
+        <div>
+            <UserSearch 
+                users={members}
+                renderUsers={renderUsers} />
+        </div>
     </div>
     )
 }

@@ -108,29 +108,27 @@ function PublicProfile() {
     return (
         <div>
             <Header />
-            <div className="row">
-                <div className="col-md-3">
-                    <h2>Profile</h2>
-                    <br />
+            <div className="row profile-font">
+                <div className="col-md-3 profile-column">
                     <div className="profile-avatar">
                         <img src={require(`../../images/avatar.jpeg`)} alt="Avatar" />
                     </div>
-                    <div className="profile-name">
+                    <div className="row profile-name">
                         <h3>
                             {publicUser?.firstName} {publicUser?.lastName}
                         </h3>
                     </div>
                     <div className="row">
-                        <div className="col-sm-6">
-                            <span className="mr-2">Followers:</span> {publicUser?.followers.length}
-                        </div>
-                        <div className="col-sm-6">
-                            <span className="mr-2">Following:</span> {publicUser?.following.length}
+                        <div className="col-sm-11 profile-desc">
+                            <h5>{publicUser?.username}</h5>
                         </div>
                     </div>
                     <div className="row">
+                    <div className="col-sm-6 profile-desc">
+                            <span>Followers:</span> {publicUser?.followers.length}
+                        </div>
                         <div className="col-sm-6">
-                            <span className="mr-2">Email:</span> {publicUser?.email}
+                            <span>Following:</span> {publicUser?.following.length}
                         </div>
                     </div>
                     <div>
@@ -138,9 +136,9 @@ function PublicProfile() {
                         <button onClick={unfollow}>Unfollow</button>
                     </div>
                 </div>
-                <div className="col-md-9">
-                    <div className="row align-items-center">
-                        <div className="col-md-8 bookclub-section-title">
+                <div className="col-md-9 profile-bg">
+                    <div className="row">
+                        <div className="col-md-11 profile-container">
                             <h4>My BookClubs</h4>
                         </div>
                         <div className="d-flex flex-wrap bookclub-pfp">

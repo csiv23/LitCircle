@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import "./index.css";
+import "../index.css";
 import { User, Book, Club, ObjectId } from "../../types";
 import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from '../../../database';
 import Header from "../../Header";
@@ -76,51 +76,51 @@ function MyProfile() {
     }
 
     return (
-        <div>
+        <div className="profile-font">
             <Header />
             <div className="row">
-                <div className="col-md-3">
-                    <h2>Profile</h2>
-                    <br />
+                <div className="col-md-3 profile-column">
                     <div className="profile-avatar">
                         <img src={require(`../../images/avatar.jpeg`)} alt="Avatar" />
                     </div>
-                    <div className="profile-name">
-                        <h3>
-                            {currentUser?.firstName} {currentUser?.lastName}
+                    <div className="row profile-name">
+                        <div className="col-md-8">
+                            <h3>{currentUser?.firstName} {currentUser?.lastName}</h3>
+                        </div>
+                        <div className="col-md-4 text-right">
                             <Link to={`/myProfile/${userId}/Edit`}>
-                                <button className="btn btn-secondary ml-2">Edit</button>
+                                <button className="btn">Edit</button>
                             </Link>
-                        </h3>
-                    </div>
-                    <div className="row">
-                        <div className="col-sm-6">
-                            <span className="mr-2">Username:</span> {currentUser?.username}
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-sm-6">
-                            <span className="mr-2">Followers:</span> {currentUser?.followers.length}
-                        </div>
-                        <div className="col-sm-6">
-                            <span className="mr-2">Following:</span> {currentUser?.following.length}
+                        <div className="col-sm-11 profile-desc">
+                            <h5>{currentUser?.username}</h5>
                         </div>
                     </div>
                     <div className="row">
+                        <div className="col-sm-6 profile-desc">
+                            <span>Followers:</span> {currentUser?.followers.length}
+                        </div>
                         <div className="col-sm-6">
-                            <span className="mr-2">Email:</span> {currentUser?.email}
+                            <span>Following:</span> {currentUser?.following.length}
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-11 profile-desc">
+                            <span>Email:</span> {currentUser?.email}
                         </div>
                     </div>
                 </div>
-                <div className="col-md-9">
-                    <div className="row align-items-center">
+                <div className="col-md-9 profile-bg">
+                    <div className="row profile-container">
                         <div className="col-md-8 bookclub-section-title">
                             <h4>My BookClubs</h4>
                         </div>
                         <div className="col-md-4 text-right">
                             <button className="btn btn-primary">Add BookClub</button>
                         </div>
-                        <div className="d-flex flex-wrap bookclub-pfp">
+                        <div className="d-flex flex-wrap bookclub-desc">
                             {currentUserClubs?.map((club: Club, index) => {
                                 if (club) {
                                     return (
@@ -142,7 +142,7 @@ function MyProfile() {
                             })}
                         </div>
                     </div>
-                    <div className="row align-items-center">
+                    <div className="row profile-container">
                         <div className="col-md-8">
                             <h4>Books I've Read</h4>
                         </div>
@@ -155,10 +155,13 @@ function MyProfile() {
                                     return (
                                         <div key={index} className="book">
                                             <Link to={`/book/${book._id}`}>
-                                                <img src={require(`../../../images/emptyBook.jpeg`)}
-                                                    alt={book.title} />
+                                            <div>
+                                                {(book.coverImageUrl && book.coverImageUrl !== "") ? 
+                                                <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
+                                                : <img src={require("../../../images/emptyBook.jpeg")} alt={book.title} />}
+                                            </div>
                                                 <h5>{book.title}</h5>
-                                                <p>{book.author}</p>
+                                                <p className="book-author">{book.author}</p>
                                             </Link>
                                         </div>
                                     );
@@ -172,7 +175,7 @@ function MyProfile() {
                             })}
                         </div>
                     </div>
-                    <div className="row align-items-center">
+                    <div className="row profile-container">
                         <div className="col-md-8">
                             <h4>My Book Wishlist</h4>
                         </div>
@@ -185,10 +188,13 @@ function MyProfile() {
                                     return (
                                         <div key={index} className="book">
                                             <Link to={`/book/${book._id}`}>
-                                                <img src={require(`../../../images/emptyBook.jpeg`)}
-                                                    alt={book.title} />
+                                            <div>
+                                                {(book.coverImageUrl && book.coverImageUrl !== "") ? 
+                                                <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
+                                                : <img src={require("../../../images/emptyBook.jpeg")} alt={book.title} />}
+                                            </div>
                                                 <h5>{book.title}</h5>
-                                                <p>{book.author}</p>
+                                                <p className="book-author">{book.author}</p>
                                             </Link>
                                         </div>
                                     );

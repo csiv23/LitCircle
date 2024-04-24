@@ -36,8 +36,8 @@ export default function Signup() {
     }
 
     return (
-        <div>
-            <h1>Sign Up</h1>
+        <div className="signin-container">
+            <h2>Sign Up</h2>
             <input value={credentials.firstName} placeholder="First Name" onChange={(e) =>
                 setCredentials({ ...credentials, firstName: e.target.value })} />
             <input value={credentials.lastName} placeholder="Last Name" onChange={(e) =>
