@@ -159,7 +159,7 @@ function BookClubs() {
             <div className="row">
                 { userInClub
                 ? 
-                <div>
+                <div className="row">
                 <ClubNav club={club}/>
                 <div className="col-md-9 club-bg">
                     <div className="row align-items-center">
@@ -212,51 +212,3 @@ function BookClubs() {
 }
 
 export default BookClubs; 
-
-// const [clubOrganizer, setClubOrganizer] = useState<any>({ _id: "" });
-// const [currBook, setCurrBook] = useState<Book>({  _id: "",
-//     googleBooksId: "",
-//     title: "Untitled",
-//     author: "N/A",
-//     coverImageUrl: "",
-//     description: "N/A",
-//     clubsReading: [],
-//  });
-// const [booksRead, setBooksRead] = useState([] as Book[]);
-// const [wishlist, setWishlist] = useState([] as Book[]);
-
-
-// const findOrganizer = async () => {
-//     if (!clubId)
-//         return;
-//     const response = await mongooseClient.getClubOrganizer(clubId);
-//     setClubOrganizer(response);
-// }
-
-// const findCurrBook = async () => {
-//     if (!clubId)
-//         return;
-//     const response = await mongooseClient.getClubCurrentBook(clubId);
-//     setCurrBook(response);
-// }
-
-// const getBooksRead = async () => {
-//     if (!clubId)
-//         return;
-//     const response = await mongooseClient.getBooksReadByClub(clubId);
-//     setBooksRead(response);
-// }
-
-// const getWishlist = async () => {
-//     if (!clubId)
-//         return;
-//     const response = await mongooseClient.getWishlistByClub(clubId);
-//     setWishlist(response);
-// }
-
-// const getMembers = async () => {
-//     if (!clubId)
-//         return;
-//     const response = await mongooseClient.getMembersByClub(clubId);
-//     setClubMembers(response);
-// }
