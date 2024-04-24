@@ -175,6 +175,41 @@ exports.followUser = async (req, res) => {
     }
 };
 
+// Unfollow another user
+exports.unfollowUser = async (req, res) => {
+    const { userId } = req.params; // Follower
+    const { userIdToFollow } = req.body; // Followed
+
+    try {
+        // Check if user already following
+        const user = await User.findById(userId);
+        const alreadyFollowing = user.Following.some(id => id == userIdToFollow);
+        if (!alreadyFollowing) {
+            console.log("Already unfollowed this user!")
+            return res.status(400).json({ msg: 'Already unfollowed this user!' });
+        }
+
+        // Remove userIdToFollow from the Following array of the follower
+        await User.findByIdAndUpdate(
+            userId,
+            { $pull: { Following: userIdToFollow } },
+            { new: true }
+        );
+        // Remove userId from the Followers array of the followed user
+        await User.findByIdAndUpdate(
+            userIdToFollow,
+            { $pull: { Followers: userId } },
+            { new: true }
+        );
+        const updatedUser = await User.findById(userId);
+        req.session["currentUser"] = updatedUser;
+        res.status(204).send();
+    } catch (error) {
+        console.error("Error following user:", error);
+        res.status(500).send('Server error');
+    }
+};
+
 // Handler for fetching the list of followers of a specific user.
 exports.getFollowers = async (req, res) => {
     // Extract the userId from the request parameters.

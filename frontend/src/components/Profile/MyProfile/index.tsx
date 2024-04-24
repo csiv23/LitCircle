@@ -127,7 +127,7 @@ function MyProfile() {
                                         <div key={index}>
                                             <Link to={`/bookclub/${club._id}`}>
                                                 <h5>{club.name}</h5>
-                                                <img src={require(`../../images/friends.jpeg`)} alt={club.name} className="book-cover" />
+                                                <img src={require(`../../../images/BookclubDefault.jpeg`)} alt={club.name} className="book-cover" />
                                             </Link>
                                             <p>Members: {club.members.length}</p>
                                         </div>
@@ -155,8 +155,8 @@ function MyProfile() {
                                     return (
                                         <div key={index} className="book">
                                             <Link to={`/book/${book._id}`}>
-                                                {/* <img src={require(`../../images/${book.coverImageUrl}`)}
-                                                    alt={book.title} /> */}
+                                                <img src={require(`../../../images/emptyBook.jpeg`)}
+                                                    alt={book.title} />
                                                 <h5>{book.title}</h5>
                                                 <p>{book.author}</p>
                                             </Link>
@@ -185,8 +185,8 @@ function MyProfile() {
                                     return (
                                         <div key={index} className="book">
                                             <Link to={`/book/${book._id}`}>
-                                                {/* <img src={require(`../../images/${book.coverImage}`)}
-                                                    alt={book.title} /> */}
+                                                <img src={require(`../../../images/emptyBook.jpeg`)}
+                                                    alt={book.title} />
                                                 <h5>{book.title}</h5>
                                                 <p>{book.author}</p>
                                             </Link>

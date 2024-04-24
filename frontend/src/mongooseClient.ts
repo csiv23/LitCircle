@@ -414,6 +414,15 @@ export const followUser = async (userId: string, userIdToFollow: string) => {
   }
 }
 
+export const unfollowUser = async (userId: string, userIdToUnfollow: string) => {
+  try {
+    const response = await axios.patch(`${USERS_API_URL}/${userId}/unfollow`, {userIdToFollow: userIdToUnfollow});
+    return cleanUser(response.data);
+  } catch (error) {
+    console.log("Already unfollowed this user!")
+  }
+}
+
 export const getRecentUsers = async () => {
   const response = await mongooseGet('homepage/recent-users');
   return response.map(cleanUser);
