@@ -19,6 +19,9 @@ export default function GoogleBooksSearch(
     console.log(results)
     setResults(results);
    }
+   else {
+    setResults(results);
+   }
  };
 
  useEffect(() => {

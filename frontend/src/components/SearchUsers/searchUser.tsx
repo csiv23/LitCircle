@@ -61,8 +61,8 @@ export default function UserSearch(
         Refresh
       </button>
       <div>
-      {results &&
-        results.length > 0 && renderUsers(results) }
+      {(results &&
+        results.length > 0) ? renderUsers(results) : renderUsers(users)}
       </div>
 
     </div>
