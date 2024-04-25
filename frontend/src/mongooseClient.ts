@@ -595,3 +595,9 @@ export const markCurrentBookAsRead = async (clubId : string) => {
   const updatedClub = await mongoosePost(`clubs/${clubId}/markCurrentBookAsRead`);
   return cleanClub(updatedClub.club);
 }
+
+
+export const deleteClub = async (clubId : string) => {
+  const response = await mongooseDelete(`clubs/${clubId}/delete`);
+  return response;
+}
