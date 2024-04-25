@@ -3,7 +3,7 @@ import MongooseBookSearch from "../../../MongooseSearchBooks";
 import GoogleBooksSearch from "../../../SearchBooks/search";
 import { Link } from "react-router-dom";
 
-export default function Wishlist(
+export default function BooksRead(
     { books }
         :
         { books: Book[] }) {
