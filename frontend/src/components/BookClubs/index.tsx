@@ -266,17 +266,8 @@ function BookClubs() {
                             isAdmin={isAdmin}
                         />} />
                         <Route path="books-read" 
-                        element={<BooksRead
-                            books={booksRead}
-                            club={club} 
-                        />} />
-                        <Route path="wishlist" element={<Wishlist
-                            books={wishlist}
-                            club={club}
-                            isAdmin={isAdmin}
-                            addToWishlist={addToWishlist}
-                            removeFromWishlist={removeFromWishlist}
-                        />} /> 
+                        element={<BooksRead/>} />
+                        <Route path="wishlist" element={<Wishlist/>} /> 
                     </Routes>
                 </div>
                 </div>

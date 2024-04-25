@@ -342,10 +342,10 @@ export async function mongooseGetCredentials(uri : string) {
   }
 }
 
-export async function mongooseDelete(uri : string, params={}) {
+export async function mongooseDelete(uri : string) {
   const url = `${MONGOOSE_URL}/${uri}`;
   try {
-      const response = await axios.delete(url, params);
+      const response = await axios.delete(url);
       console.log(response.data);
       return response.data;
     } catch (error) {
@@ -577,6 +577,6 @@ export const markCurrentBookAsRead = async (clubId : string) => {
 }
 
 export const removeBookFromClubWishlist = async (clubId : string, bookId : string) => {
-  const updatedClub = await mongooseDelete(`clubs/${clubId}/wishlist`, {bookId : bookId});
+  const updatedClub = await mongooseDelete(`clubs/${clubId}/wishlist/${bookId}`);
   return cleanClub(updatedClub.club);
 }

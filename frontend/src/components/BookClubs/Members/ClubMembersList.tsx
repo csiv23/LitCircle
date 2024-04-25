@@ -23,10 +23,16 @@ function Members(
     organizer: User
     isAdmin : boolean
     leaveClub: () => void,
-    removeUser : (userId:string) => void
+    removeUser : (userId:string) => Promise<void>
     searchUser : (userQuery:string) => Promise<any>
 }) 
 {   
+
+    const removeUserFromList = async (userId:string) => {
+        await removeUser(userId);
+        members.filter(member => member._id !== userId);
+    }
+
     const renderUser = (user : User) => {
         return (
             <div key={user._id} className="member">
@@ -52,7 +58,7 @@ function Members(
                             : "Follow"
                         }
                         </button>
-                        {isAdmin && <button onClick={() => {removeUser(user._id)}}>
+                        {isAdmin && <button onClick={() => {removeUserFromList(user._id)}}>
                             Remove 
                         </button>}
                         </>
@@ -82,8 +88,6 @@ function Members(
         )
     }
 
-
-    
     return (
     <div className="d-flex flex-wrap">
     <div>

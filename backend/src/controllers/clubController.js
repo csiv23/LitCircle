@@ -400,14 +400,14 @@ exports.addBookToWishlist = async (req, res) => {
 }
 
 exports.deleteBookFromWishlist = async (req, res) => {
-    const { clubId } = req.params;
-    const { bookId } = req.body;
+    const { clubId, bookId } = req.params;
 
     const club = await validateClubExists(clubId, res);
     if (!club) {
         return;
     }
 
+    console.log(bookId);
     const book = await validateBookbyId(bookId, res);
     if (!book) {
         return;
