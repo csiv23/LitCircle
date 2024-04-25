@@ -161,9 +161,6 @@ export default function Wishlist(
               const newWishlist = await mongooseClient.getWishlistByClub(clubId);
               setWishlist(newWishlist);
   
-              const response = await mongooseClient.getWishlistByClub(clubId);
-              setWishlist(response);
-  
               const userIsAdmin = currentClub.organizer === userSession._id
               setIsAdmin(userIsAdmin)
               console.log("user is admin: " + userIsAdmin);
