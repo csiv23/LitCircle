@@ -124,21 +124,35 @@ exports.signOut = async (req, res) => {
 // Update user profile
 exports.updateUserProfile = async (req, res) => {
     const { userId } = req.params;
-    const { username, password } = req.body;
+    const { Email, FirstName, LastName, Username, AvatarUrl } = req.body;
+
+    // Build the update object dynamically
+    const updateData = {};
+    if (Email) updateData.Email = Email;
+    if (FirstName) updateData.FirstName = FirstName;
+    if (LastName) updateData.LastName = LastName;
+    if (Username) updateData.Username = Username;
+    if (AvatarUrl) updateData.AvatarUrl = AvatarUrl;
 
     try {
+        // Perform the update operation
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            { $set: { Username: username, Password: password } },
-            { new: true }
+            { $set: updateData },
+            { new: true } // Return the updated document
         );
+
+        // Update the session user
         req.session["currentUser"] = updatedUser;
+
+        // Send the updated user as a response
         res.json(updatedUser);
     } catch (error) {
         console.error("Error updating user profile:", error);
         res.status(500).send('Server error');
     }
 };
+
 
 // Follow another user
 exports.followUser = async (req, res) => {

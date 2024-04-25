@@ -15,6 +15,7 @@ import BooksRead from './BooksRead';
 import Wishlist from './Wishlist';
 import BookclubJoin from '../BookclubJoin';
 import { current } from '@reduxjs/toolkit';
+import AdminLeave from '../AdminLeave/adminleave';
 
 function BookClubs() {
     const navigate = useNavigate();
@@ -83,10 +84,25 @@ function BookClubs() {
 
     const leaveClub = async () => {
         if (clubId && currentUser && currentUser._id) {
+            if (isAdmin) {
+                navigate(`/bookclub/${clubId}/leave`);
+            }
+            else {
+                await mongooseClient.leaveClub(clubId, currentUser._id);
+                setUserInClub(false);
+                navigate(`/profile/${currentUser._id}`);
+            }
+        }   
+    }
+
+    const appointAsOrganizer = async (userId : string) => {
+        if (clubId && currentUser && currentUser._id) {
+            await mongooseClient.updateClub({...club, organizer: userId});
             await mongooseClient.leaveClub(clubId, currentUser._id);
             setUserInClub(false);
+
             navigate(`/profile/${currentUser._id}`);
-        }   
+        }
     }
 
     const removeUser = async (userId : string) => {
@@ -234,22 +250,14 @@ function BookClubs() {
                     <div className="row align-items-center">
                     <Routes>
                         <Route path="/" element={<Navigate to="about" />} />
+                        <Route path="leave" element={<AdminLeave appointAsOrganizer={appointAsOrganizer}/>}/>
                         <Route path="about" element={<About 
                             club={club}
                             setClub={setClub}
                             updateClub={updateClub}
                             isAdmin={isAdmin}/>} />
                         <Route path="members" 
-                        element={<Members
-                            members={clubMembers}
-                            club={club}
-                            currentUser={currentUser}
-                            organizer={clubOrganizer}
-                            leaveClub={leaveClub}
-                            isAdmin={isAdmin}
-                            removeUser={removeUser}
-                            searchUser={searchUsers}
-                        />} />
+                        element={<Members leaveClub={leaveClub}/>} />
                         <Route path="currently-reading" 
                         element={<CurrentlyReading
                             currentBook={currBook}
@@ -262,21 +270,13 @@ function BookClubs() {
                         element={<NextMeeting
                             currentBook={currBook}
                             club={club}
-                            meeting={club.nextMeeting}
                             isAdmin={isAdmin}
+                            setClub={setClub}
+                            updateClub={updateClub}
                         />} />
                         <Route path="books-read" 
-                        element={<BooksRead
-                            books={booksRead}
-                            club={club} 
-                        />} />
-                        <Route path="wishlist" element={<Wishlist
-                            books={wishlist}
-                            club={club}
-                            isAdmin={isAdmin}
-                            addToWishlist={addToWishlist}
-                            removeFromWishlist={removeFromWishlist}
-                        />} /> 
+                        element={<BooksRead/>} />
+                        <Route path="wishlist" element={<Wishlist/>} /> 
                     </Routes>
                 </div>
                 </div>

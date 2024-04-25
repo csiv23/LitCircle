@@ -36,7 +36,7 @@ export default function UserSearch(
         fullTextSearch(search);
         console.log("rerendered");
         console.log(users.length);
-     }, []);
+     }, [results]);
     
      return (
     <div>

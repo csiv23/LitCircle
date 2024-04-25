@@ -23,56 +23,77 @@ exports.getClub = async (req, res) => {
             // Since validateClubExists sends the response, just return here.
             return;
         }
-
-        const formattedClub = (club.NextMeeting && club.NextMeeting.Date)
-        ? {
-            ...club,
-            NextMeeting: {
+        
+        // Safely access NextMeeting and Date properties
+        let nextMeetingInfo = {};
+        if (club.NextMeeting && club.NextMeeting.Date) {
+            nextMeetingInfo = {
                 ...club.NextMeeting,
-                Date: club.NextMeeting.Date.toISOString()
-            }
+                Date: club.NextMeeting.Date.toISOString() // Safely converting Date to ISO string
+            };
         }
-        : club
 
-        res.json(formattedClub);
+        // Respond with club info, including NextMeeting if available
+        res.json({
+            ...club.toObject(), 
+            NextMeeting: nextMeetingInfo
+        });
+
     } catch (error) {
         console.error("Error fetching club by ID:", error);
         res.status(500).json({ error: 'Internal server error while fetching the club by ID.' });
     }
 };
 
+
+
 /**
  * Creates a new club with the given details in the request body.
  * It checks if the organizer exists before creating the club.
  */
 exports.createClub = async (req, res) => {
-    const { Name, Description, Organizer } = req.body;
+    const { name, description, organizer, imageUrl } = req.body;
+
+    // Validate required fields are not empty
+    if (!name || !description || !organizer) {
+        return res.status(400).json({ error: 'Missing required fields. Name, description, and organizer are required.' });
+    }
 
     try {
-        const organizer = await validateUserExists(Organizer);
-        if (!organizer) return; // Already handled in validateUserExists
+        // Check if the organizer exists using the organizer ID provided
+        const organizerExists = await validateUserExists(organizer);
+        if (!organizerExists) {
+            // If the organizer doesn't exist, return a 404 error
+            return res.status(404).json({ error: 'Organizer not found. You must specify a valid organizer ID.' });
+        }
 
+        // Create a new club with the provided data
         const newClub = new Club({
-            Name,
-            Description,
-            Members: [Organizer], // Initial member is the organizer
+            Name: name,
+            Description: description,
+            Members: [organizer], // Initialize with the organizer as the first member
             BooksRead: [],
             Wishlist: [],
             CurrentBook: null,
-            Organizer,
-            ImageUrl: "",
+            Organizer: organizer,
+            ImageUrl: imageUrl || "" // Use an empty string as default if no image URL is provided
         });
 
+        // Save the new club to the database
         await newClub.save();
-        organizer.BookClubs.push({ ClubId: newClub._id, IsLeader: true, JoinDate: new Date() });
-        await organizer.save();
 
-        res.json({ message: "Club created successfully", clubID: newClub.id });
+        // Update the organizer's document to include the new club
+        organizerExists.BookClubs.push({ ClubId: newClub._id, IsLeader: true, JoinDate: new Date() });
+        await organizerExists.save();
+
+        // Respond with success message and the ID of the newly created club
+        res.json({ message: "Club created successfully", clubID: newClub._id });
     } catch (error) {
         console.error("Error creating new club:", error);
-        res.status(500).json({ error: 'Internal server error while creating a new club.' });
+        res.status(500).json({ error: 'Internal server error while creating a new club.', details: error.message });
     }
 };
+
 
 /**
  * Updates the specified club's information based on the data provided in the request body.
@@ -157,28 +178,59 @@ exports.joinClub = async (req, res) => {
 
 /**
  * Removes a user from a club's member list based on the user ID provided in the request body.
+ * If the user is the organizer, they must appoint a new organizer and update leadership status before leaving.
  */
 exports.leaveClub = async (req, res) => {
     const { clubId } = req.params; // Extract the clubId from the URL parameter
-    const { userId } = req.body; 
+    const { userId, newOrganizerId } = req.body; // Include newOrganizerId if the organizer is leaving
 
     try {
         const club = await validateClubExists(clubId, res);
         const user = await validateUserExists(userId, res);
-        if (!club || !user) return; // Already handled in validate*
+        if (!club || !user) return; // Validation handlers take care of responses
 
+        // Check if the user is the organizer
+        if (club.Organizer.toString() === userId) {
+            if (!newOrganizerId) {
+                return res.status(400).json({ error: 'A new organizer must be assigned before the current organizer can leave.' });
+            }
+            const newOrganizer = await validateUserExists(newOrganizerId, res);
+            if (!newOrganizer) return; // validateUserExists should handle the response
+            if (!club.Members.includes(newOrganizerId)) {
+                return res.status(400).json({ error: 'New organizer must be a current member of the club.' });
+            }
+            club.Organizer = newOrganizerId;
+            // Update the new organizer's IsLeader status in their BookClubs list
+            newOrganizer.BookClubs = newOrganizer.BookClubs.map(bookclub => {
+                if (bookclub.ClubId.toString() === clubId) {
+                    return { ...bookclub.toObject(), IsLeader: true };
+                }
+                return bookclub;
+            });
+            await newOrganizer.save();
+        }
+
+        // Remove the user from the club's members list
         club.Members = club.Members.filter(member => member.toString() !== userId);
         await club.save();
 
-        user.BookClubs = user.BookClubs.filter(bookclub => bookclub.ClubId !== clubId);
+        // Remove the club from the user's BookClubs list and update IsLeader if needed
+        user.BookClubs = user.BookClubs.filter(bookclub => {
+            if (bookclub.ClubId.toString() === clubId) {
+                // If the leaving user is the organizer, clear the IsLeader flag
+                bookclub.IsLeader = false;
+            }
+            return bookclub.ClubId.toString() !== clubId;
+        });
         await user.save();
 
-        res.json({ message: 'User removed from club successfully' });
+        res.json({ message: 'User removed from club successfully', club });
     } catch (error) {
         console.error("Error removing user from club:", error);
         res.status(500).json({ error: 'Internal server error while removing a user from the club.' });
     }
 };
+
 
 /**
  * A specialized function for fetching members of a club with detailed user information.
@@ -221,8 +273,10 @@ exports.fetchClubAttribute = (attributeName) => {
 
         try {
             const populatedClub = await Club.findById(club._id).populate(attributeName);
-            if (!populatedClub || !populatedClub[attributeName]) {
-                return res.status(404).json({ message: `${attributeName} not found in club details` });
+            // Check if attributeName is "currentBook" and if populatedClub or the attribute is null
+            if (attributeName === "currentBook" && (!populatedClub || !populatedClub[attributeName])) {
+                // Return an empty string if currentBook doesn't exist or is null
+                return res.json({ [attributeName]: "" });
             }
 
             res.json({ [attributeName]: populatedClub[attributeName] });
@@ -400,14 +454,14 @@ exports.addBookToWishlist = async (req, res) => {
 }
 
 exports.deleteBookFromWishlist = async (req, res) => {
-    const { clubId } = req.params;
-    const { bookId } = req.body;
+    const { clubId, bookId } = req.params;
 
     const club = await validateClubExists(clubId, res);
     if (!club) {
         return;
     }
 
+    console.log(bookId);
     const book = await validateBookbyId(bookId, res);
     if (!book) {
         return;
@@ -424,6 +478,65 @@ exports.deleteBookFromWishlist = async (req, res) => {
     await club.save();
 
     res.status(200).json({ message: 'Book removed from the wishlist successfully', club });
+}
+
+exports.addBookToBooksRead = async (req, res) => {
+    const { clubId } = req.params;
+    const { bookId } = req.body;
+
+    try {
+        const club = await validateClubExists(clubId, res);
+        if (!club) {
+            return;
+        }
+
+        const book = await validateBookbyId(bookId, res);
+        if (!book) {
+            return;
+        }
+
+        // Check if the book is already in booksRead
+        const isInBooksRead = club.BooksRead.some(b => b.toString() === bookId);
+        if (isInBooksRead) {
+            return res.status(200).json({ message: 'Book is already in the list of books read.' });
+        }
+
+        // Add the book to the booksRead
+        club.BooksRead.push(bookId);
+        await club.save();
+
+        res.status(200).json({ message: 'Book added to books read list successfully', club });
+    } catch (error) {
+        console.error('Error adding book to the club\'s books read list :', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+exports.deleteBookFromBooksRead = async (req, res) => {
+    const { clubId, bookId } = req.params;
+
+    const club = await validateClubExists(clubId, res);
+    if (!club) {
+        return;
+    }
+
+    console.log(bookId);
+    const book = await validateBookbyId(bookId, res);
+    if (!book) {
+        return;
+    }
+
+    // Check if the book is in the list
+    const isInBooksRead = club.BooksRead.some(b => b.toString() === bookId);
+    if (!isInBooksRead) {
+        return res.status(400).json({ message: 'Book is not in the list of books read.' });
+    }
+
+    // Remove the book from the list
+    club.BooksRead = club.BooksRead.filter(b => b.toString() !== bookId);
+    await club.save();
+
+    res.status(200).json({ message: 'Book removed from the list of books read successfully', club });
 }
 
 

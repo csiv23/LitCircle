@@ -14,10 +14,15 @@ function SearchableBooksList(
 } : 
 { 
     booksList: Book[],
-    removeBook : (bookId : string) => void,
+    removeBook : (bookId : string) => Promise<void>,
     isAdmin : boolean
 }) 
 {   
+    const removeBookFromList = async (bookId : string) => {
+        await removeBook(bookId);
+        booksList.filter(book => book._id !== bookId);
+    }
+
     const renderBook = (book : Book) => {
         return (
             <div key={book._id} className="book book-item">
@@ -30,7 +35,7 @@ function SearchableBooksList(
                 <h5 className="book-title">{book.title}</h5>
                 <p className="book-author">{book.author}</p>
             </Link>
-            {isAdmin && <button onClick={() => {removeBook(book._id)}} className="btn">
+            {isAdmin && <button onClick={() => {removeBookFromList(book._id)}} className="btn">
                 Remove Book
             </button>}
         </div>

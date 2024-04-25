@@ -26,48 +26,50 @@ type MongooseClub = {
   Organizer : string
 }
 
-function cleanBookObj (bookData: any) : Book {
+function cleanBookObj(bookData: any): Book {
   let bookClean = {
-    _id: "",
-    googleBooksId: "",
-    title: "Untitled",
-    author: "N/A",
-    coverImageUrl: "",
-    description: "N/A",
-    clubsReading: [],
+      _id: "",
+      googleBooksId: "",
+      title: "Untitled",
+      author: "N/A",
+      coverImageUrl: "",
+      description: "N/A",
+      clubsReading: [],
+  };
+
+  // Check if bookData is not null before accessing its properties
+  if (bookData && bookData._id) {
+      bookClean._id = bookData._id;
   }
 
-  if (bookData._id) {
-    bookClean._id = bookData._id;
+  if (bookData && bookData.GoogleBooksId) {
+      bookClean.googleBooksId = bookData.GoogleBooksId;
   }
 
-  if (bookData.GoogleBooksId) {
-    bookClean.googleBooksId = bookData.GoogleBooksId;
-  }
-
-  if (bookData.Title) {
-    bookClean.title = bookData.Title;
+  if (bookData && bookData.Title) {
+      bookClean.title = bookData.Title;
   }
 
   // TODO: EMBED HTML FROM DESCRIPTION? 
-  if (bookData.Description) {
-    bookClean.description = bookData.Description;
+  if (bookData && bookData.Description) {
+      bookClean.description = bookData.Description;
   }
 
-  if (bookData.Author) {
-    bookClean.author = bookData.Author;
+  if (bookData && bookData.Author) {
+      bookClean.author = bookData.Author;
   }
 
-  if (bookData.CoverImageUrl) {
-    bookClean.coverImageUrl = bookData.CoverImageUrl;
+  if (bookData && bookData.CoverImageUrl) {
+      bookClean.coverImageUrl = bookData.CoverImageUrl;
   }
 
-  if (bookData.ClubsReading) {
-    bookClean.clubsReading = bookData.ClubsReading;
+  if (bookData && bookData.ClubsReading) {
+      bookClean.clubsReading = bookData.ClubsReading;
   }
 
   return bookClean;
 }
+
 
 function cleanUser (userData: any) : User {
   let userClean = {
@@ -342,10 +344,10 @@ export async function mongooseGetCredentials(uri : string) {
   }
 }
 
-export async function mongooseDelete(uri : string, params={}) {
+export async function mongooseDelete(uri : string) {
   const url = `${MONGOOSE_URL}/${uri}`;
   try {
-      const response = await axios.delete(url, params);
+      const response = await axios.delete(url);
       console.log(response.data);
       return response.data;
     } catch (error) {
@@ -471,6 +473,24 @@ export const addToClubWishlist = async (clubId : string, bookId : string) => {
   return response;
 }
 
+
+export const removeBookFromClubWishlist = async (clubId : string, bookId : string) => {
+  const updatedClub = await mongooseDelete(`clubs/${clubId}/wishlist/${bookId}`);
+  return cleanClub(updatedClub.club);
+}
+
+
+export const addToClubBooksRead = async (clubId : string, bookId : string) => {
+  const response = await mongoosePost(`clubs/${clubId}/booksRead`, {bookId : bookId})
+  return response;
+}
+
+
+export const removeFromClubBooksRead = async (clubId : string, bookId : string) => {
+  const updatedClub = await mongooseDelete(`clubs/${clubId}/booksRead/${bookId}`);
+  return cleanClub(updatedClub.club);
+}
+
 export const getUserWishlist = async (userId : string) => {
   console.log("getUserWishlist")
   const response = await mongooseGet(`users/${userId}/wishlist`)
@@ -573,10 +593,5 @@ export const setCurrentBook = async (clubId : string, bookId : string) => {
 
 export const markCurrentBookAsRead = async (clubId : string) => {
   const updatedClub = await mongoosePost(`clubs/${clubId}/markCurrentBookAsRead`);
-  return cleanClub(updatedClub.club);
-}
-
-export const removeBookFromClubWishlist = async (clubId : string, bookId : string) => {
-  const updatedClub = await mongooseDelete(`clubs/${clubId}/wishlist`, {bookId : bookId});
   return cleanClub(updatedClub.club);
 }
