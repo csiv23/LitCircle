@@ -15,7 +15,7 @@ export default function GoogleAPI() {
             if (book) {
               return (
                 <div key={index} className="book book-item">
-                  <Link to={`/book/${book._id}`}>
+                  <Link to={`/book/${book.googleBooksId}`}>
                   <div>
                       {(book.coverImageUrl && book.coverImageUrl !== "") ? 
                       <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
