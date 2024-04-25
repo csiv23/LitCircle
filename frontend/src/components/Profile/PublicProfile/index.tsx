@@ -161,11 +161,11 @@ function PublicProfile() {
                                 return (
                                     <div key={follower._id}>
                                         <div>{follower.username}</div>
-                                        {/* <Link to={`/profile/${follower._id}`}>
+                                        <Link to={`/profile/${follower._id}`}>
                                             {(follower.avatar && follower.avatar !== "") ?
                                                 <img src={follower.avatar} alt={follower.avatar} />
                                                 : <img src={require("../../images/avatar.jpeg")} alt={follower.avatar} />}
-                                        </Link> */}
+                                        </Link>
                                     </div>
                                 )
                             } else {
