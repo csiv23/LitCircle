@@ -99,8 +99,8 @@ function MyProfile() {
                 // const updatedUser = await client.removeFromWishlist(currentUser._id, bookId);
                 // const updatedUserById = await client.getUserById(currentUser._id)
                 // setCurrentUser(updatedUserById);
-                await client.removeFromWishlist(currentUser._id, bookId);
-                setCurrentUser(await client.profile());
+                const updatedUser = await client.removeFromWishlist(currentUser._id, bookId);
+                setCurrentUser(updatedUser);
             } catch (error) {
                 console.error("Error removing from wishlist:", error);
             }
