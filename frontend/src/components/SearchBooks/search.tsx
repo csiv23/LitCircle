@@ -22,8 +22,12 @@ export default function GoogleBooksSearch(
  };
 
  useEffect(() => {
+  // Effect to handle changes in title from the URL
+  if (title !== undefined) {
+    setSearch(title); // Update the search state if title changes
     fullTextSearch(title);
- }, []);
+  }
+}, [title]); // Only re-run the effect if title changes
 
  return (
     <div>

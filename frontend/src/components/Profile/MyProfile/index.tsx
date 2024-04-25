@@ -32,6 +32,7 @@ function MyProfile() {
             fetchUsersClubs();
             fetchUsersBooksRead();
             fetchUsersBooksWishlist();
+            console.log("Rerendered the 2nd useEffect")
         }
     }, [currentUser]);
 
@@ -82,6 +83,44 @@ function MyProfile() {
                 const updatedUser = await client.addToWishlist(currentUser._id, gotBook._id);
                 console.log("addToWishlist updatedUser: " + JSON.stringify(updatedUser));
                 setCurrentUser(updatedUser);
+            }
+        }
+    }
+    const addToBooksRead = async (book: Book) => {
+        if (currentUser) {
+            console.log("addToBooksRead")
+            try {
+                const mongooseBookId = await client.createBook(book);
+                const updatedUser = await client.addToWishlist(currentUser._id, mongooseBookId);
+                setCurrentUser(updatedUser);
+            } catch {
+                console.log("addToBooksRead catch statement");
+                const gotBook = await client.getBookById(book._id);
+                const updatedUser = await client.addToBooksRead(currentUser._id, gotBook._id);
+                console.log("addToBooksRead updatedUser: " + JSON.stringify(updatedUser));
+                setCurrentUser(updatedUser);
+            }
+        }
+    }
+    const addToMyClubs = async (club: Club) => {
+        if (currentUser) {
+            console.log("addToMyClubs");
+            
+        }
+    }
+    const removeFromWishlist = async (bookId: string) => {
+        // const filteredWishlist = currentUserBooksWishlist.filter(book => book._id !== bookToRemove._id);
+        if (currentUser) {
+            try {
+                console.log("removeFromWishlist clicked")
+                await client.removeFromWishlist(currentUser._id, bookId);
+                // const filteredWishlist = currentUserBooksWishlist.filter(book => book._id !== bookId);
+                // setCurrentUserBooksWishlist(filteredWishlist);
+                // fetchUsersBooksWishlist();
+                // setCurrentUser(updatedUser);
+                console.log("Successfully removed book from wishlist")
+            } catch (error) {
+                console.error("Error removing from wishlist:", error);
             }
         }
     }
@@ -137,6 +176,7 @@ function MyProfile() {
                         <div className="col-md-4 text-right">
                             <button className="btn btn-primary">Add BookClub</button>
                         </div>
+
                         <div className="d-flex flex-wrap bookclub-pfp">
                             {currentUserClubs?.map((club: Club, index) => {
                                 if (club) {
@@ -165,6 +205,20 @@ function MyProfile() {
                         </div>
                         <div className="col-md-4 text-right">
                             <button className="btn btn-primary">Add Book</button>
+                        </div>
+                        <Wishlist 
+                            books={currentUserBooksWishlist}
+                            addToWishlist={addToBooksRead}/>
+                        <div className="col-md-4 text-right">
+                            <button className="btn btn-primary" onClick={() => addToBooksRead({
+                                _id: '66285721ae48634f3257c933',
+                                title: 'e',
+                                googleBooksId: 'NKFPEAAAQBAJ',
+                                author: 'Matt Beaumont',
+                                description: 'A Novel',
+                                coverImageUrl: 'http://books.google.com/books/content?id=NKFPEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api',
+                                clubsReading: []
+                            })}>Add Book</button>
                         </div>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
                             {currentUserBooksRead?.map((book: Book, index) => {
@@ -211,13 +265,16 @@ function MyProfile() {
                             {currentUserBooksWishlist?.map((book: Book, index) => {
                                 if (book) {
                                     return (
-                                        <div key={index} className="book">
-                                            <Link to={`/book/${book._id}`}>
-                                                <img src={require(`../../../images/emptyBook.jpeg`)}
-                                                    alt={book.title} />
-                                                <h5>{book.title}</h5>
-                                                <p>{book.author}</p>
-                                            </Link>
+                                        <div>
+                                            <button onClick={() => removeFromWishlist(book._id)}>Remove Book</button>
+                                            <div key={index} className="book">
+                                                <Link to={`/book/${book._id}`}>
+                                                    <img src={require(`../../../images/emptyBook.jpeg`)}
+                                                        alt={book.title} />
+                                                    <h5>{book.title}</h5>
+                                                    <p>{book.author}</p>
+                                                </Link>
+                                            </div>
                                         </div>
                                     );
                                 } else {

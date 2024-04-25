@@ -291,7 +291,7 @@ exports.addBookToWishlist = async (req, res) => {
 
         req.session["currentUser"] = updatedUser;
         res.json(updatedUser);
-        res.status(200).json(updatedUser);
+        // res.status(200).json(updatedUser);
     } catch (error) {
         console.error("Error adding book to wishlist:", error);
         res.status(500).send('Server error');
