@@ -55,8 +55,8 @@ export default function CurrentlyReading(
                     : <img src={require("../../../images/emptyBook.jpeg")} alt={currentBook.title} />}
                 </div>
                 <div className="book-details">
-                    <h5 className="book-title">{currentBook.title}</h5>
-                    <p className="book-author">{currentBook.author}</p>
+                    <h5 className="book-curr-title">{currentBook.title}</h5>
+                    <p className="book-curr-author">{currentBook.author}</p>
                     <p className="book-description">{currentBook.description}</p>
                 </div>
             </Link>

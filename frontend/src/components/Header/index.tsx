@@ -23,14 +23,14 @@ function Header() {
         { label: "Homepage", url: "home", icon: "litcircle-logo.png" },
         { label: "Search Bookclubs", url: "search-clubs" },
         { label: "Search Books", url: "search-books" },
-        { label: "Profile", url: `profile/${currentUser?._id}` }
+        { label: currentUser ? currentUser.username : "Sign in", url: currentUser ? `profile/${currentUser._id}` : "login", desc: "Profile" }
     ];
     
     return(
         <div>
             <ul className="header-row">
                 {links.map((link, index) => (
-                    <li key={index} className={`header-icon ${link.label === "Profile" ? "profile-label" : ""}`}>
+                    <li key={index} className={`header-icon ${link.desc === "Profile" ? "profile-label" : ""}`}>
                         <Link to={`/${link.url}`}> 
                             {link.icon && 
                                 <img src={require(`../images/${link.icon}`)} alt="Logo"/>}

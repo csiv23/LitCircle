@@ -115,12 +115,12 @@
     color: black;
 }
 
-.book-title {
+.book-curr-title {
     margin-top: 10px;
     margin-bottom: 0px;
 }
 
-.book-author {
+.book-curr-author {
     color:rgb(78, 77, 77);
     margin-top: 0px;
 }

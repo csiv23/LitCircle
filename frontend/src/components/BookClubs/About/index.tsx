@@ -26,7 +26,7 @@ export default function About(
                         <button onClick={updateClub}>Save</button></>}
             </div>
             <div className="col-md-11 club-container">
-                <h3 className="club-name">{club.name}</h3>
+                <h3>{club.name}</h3>
                 {isAdmin &&
                 <>
                 <input value={club.name} className="form-control inline"

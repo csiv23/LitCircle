@@ -30,7 +30,7 @@ function SearchableBooksList(
                 <h5 className="book-title">{book.title}</h5>
                 <p className="book-author">{book.author}</p>
             </Link>
-            {isAdmin && <button onClick={() => {removeBook(book._id)}}>
+            {isAdmin && <button onClick={() => {removeBook(book._id)}} className="btn">
                 Remove Book
             </button>}
         </div>

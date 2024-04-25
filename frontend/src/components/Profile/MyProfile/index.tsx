@@ -216,7 +216,7 @@ function MyProfile() {
                                 clubsReading: []
                             })}>Add Book</button>
                         </div> */}
-                        <div className="col-lg d-flex flex-wrap">
+                        {/* <div className="col-lg d-flex flex-wrap">
                             {currentUserBooksRead?.map((book: Book, index) => {
                                 if (book) {
                                     return (
@@ -240,7 +240,7 @@ function MyProfile() {
                                     );
                                 }
                             })}
-                        </div>
+                        </div> */}
                     </div>
                     <div className="row profile-container">
                         <div className="col-md-8">
@@ -260,7 +260,7 @@ function MyProfile() {
                                 clubsReading: []
                             })}>Add Book</button>
                         </div> */}
-                        <div className="col-lg book-container d-flex flex-wrap">
+                        {/* <div className="col-lg book-container d-flex flex-wrap">
                             {currentUserBooksWishlist?.map((book: Book, index) => {
                                 if (book) {
                                     return (
@@ -287,7 +287,7 @@ function MyProfile() {
                                     );
                                 }
                             })}
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

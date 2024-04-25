@@ -58,7 +58,7 @@ function Home() {
             <>
               <h3>Connecting Minds, One Page at a Time</h3>
               <h4>Start organizing your club today.</h4>
-              <Link to="/signup">
+              <Link to="/login">
                 <button className="home-sign-up">Sign Up</button>
               </Link>
             </>

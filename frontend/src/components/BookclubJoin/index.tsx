@@ -1,6 +1,7 @@
 import { Club, User, Book } from "../types";
 import CurrentBook from "./CurrentBook";
 import BooksList from "./BooksList";
+import '../../index.css';
 
 export default function BookclubJoin(
     {club, currentBook, booksRead, wishlist, joinClub}
@@ -14,27 +15,28 @@ export default function BookclubJoin(
     }   
 ) {
     return (
-        <div>
-                <div className="col-md-3 club-column">
-                    <div className='club-text'>
-                        <h3 className="club-heading">{club.name}</h3>
-                        <br/>
-                        <div className="row mr-2">
+        <div className="row">
+            <div className="col-md-3 club-column">
+                <div className='club-text club-profile-picture'>
+                {(club.imageUrl && club.imageUrl !== "") ? 
+                        <img src={club.imageUrl} alt={club.name} /> 
+                        : <img src={require("../../images/BookclubDefault.jpeg")} alt={club.name} />}
+                    <h3 className="club-heading">{club.name}</h3>
+                    <div className="row club-members">
                             <p>Meeting location: {club.nextMeeting && club.nextMeeting.location}</p>
-                        </div>
-                        <div className="row mr-2">
-                            <p>Next meeting:
+                        <div className="row">
+                            <p>Next meeting: {" "}
                                 {club.nextMeeting && club.nextMeeting.meetingDate && club.nextMeeting.meetingDate.toLocaleString('en-us', {  weekday: 'long' })}
+                                {" "}
                                 {club.nextMeeting && club.nextMeeting.meetingDate && club.nextMeeting.meetingDate.toLocaleString()} </p>
                         </div>
-                        <div className="row mr-2">
+                        <div className="row mr-2 ">
                             <p>{club.members.length} members</p>
-                        </div>
                     </div>
-                    <div>
-                        <button onClick={joinClub}>Join Club</button>
+                        <button onClick={joinClub} className="btn">Join Club</button>
                     </div>
                 </div>
+            </div>
                 <div className="col-md-9 club-bg">
                     <div className="row align-items-center ">
                         <div className="col-md-11 club-container">
@@ -44,11 +46,6 @@ export default function BookclubJoin(
                         <div className="col-md-11 club-container">
                             <h4>Our Current Read</h4>
                             <CurrentBook currBook={currentBook} />
-                        </div>
-                        <div className="col-md-11 club-container">
-                            {(club.imageUrl && club.imageUrl !== "") ? 
-                            <img src={club.imageUrl} alt={club.name} className="book-cover" /> 
-                            : <img src={require("../../images/BookclubDefault.jpeg")} alt={club.name} />}
                         </div>
                     </div>
                     <div className="row align-items-center">
