@@ -361,7 +361,7 @@ export async function notImplemented() {
 
  export const getUsers = async () => {
   const response = await mongooseGetCredentials('users');
-  return response
+  return response.map(cleanUser);
 };
 
  // implement this 
@@ -471,6 +471,13 @@ export const addToClubWishlist = async (clubId : string, bookId : string) => {
   return response;
 }
 
+export const getUserWishlist = async (userId : string) => {
+  console.log("getUserWishlist")
+  const response = await mongooseGet(`users/${userId}/wishlist`)
+  console.log("response: " + JSON.stringify(response))
+  return response.map(cleanBookObj);
+}
+
 export const addToWishlist = async (userId : string, bookId : string) => {
   const response = await mongoosePatch(`users/${userId}/wishlist`, {bookId : bookId})
   return cleanUser(response);
@@ -500,7 +507,6 @@ export const getUserClubsWithoutBookRec = async (userId : string, bookId : strin
   const response = await mongooseGet(
     `users/${userId}/clubsWithoutRec/${bookId}`);
   return response.map(cleanClub);
-  
 }
 
 export const followUser = async (userId: string, userIdToFollow: string) => {
