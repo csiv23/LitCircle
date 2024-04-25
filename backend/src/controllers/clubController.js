@@ -267,7 +267,7 @@ exports.setCurrentBook = async (req, res) => {
     const { bookId } = req.body;
 
     try {
-        const book = await validateBookExists(bookId, res);
+        const book = await validateBookbyId(bookId, res);
         if (!book) {
             // If the book doesn't exist, validateBookExists has already handled the response.
             return;
@@ -306,7 +306,7 @@ exports.markCurrentBookAsRead = async (req, res) => {
 
     try {
         const club = await validateClubExists(clubId, res);
-        const book = await validateBookExists(club.CurrentBook, res);
+        const book = await validateBookbyId(club.CurrentBook, res);
         if (!club || !book) return; // Already handled in validate*
 
 
@@ -408,7 +408,7 @@ exports.deleteBookFromWishlist = async (req, res) => {
         return;
     }
 
-    const book = await validateBookExists(bookId, res);
+    const book = await validateBookbyId(bookId, res);
     if (!book) {
         return;
     }

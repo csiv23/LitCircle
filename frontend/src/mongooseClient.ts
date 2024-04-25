@@ -305,7 +305,7 @@ export async function mongoosePatch(uri : string, params : any) {
  * @param {any} params - The payload to send in the POST request.
  * @returns {Promise<any>} The response data from the server.
  */
-export async function mongoosePost(uri : string, params : any) {
+export async function mongoosePost(uri : string, params={}) {
   const url = `${MONGOOSE_URL}/${uri}`;
   try {
       // Attempt to send a POST request using Axios
@@ -341,6 +341,19 @@ export async function mongooseGetCredentials(uri : string) {
       throw error;
   }
 }
+
+export async function mongooseDelete(uri : string, params={}) {
+  const url = `${MONGOOSE_URL}/${uri}`;
+  try {
+      const response = await axios.delete(url, params);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error(`Mongoose request failed at ${url}`, error);
+      throw error;
+  }
+}
+
 
 export async function notImplemented() {
   console.log("not implemented yet")
@@ -544,5 +557,20 @@ export const updateClub = async (club : Club) => {
   const clubMongoose = cleanClubMongoose(club);
 
   const updatedClub = await mongoosePatch(`clubs/${club._id}`, {data: clubMongoose});
+  return cleanClub(updatedClub.club);
+}
+
+export const setCurrentBook = async (clubId : string, bookId : string) => {
+  const updatedClub = await mongoosePost(`clubs/${clubId}/setCurrentBook`, {bookId : bookId});
+  return cleanClub(updatedClub.club);
+}
+
+export const markCurrentBookAsRead = async (clubId : string) => {
+  const updatedClub = await mongoosePost(`clubs/${clubId}/markCurrentBookAsRead`);
+  return cleanClub(updatedClub.club);
+}
+
+export const removeBookFromClubWishlist = async (clubId : string, bookId : string) => {
+  const updatedClub = await mongooseDelete(`clubs/${clubId}/wishlist`, {bookId : bookId});
   return cleanClub(updatedClub.club);
 }

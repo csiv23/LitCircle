@@ -13,7 +13,8 @@ function Members(
     organizer, 
     isAdmin,
     leaveClub,
-    removeUser
+    removeUser,
+    searchUser,
 } : 
 { 
     members: User[],
@@ -23,6 +24,7 @@ function Members(
     isAdmin : boolean
     leaveClub: () => void,
     removeUser : (userId:string) => void
+    searchUser : (userQuery:string) => Promise<any>
 }) 
 {   
     const renderUser = (user : User) => {
@@ -80,6 +82,7 @@ function Members(
         )
     }
 
+
     
     return (
     <div className="d-flex flex-wrap">
@@ -91,7 +94,8 @@ function Members(
     <div>
         <UserSearch 
             users={members}
-            renderUsers={renderUsers} />
+            renderUsers={renderUsers}
+            searchUsers={searchUser} />
     </div>
 
     
