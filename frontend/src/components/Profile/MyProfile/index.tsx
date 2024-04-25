@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import EditProfile from "./EditProfile";
 import { setCurrentUser } from "../../../reducers/usersReducer";
 import Wishlist from "./Wishlist";
+import BooksRead from "./BooksRead";
 
 function getURL( book: Book  ) {
     return `/book/${book.title.replace(/\s+/g, '-').toLowerCase()}`
@@ -83,7 +84,7 @@ function MyProfile() {
         if (currentUser) {
             try {
                 const mongooseBookId = await client.createBook(book);
-                const updatedUser = await client.addToWishlist(currentUser._id, mongooseBookId);
+                const updatedUser = await client.addToBooksRead(currentUser._id, mongooseBookId);
                 setCurrentUser(updatedUser);
             } catch {
                 const updatedUser = await client.addToBooksRead(currentUser._id, book._id);
@@ -91,22 +92,15 @@ function MyProfile() {
             }
         }
     }
-    const addToMyClubs = async (club: Club) => {
-        if (currentUser) {
-            console.log("addToMyClubs");
-            
-        }
-    }
     const removeFromWishlist = async (bookId: string) => {
         if (currentUser) {
             try {
                 console.log("removeFromWishlist clicked")
-                const updatedUser = await client.removeFromWishlist(currentUser._id, bookId);
-                // setCurrentUser(updatedUser);
-                // console.log("removeFromWishlist updatedUser: " + JSON.stringify(updatedUser))
-                // console.log("removeFromWishlist currentUser: " + JSON.stringify(updatedUser))
-                const updatedUserById = await client.getUserById(currentUser._id)
-                setCurrentUser(updatedUserById);
+                // const updatedUser = await client.removeFromWishlist(currentUser._id, bookId);
+                // const updatedUserById = await client.getUserById(currentUser._id)
+                // setCurrentUser(updatedUserById);
+                await client.removeFromWishlist(currentUser._id, bookId);
+                setCurrentUser(await client.profile());
             } catch (error) {
                 console.error("Error removing from wishlist:", error);
             }
@@ -161,10 +155,6 @@ function MyProfile() {
                         <div className="col-md-8 bookclub-section-title">
                             <h4>My BookClubs</h4>
                         </div>
-                        <div className="col-md-4 text-right">
-                            <button className="btn btn-primary">Add BookClub</button>
-                        </div>
-
                         <div className="d-flex flex-wrap bookclub-pfp">
                             {currentUserClubs?.map((club: Club, index) => {
                                 if (club) {
@@ -191,12 +181,9 @@ function MyProfile() {
                         <div className="col-md-8">
                             <h4>Books I've Read</h4>
                         </div>
-                        <div className="col-md-4 text-right">
-                            <button className="btn btn-primary">Add Book</button>
-                        </div>
-                        <Wishlist 
+                        <BooksRead 
                             books={currentUserBooksRead}
-                            addToWishlist={addToBooksRead}/>
+                            addToBooksRead={addToBooksRead}/>
                         {/* <div className="col-md-4 text-right">
                             <button className="btn btn-primary" onClick={() => addToBooksRead({
                                 _id: '66285721ae48634f3257c933',
@@ -208,7 +195,7 @@ function MyProfile() {
                                 clubsReading: []
                             })}>Add Book</button>
                         </div> */}
-                        <div className="col-lg book-container book-cover d-flex flex-wrap">
+                        {/* <div className="col-lg book-container book-cover d-flex flex-wrap">
                             {currentUserBooksRead?.map((book: Book, index) => {
                                 if (book) {
                                     return (
@@ -229,7 +216,7 @@ function MyProfile() {
                                     );
                                 }
                             })}
-                        </div>
+                        </div> */}
                     </div>
                     <div className="row align-items-center">
                         <div className="col-md-8">
@@ -237,20 +224,10 @@ function MyProfile() {
                         </div>
                         <Wishlist 
                             books={currentUserBooksWishlist}
-                            addToWishlist={addToWishlist}/>
-                        {/* <div className="col-md-4 text-right">
-                            <button className="btn btn-primary" onClick={() => addToWishlist({
-                                _id: '66285721ae48634f3257c933',
-                                title: 'e',
-                                googleBooksId: 'NKFPEAAAQBAJ',
-                                author: 'Matt Beaumont',
-                                description: 'A Novel',
-                                coverImageUrl: 'http://books.google.com/books/content?id=NKFPEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api',
-                                clubsReading: []
-                            })}>Add Book</button>
-                        </div> */}
+                            addToWishlist={addToWishlist}
+                            removeFromWishlist={removeFromWishlist}/>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {currentUserBooksWishlist?.map((book: Book, index) => {
+                            {/* {currentUserBooksWishlist?.map((book: Book, index) => {
                                 if (book) {
                                     return (
                                         <div>
@@ -272,7 +249,7 @@ function MyProfile() {
                                         </div>
                                     );
                                 }
-                            })}
+                            })} */}
                         </div>
                     </div>
                 </div>

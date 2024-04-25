@@ -2,10 +2,10 @@ import { Book } from "../../../types";
 import MongooseBookSearch from "../../../MongooseSearchBooks";
 import GoogleBooksSearch from "../../../SearchBooks/search";
 
-export default function Wishlist(
-    { books, addToWishlist, removeFromWishlist }
+export default function BooksRead(
+    { books, addToBooksRead }
         :
-        { books: Book[], addToWishlist: (book: Book) => void, removeFromWishlist: (bookId: string) => void }) {
+        { books: Book[], addToBooksRead: (book: Book) => void }) {
     const renderBooks = (books: Book[]) => {
         return (
             <div className="table-responsive">
@@ -14,8 +14,7 @@ export default function Wishlist(
                         <tr>
                             {books.map((book) => (
                                 <td className="book" key={book._id}>
-                                    <button onClick={() => removeFromWishlist(book._id)}>Remove Book</button>
-                                    <button onClick={() => { addToWishlist(book) }}>
+                                    <button onClick={() => { addToBooksRead(book) }}>
                                         {(book.coverImageUrl && book.coverImageUrl !== "") ?
                                             <img src={book.coverImageUrl} alt={book.title} className="book-cover" />
                                             : <img src={require("../../../../images/emptyBook.jpeg")}
