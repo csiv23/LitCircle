@@ -31,7 +31,6 @@ function MyProfile() {
             fetchUsersClubs();
             fetchUsersBooksRead();
             fetchUsersBooksWishlist();
-            console.log("Rerendered the 2nd useEffect")
         }
     }, [currentUser]);
 
@@ -179,7 +178,7 @@ function MyProfile() {
                     </div>
                     <div className="row align-items-center">
                         <div className="col-md-8">
-                            <h4>Books I've Read</h4>
+                            <h4>Books I've Read ({currentUserBooksRead.length})</h4>
                         </div>
                         <BooksRead 
                             books={currentUserBooksRead}
@@ -209,7 +208,7 @@ function MyProfile() {
                     </div>
                     <div className="row align-items-center">
                         <div className="col-md-8">
-                            <h4>My Book Wishlist</h4>
+                            <h4>My Book Wishlist ({currentUserBooksWishlist.length})</h4>
                         </div>
                         <Wishlist 
                             books={currentUserBooksWishlist}
