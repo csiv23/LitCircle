@@ -35,11 +35,14 @@ exports.getClub = async (req, res) => {
         : club
 
         res.json(formattedClub);
+
     } catch (error) {
         console.error("Error fetching club by ID:", error);
         res.status(500).json({ error: 'Internal server error while fetching the club by ID.' });
     }
 };
+
+
 
 /**
  * Creates a new club with the given details in the request body.
@@ -64,7 +67,7 @@ exports.createClub = async (req, res) => {
         });
 
         await newClub.save();
-        organizer.BookClubs.push({ ClubId: newClub._id, IsLeader: true, JoinDate: new Date() });
+        organizer.BookClubs.push({ ClubId: newClub._id, IsLeader: true });
         await organizer.save();
 
         res.json({ message: "Club created successfully", clubID: newClub.id });
@@ -79,19 +82,35 @@ exports.createClub = async (req, res) => {
  */
 exports.updateClubInfo = async (req, res) => {
     try {
+        const { clubId } = req.params;
+
         const club = await validateClubExists(req.params.clubId, res);
         // No need to proceed if club doesn't exist as validateClubExists handles the response
         if (!club) return;
 
-        const updateData = req.body;
+        const clubData = req.body.data;
+    
+        const updateData = (clubData && clubData.NextMeeting && clubData.NextMeeting.Date)
+        ? {
+            ...clubData,
+            NextMeeting : {
+                ...clubData.NextMeeting,
+                Date : new Date(clubData.NextMeeting.Date)
+            }
+        } : clubData;
+
+        console.log(updateData);
+
         if (updateData.Organizer) {
             const organizer = await validateUserExists(updateData.Organizer, res);
             // No need to proceed if organizer doesn't exist as validateUserExists handles the response
             if (!organizer) return;
         }
-
+        
         Object.assign(club, updateData);
         await club.save();
+        
+        console.log(club);
         res.json({ message: 'Club updated successfully', club });
     } catch (error) {
         console.error("Error updating club info:", error);
@@ -115,7 +134,7 @@ exports.joinClub = async (req, res) => {
         if (!user) return;
 
         if (club.Members.map(member => member.toString()).includes(userId)) {
-            return res.status(400).json({ message: 'User already a member of the club' });
+            return res.status(200).json({ message: 'User already a member of the club' });
         }
 
         club.Members.push(userId);
@@ -205,8 +224,10 @@ exports.fetchClubAttribute = (attributeName) => {
 
         try {
             const populatedClub = await Club.findById(club._id).populate(attributeName);
-            if (!populatedClub || !populatedClub[attributeName]) {
-                return res.status(404).json({ message: `${attributeName} not found in club details` });
+            // Check if attributeName is "currentBook" and if populatedClub or the attribute is null
+            if (attributeName === "currentBook" && (!populatedClub || !populatedClub[attributeName])) {
+                // Return an empty string if currentBook doesn't exist or is null
+                return res.json({ [attributeName]: "" });
             }
 
             res.json({ [attributeName]: populatedClub[attributeName] });
@@ -251,7 +272,7 @@ exports.setCurrentBook = async (req, res) => {
     const { bookId } = req.body;
 
     try {
-        const book = await validateBookExists(bookId, res);
+        const book = await validateBookbyId(bookId, res);
         if (!book) {
             // If the book doesn't exist, validateBookExists has already handled the response.
             return;
@@ -290,7 +311,7 @@ exports.markCurrentBookAsRead = async (req, res) => {
 
     try {
         const club = await validateClubExists(clubId, res);
-        const book = await validateBookExists(club.CurrentBook, res);
+        const book = await validateBookbyId(club.CurrentBook, res);
         if (!club || !book) return; // Already handled in validate*
 
 
@@ -392,7 +413,7 @@ exports.deleteBookFromWishlist = async (req, res) => {
         return;
     }
 
-    const book = await validateBookExists(bookId, res);
+    const book = await validateBookbyId(bookId, res);
     if (!book) {
         return;
     }

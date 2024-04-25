@@ -8,6 +8,8 @@ import * as client from "../../../mongooseClient";
 import { useEffect, useState } from "react";
 import EditProfile from "./EditProfile";
 import { setCurrentUser } from "../../../reducers/usersReducer";
+import Wishlist from "./Wishlist";
+import BooksRead from "./BooksRead";
 
 function getURL( book: Book  ) {
     return `/book/${book.title.replace(/\s+/g, '-').toLowerCase()}`
@@ -15,13 +17,12 @@ function getURL( book: Book  ) {
 
 function MyProfile() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-
     const { userId } = useParams();
     const [currentUser, setCurrentUser] = useState<User>();
     const [currentUserClubs, setCurrentUserClubs] = useState<Club[]>([]);
     const [currentUserBooksRead, setCurrentUserBooksRead] = useState<Book[]>([]);
     const [currentUserBooksWishlist, setCurrentUserBooksWishlist] = useState<Book[]>([]);
+    const [currentUserFollowers, setCurrentUserFollowers] = useState<User[]>();
     useEffect(() => {
         fetchProfile();
     }, []);
@@ -31,6 +32,7 @@ function MyProfile() {
             fetchUsersClubs();
             fetchUsersBooksRead();
             fetchUsersBooksWishlist();
+            fetchUsersFollowers();
         }
     }, [currentUser]);
 
@@ -45,8 +47,8 @@ function MyProfile() {
     const fetchUsersClubs = async () => {
         const allClubs = await client.getClubs();
         const userBookClubIds: ObjectId[] = [];
-        currentUser?.bookClubs.map((bookClub: any) => userBookClubIds.push(bookClub["_id"]));
-        const commonClubs = allClubs.filter((club: Club) => userBookClubIds.includes(club["_id"]));
+        currentUser?.bookClubs.map((bookClub: any) => userBookClubIds.push(bookClub.ClubId));
+        const commonClubs = allClubs.filter((club: Club) => userBookClubIds.includes(club._id));
         setCurrentUserClubs(commonClubs);
     };
     const fetchUsersBooksRead = async () => {
@@ -63,11 +65,50 @@ function MyProfile() {
         const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book["_id"]));
         setCurrentUserBooksWishlist(commonBooks);
     };
+    const fetchUsersFollowers = async () => {
+        const allUsers = await client.getUsers();
+        const followers = allUsers.filter((user: User) => currentUser?.followers.includes(user._id));
+        setCurrentUserFollowers(followers);
+    }
     const signout = async () => {
-        console.log("currentUser before signout: " + JSON.stringify(currentUser));
         await client.signout();
         navigate("/login");
     };
+    const addToWishlist = async (book: Book) => {
+        if (currentUser) {
+            try {
+                const mongooseBookId = await client.createBook(book);
+                const updatedUser = await client.addToWishlist(currentUser._id, mongooseBookId);
+                setCurrentUser(updatedUser);
+            } catch {
+                const updatedUser = await client.addToWishlist(currentUser._id, book._id);
+                setCurrentUser(updatedUser);
+            }
+        }
+    }
+    const addToBooksRead = async (book: Book) => {
+        if (currentUser) {
+            try {
+                const mongooseBookId = await client.createBook(book);
+                const updatedUser = await client.addToBooksRead(currentUser._id, mongooseBookId);
+                setCurrentUser(updatedUser);
+            } catch {
+                const updatedUser = await client.addToBooksRead(currentUser._id, book._id);
+                setCurrentUser(updatedUser);
+            }
+        }
+    }
+    const removeFromWishlist = async (bookId: string) => {
+        if (currentUser) {
+            try {
+                console.log("removeFromWishlist clicked")
+                const updatedUser = await client.removeFromWishlist(currentUser._id, bookId);
+                setCurrentUser(updatedUser);
+            } catch (error) {
+                console.error("Error removing from wishlist:", error);
+            }
+        }
+    }
 
     console.log("MyProfile currentUser: " + JSON.stringify(currentUser));
     if (!currentUser || currentUser?._id !== userId) {
@@ -111,20 +152,49 @@ function MyProfile() {
                             <span className="mr-2">Email:</span> {currentUser?.email}
                         </div>
                     </div>
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <span className="mr-2">
+                                Your Followers:
+                                {currentUserFollowers?.map((follower: User, index) => {
+                                    if (follower) {
+                                        console.log("follower: " + JSON.stringify(follower))
+                                        return (
+                                            <div key={follower._id}>
+                                                <Link to={`/profile/${follower._id}`}>
+                                                    {(follower.avatar && follower.avatar !== "") ?
+                                                        <img src={follower.avatar} alt={follower.avatar} />
+                                                        : <img src={require("../../images/avatar.jpeg")} alt={follower.avatar} />}
+                                                </Link>
+                                                <div>{follower.username}</div>
+                                            </div>
+                                        )
+                                    } else {
+                                        return (
+                                            <div key={index}>
+                                                <p>Follower with ID not found.</p>
+                                            </div>
+                                        );
+                                    }
+                                })}
+                            </span>
+                            
+                        </div>
+                    </div>
                 </div>
                 <div className="col-md-9">
                     <div className="row align-items-center">
                         <div className="col-md-8 bookclub-section-title">
-                            <h4>My BookClubs</h4>
-                        </div>
-                        <div className="col-md-4 text-right">
-                            <button className="btn btn-primary">Add BookClub</button>
+                            <h4>My BookClubs ({currentUserClubs.length})</h4>
                         </div>
                         <div className="d-flex flex-wrap bookclub-pfp">
                             {currentUserClubs?.map((club: Club, index) => {
                                 if (club) {
                                     return (
-                                        <div key={index}>
+                                        <div key={club._id}>
+                                            {(club.organizer && currentUser && currentUser._id && club.organizer === currentUser._id) &&
+                                                (<p> User is admin of club </p>)
+                                            }
                                             <Link to={`/bookclub/${club._id}`}>
                                                 <h5>{club.name}</h5>
                                                 <img src={require(`../../../images/BookclubDefault.jpeg`)} alt={club.name} className="book-cover" />
@@ -144,62 +214,20 @@ function MyProfile() {
                     </div>
                     <div className="row align-items-center">
                         <div className="col-md-8">
-                            <h4>Books I've Read</h4>
+                            <h4>Books I've Read ({currentUserBooksRead.length})</h4>
+                            <button onClick={() => navigate('/search-books')}>Add a Book</button>
                         </div>
-                        <div className="col-md-4 text-right">
-                            <button className="btn btn-primary">Add Book</button>
-                        </div>
-                        <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {currentUserBooksRead?.map((book: Book, index) => {
-                                if (book) {
-                                    return (
-                                        <div key={index} className="book">
-                                            <Link to={`/book/${book._id}`}>
-                                                <img src={require(`../../../images/emptyBook.jpeg`)}
-                                                    alt={book.title} />
-                                                <h5>{book.title}</h5>
-                                                <p>{book.author}</p>
-                                            </Link>
-                                        </div>
-                                    );
-                                } else {
-                                    return (
-                                        <div key={index}>
-                                            <p>Book with ID not found.</p>
-                                        </div>
-                                    );
-                                }
-                            })}
-                        </div>
+                        <BooksRead 
+                            books={currentUserBooksRead}/>
                     </div>
                     <div className="row align-items-center">
                         <div className="col-md-8">
-                            <h4>My Book Wishlist</h4>
+                            <h4>My Book Wishlist ({currentUserBooksWishlist.length})</h4>
+                            <button onClick={() => navigate('/search-books')}>Add a Book</button>
                         </div>
-                        <div className="col-md-4 text-right">
-                            <button className="btn btn-primary">Add Book</button>
-                        </div>
+                        <Wishlist 
+                            books={currentUserBooksWishlist}/>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {currentUserBooksWishlist?.map((book: Book, index) => {
-                                if (book) {
-                                    return (
-                                        <div key={index} className="book">
-                                            <Link to={`/book/${book._id}`}>
-                                                <img src={require(`../../../images/emptyBook.jpeg`)}
-                                                    alt={book.title} />
-                                                <h5>{book.title}</h5>
-                                                <p>{book.author}</p>
-                                            </Link>
-                                        </div>
-                                    );
-                                } else {
-                                    return (
-                                        <div key={index}>
-                                            <p>Book with ID not found.</p>
-                                        </div>
-                                    );
-                                }
-                            })}
                         </div>
                     </div>
                 </div>

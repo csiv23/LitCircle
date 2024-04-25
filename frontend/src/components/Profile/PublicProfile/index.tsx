@@ -21,6 +21,7 @@ function PublicProfile() {
     const [publicUserClubs, setPublicUserClubs] = useState<Club[]>([]);
     const [publicUserBooksRead, setPublicUserBooksRead] = useState<Book[]>([]);
     const [publicUserBooksWishlist, setPublicUserBooksWishlist] = useState<Book[]>([]);
+    const [publicUserFollowers, setPublicUserFollowers] = useState<User[]>([]);
     useEffect(() => {
         fetchPublicUser();
         fetchCurrentUser();
@@ -30,6 +31,7 @@ function PublicProfile() {
             fetchPublicUsersClubs();
             fetchPublicUsersBooksRead();
             fetchPublicUsersBooksWishlist();
+            fetchPublicUserFollowers();
         }
     }, [publicUser]);
 
@@ -70,7 +72,6 @@ function PublicProfile() {
     };
     const follow = async () => {
         if (currentUser) {
-            console.log("follow button clicked")
             if (publicUser) {
                 try {
                     await client.followUser(currentUser._id, publicUser?._id);
@@ -86,7 +87,6 @@ function PublicProfile() {
     }
     const unfollow = async () => {
         if (currentUser) {
-            console.log("unfollow button clicked")
             if (publicUser) {
                 try {
                     await client.unfollowUser(currentUser._id, publicUser?._id);
@@ -98,6 +98,17 @@ function PublicProfile() {
             }
         } else {
             navigate("/login");
+        }
+    }
+    const fetchPublicUserFollowers = async () => {
+        if (publicUser) {
+            try {
+                const allUsers = await client.getUsers();
+                const followers = allUsers.filter((user: User) => publicUser.followers.includes(user._id));
+                setPublicUserFollowers(followers);
+            } catch (error) {
+                console.log("PublicProfile failed to fetch publicUser followers");
+            }
         }
     }
 
@@ -136,6 +147,30 @@ function PublicProfile() {
                     <div>
                         <button onClick={follow}>Follow</button>
                         <button onClick={unfollow}>Unfollow</button>
+                    </div>
+                    <div>
+                        Followers:
+                        {publicUserFollowers?.map((follower: User, index) => {
+                            if (follower) {
+                                console.log("follower: " + JSON.stringify(follower))
+                                return (
+                                    <div key={follower._id}>
+                                        <Link to={`/profile/${follower._id}`}>
+                                            {(follower.avatar && follower.avatar !== "") ?
+                                                <img src={follower.avatar} alt={follower.avatar} />
+                                                : <img src={require("../../images/avatar.jpeg")} alt={follower.avatar} />}
+                                        </Link>
+                                        <div>{follower.username}</div>
+                                    </div>
+                                )
+                            } else {
+                                return (
+                                    <div key={index}>
+                                        <p>Follower with ID not found.</p>
+                                    </div>
+                                );
+                            }
+                        })}
                     </div>
                 </div>
                 <div className="col-md-9">
