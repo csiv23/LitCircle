@@ -1,3 +1,4 @@
+import './index.css'
 import { useEffect, useState } from "react";
 import { User } from "../types";
 import { useNavigate } from "react-router";
@@ -26,9 +27,9 @@ export default function Signin() {
     }
 
     return (
-        <div>
-            <h1>Sign In</h1>
-            {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error message if there is an error */}
+        <div className='signin-container'>
+            <h2>Sign In</h2>
+            {error && <div style={{ color: 'red' }}>{error}</div>}
             <input value={credentials.email} placeholder="Email" type="email" onChange={(e) =>
                 setCredentials({ ...credentials, email: e.target.value })} />
             <input value={credentials.password} placeholder="Password" type="password" onChange={(e) =>

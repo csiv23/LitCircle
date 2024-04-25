@@ -1,4 +1,5 @@
 import { Club, User } from "../../types";
+import '../index.css';
 
 export default function About(
     {club, isAdmin, updateClub, setClub} 
@@ -13,11 +14,11 @@ export default function About(
     return (
         <div>
             <div className="col-md-11 club-container">
-                <h1>About Our Club</h1>
+                <h2>About Our Club</h2>
             </div>
-            <div className="col-md-11 club-container">
+            <div className="col-md-11 club-container club-about">
                 {(club.imageUrl && club.imageUrl !== "") ? 
-                <img src={club.imageUrl} alt={club.name} className="book-cover" /> 
+                <img src={club.imageUrl} alt={club.name} /> 
                 : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
                 {isAdmin && 
                 <><input value={club.imageUrl} className="form-control inline"
@@ -25,7 +26,7 @@ export default function About(
                         <button onClick={updateClub}>Save</button></>}
             </div>
             <div className="col-md-11 club-container">
-                <h4>{club.name}</h4>
+                <h3>{club.name}</h3>
                 {isAdmin &&
                 <>
                 <input value={club.name} className="form-control inline"

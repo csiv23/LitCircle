@@ -3,6 +3,7 @@ import * as mongooseClient from "../../../mongooseClient"
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect, JSXElementConstructor, Key, ReactElement, ReactNode} from "react";
 import UserSearch from "../../SearchUsers/searchUser";
+import '../index.css';
 
 
 function Members({leaveClub} : {leaveClub : () => Promise<void>}) 
@@ -72,13 +73,13 @@ function Members({leaveClub} : {leaveClub : () => Promise<void>})
 
     const renderUser = (user : User) => {
         return (
-            <div key={user._id} className="member">
+            <div key={user._id} className="member book-btn">
                 <Link to={`/profile/${user._id}`}>
                     {(user.avatar && user.avatar !== "") ? 
                     <img src={user.avatar} alt={user.avatar}/> 
                     : <img src={require("../../images/avatar.jpeg")} alt={user.avatar} />}
                     { club.organizer && club.organizer === user._id &&
-                        <h4>Club Admin</h4>
+                        <h5>Club Admin</h5>
                     }  
                 </Link>
                     <p>{user.username}</p>

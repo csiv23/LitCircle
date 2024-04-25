@@ -1,6 +1,5 @@
 import { Book, Club, ClubMeeting } from "../../types";
 import { Link, useParams } from "react-router-dom";
-import {  } from "react-router-dom";
 
 export default function NextMeeting(
     {currentBook, club, isAdmin,
@@ -15,9 +14,9 @@ export default function NextMeeting(
 
     return (
     <div>
-        <div>
+        <div className="col-md-11 club-container">
             <h4>Next Meeting</h4>
-            <p>{club.nextMeeting.meetingDate.toLocaleString('en-us', {  weekday: 'long' })}
+            <p>{club.nextMeeting.meetingDate.toLocaleString('en-us', {  weekday: 'long' })} {' '}
                 {club.nextMeeting.meetingDate.toLocaleString()}
             </p>
            {isAdmin &&  <input type="datetime-local" value={club.nextMeeting.meetingDate.toISOString()}
@@ -25,7 +24,7 @@ export default function NextMeeting(
             >
             </input>}
         </div>
-        <div key={currentBook._id} className="book">
+        <div key={currentBook._id} className="col-md-11 club-container book">
             <Link to={`/book/${currentBook.googleBooksId}`}>
                 <div>
                 {(currentBook.coverImageUrl && currentBook.coverImageUrl !== "") ? 

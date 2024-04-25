@@ -4,6 +4,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import BookclubResults from "./bookclubSearchResults";
 import { User } from "../types";
 import * as client from "../../mongooseClient";
+import './index.css';
 
 export default function BookclubSearch() {
   const navigate = useNavigate();
@@ -36,25 +37,26 @@ export default function BookclubSearch() {
 
   return (
     <div>
-      <h2>Search Bookclubs</h2>
-      <input type="text" value={search}
-        onChange={(e) =>
-          setSearch(e.target.value)} />
-      <Link to={`/search-clubs/${search}`}>
-        <button
-          onClick={() => fullTextSearch(search)}>
-          Search
-        </button>
-      </Link>
-      {results &&
-        results.length > 0 && (
-          <>
-            <h2>Books</h2>
-            <BookclubResults
-              clubs={results} />
-          </>
-        )}
+      <div className="club-container">
+        <h2>Search Bookclubs</h2>
+        <input type="text" value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)} />
+        <Link to={`/search-clubs/${search}`}>
+          <button className="btn"
+            onClick={() => fullTextSearch(search)}>
+            Search
+          </button>
+        </Link>
+        {results &&
+          results.length > 0 && (
+            <>
+              <h3>Bookclubs</h3>
+              <BookclubResults
+                clubs={results} />
+            </>
+          )}
+      </div>
     </div>
-
   )
 }

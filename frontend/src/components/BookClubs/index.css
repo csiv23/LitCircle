@@ -1,6 +1,7 @@
-.club-profile-picture {
+.club-profile-picture img{
     width: 200px;
     height: 200px;
+    margin: 5px;
 }
 
 .club-font {
@@ -9,10 +10,17 @@
 
 .club-heading {
     font-weight: bold;
+    font-size: 20px;
+    margin: 5px;
+}
+
+.club-members {
+    margin: 5px;
 }
 
 .club-column {
     background-color: rgb(214, 207, 192);
+    min-height: 100vh;
 }
 
 .club-text {
@@ -30,6 +38,34 @@
     border-radius: 10px;
     margin: 10px;
     padding: 10px;
+}
+
+.club-name {
+    margin-top: 20px;
+}
+
+.club-nav {
+    margin: 20px;
+    font-size: 18px;
+    list-style-type: none;
+}
+
+.club-nav a{
+    text-decoration: none;
+    color: black;
+}
+
+.club-nav li {
+    margin-left: 40px;
+    margin-bottom: 5px; 
+}
+
+.active {
+    font-weight: bold;
+}
+
+.club-about img{
+    height: 300px;
 }
 
 .book-cover {
@@ -59,11 +95,19 @@
 
 .book-container {
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-.book {
-    margin: 5px;
+.book-details {
+    flex: 1;
+    margin-left: 20px;
+}
+
+.book img {
+    width: 130px;
+    height: 200px;
 }
 
 .book a {
@@ -71,20 +115,39 @@
     color: black;
 }
 
-.book-title {
+.book-curr-title {
     margin-top: 10px;
+    margin-bottom: 0px;
 }
 
-.book-author {
+.book-curr-author {
     color:rgb(78, 77, 77);
+    margin-top: 0px;
 }
 
-.book-btn {
+.books-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin: 10px;
+}
+
+.book-btn button{
+    color: whitesmoke;
     background-color: rgb(126, 135, 96);
+    border: none;
+}
+
+.book-wishlist {
+    background-color: rgba(244, 228, 210, 0.697);
     border: none;
 }
 
 .vertical-divider {
     border-left: 2px; 
     height: 100%;
+}
+
+.text-right {
+    text-align: right;
 }

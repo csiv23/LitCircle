@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import * as client from "../../../../mongooseClient";
 import { User } from "../../../types";
 import { useDispatch, useSelector } from "react-redux";
+import '../../index.css';
 
 export default function EditProfile() {
     const navigate = useNavigate();
@@ -45,19 +46,21 @@ export default function EditProfile() {
 
     console.log("EditProfile currentUser: " + JSON.stringify(currentUser));
     return (
-        <div>
+        <div className="profile-font profile-bg profile-desc">
             <h1>Edit Profile</h1>
             {userId && (
                 <div>
-                    Username:
-                    <input value={currentUser.username} onChange={(e) =>
-                        setCurrentUser({...currentUser, username: e.target.value})} />
-                    Password:
-                    <input value={currentUser.password} onChange={(e) =>
-                        setCurrentUser({...currentUser, password: e.target.value})} />
-                    <br />
-                    <br />
-                    <button onClick={updateProfile}> Save Changes </button>
+                    <div className="edit-profile">
+                        Username:
+                        <input value={currentUser.username} onChange={(e) =>
+                            setCurrentUser({...currentUser, username: e.target.value})} />
+                    </div>
+                    <div className="edit-profile">
+                        Password:
+                        <input value={currentUser.password} onChange={(e) =>
+                            setCurrentUser({...currentUser, password: e.target.value})} />
+                    </div>
+                    <button onClick={updateProfile} className="btn"> Save Changes </button>
                 </div>
             )}
         </div>

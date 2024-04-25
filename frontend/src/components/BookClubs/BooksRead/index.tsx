@@ -191,11 +191,10 @@ return (
                 <img src={club.imageUrl} alt={club.imageUrl} className="book-cover" /> 
                 : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
     </div>
-    <h4>
-        Books We Want to Read
-    </h4>
-    <br></br>
-    <h4>{booksRead.length} Books</h4>
+    <div className="col-md-11 club-container">
+            <h4>Books We've Read</h4>
+            <h6>{booksRead.length} Books</h6>
+        </div>
 
     {isAdmin && <GoogleBooksSearch renderBooks={renderBooks} searchPath={false} />}
     <div>

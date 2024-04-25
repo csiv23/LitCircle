@@ -21,7 +21,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // Multiple user sessions:
 const sessionOptions = {
-  secret: process.env.SESSION_SECRET, // process.env.SESSION_SECRET,
+  secret: "poop", // process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
 };

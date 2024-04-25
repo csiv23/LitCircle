@@ -21,6 +21,7 @@ function PublicProfile() {
     const [publicUserClubs, setPublicUserClubs] = useState<Club[]>([]);
     const [publicUserBooksRead, setPublicUserBooksRead] = useState<Book[]>([]);
     const [publicUserBooksWishlist, setPublicUserBooksWishlist] = useState<Book[]>([]);
+    const [isFollowing, setIsFollowing] = useState<boolean>();
     const [publicUserFollowers, setPublicUserFollowers] = useState<User[]>([]);
     useEffect(() => {
         fetchPublicUser();
@@ -45,6 +46,9 @@ function PublicProfile() {
         try {
             const userSession = await client.profile();
             setCurrentUser(userSession);
+            if (publicUser) {
+                setIsFollowing(userSession.following.includes(publicUser._id));
+            }
         } catch (error) {
             console.log("couldn't fetch currentUser");
         }
@@ -77,6 +81,7 @@ function PublicProfile() {
                     await client.followUser(currentUser._id, publicUser?._id);
                     setPublicUser(await client.getUserById(publicUser._id));
                     setCurrentUser(await client.profile());
+                    setIsFollowing(true);
                 } catch (error) {
                     console.log("PublicProfile failed to follow user");
                 }
@@ -92,6 +97,7 @@ function PublicProfile() {
                     await client.unfollowUser(currentUser._id, publicUser?._id);
                     setPublicUser(await client.getUserById(publicUser._id));
                     setCurrentUser(await client.profile());
+                    setIsFollowing(false);
                 } catch (error) {
                     console.log("PublicProfile failed to follow user");
                 }
@@ -119,34 +125,59 @@ function PublicProfile() {
     return (
         <div>
             <Header />
-            <div className="row">
-                <div className="col-md-3">
-                    <h2>Profile</h2>
-                    <br />
+            <div className="row profile-font">
+                <div className="col-md-3 profile-column">
                     <div className="profile-avatar">
                         <img src={require(`../../images/avatar.jpeg`)} alt="Avatar" />
                     </div>
-                    <div className="profile-name">
+                    <div className="row profile-name">
                         <h3>
                             {publicUser?.firstName} {publicUser?.lastName}
                         </h3>
                     </div>
                     <div className="row">
-                        <div className="col-sm-6">
-                            <span className="mr-2">Followers:</span> {publicUser?.followers.length}
-                        </div>
-                        <div className="col-sm-6">
-                            <span className="mr-2">Following:</span> {publicUser?.following.length}
+                        <div className="col-sm-11 profile-desc">
+                            <h5>{publicUser?.username}</h5>
                         </div>
                     </div>
                     <div className="row">
+                    <div className="col-sm-6 profile-desc">
+                            <span>Followers:</span> {publicUser?.followers.length}
+                        </div>
                         <div className="col-sm-6">
-                            <span className="mr-2">Email:</span> {publicUser?.email}
+                            <span>Following:</span> {publicUser?.following.length}
                         </div>
                     </div>
+                    <div className="btn-align">
+                        {isFollowing ? (
+                            <button onClick={unfollow} className="btn">Unfollow</button>
+                        ) : (
+                            <button onClick={follow} className="btn">Follow</button>
+                        )}
+                    </div>
                     <div>
-                        <button onClick={follow}>Follow</button>
-                        <button onClick={unfollow}>Unfollow</button>
+                        Followers:
+                        {publicUserFollowers?.map((follower: User, index) => {
+                            if (follower) {
+                                console.log("follower: " + JSON.stringify(follower))
+                                return (
+                                    <div key={follower._id}>
+                                        <div>{follower.username}</div>
+                                        <Link to={`/profile/${follower._id}`}>
+                                            {(follower.avatar && follower.avatar !== "") ?
+                                                <img src={follower.avatar} alt={follower.avatar} />
+                                                : <img src={require("../../images/avatar.jpeg")} alt={follower.avatar} />}
+                                        </Link>
+                                    </div>
+                                )
+                            } else {
+                                return (
+                                    <div key={index}>
+                                        <p>Follower with ID not found.</p>
+                                    </div>
+                                );
+                            }
+                        })}
                     </div>
                     <div>
                         Followers:
@@ -173,85 +204,91 @@ function PublicProfile() {
                         })}
                     </div>
                 </div>
-                <div className="col-md-9">
-                    <div className="row align-items-center">
-                        <div className="col-md-8 bookclub-section-title">
+                <div className="col-md-9 profile-bg">
+                    <div className="row">
+                        <div className="col-md-11 profile-container">
                             <h4>My BookClubs</h4>
-                        </div>
-                        <div className="d-flex flex-wrap bookclub-pfp">
-                            {publicUserClubs.map((club: Club, index) => {
-                                if (club) {
-                                    return (
-                                        <div key={index}>
-                                            <Link to={`/bookclub/${club._id}`}>
-                                                <h5>{club.name}</h5>
-                                                <img src={require(`../../../images/BookclubDefault.jpeg`)} alt={club.name} className="book-cover" />
-                                            </Link>
-                                            <p>Members: {club.members.length}</p>
-                                        </div>
-                                    );
-                                } else {
-                                    return (
-                                        <div key={index}>
-                                            <p>Club with ID not found.</p>
-                                        </div>
-                                    );
-                                }
-                            })}
+                            <div className="d-flex flex-wrap bookclub-pfp">
+                                {publicUserClubs.map((club: Club, index) => {
+                                    if (club) {
+                                        return (
+                                            <div key={index}>
+                                                <Link to={`/bookclub/${club._id}`}>
+                                                    <h5>{club.name}</h5>
+                                                    <img src={require(`../../../images/BookclubDefault.jpeg`)} alt={club.name} className="book-cover" />
+                                                </Link>
+                                                <p>Members: {club.members.length}</p>
+                                            </div>
+                                        );
+                                    } else {
+                                        return (
+                                            <div key={index}>
+                                                <p>Club with ID not found.</p>
+                                            </div>
+                                        );
+                                    }
+                                })}
+                            </div>
                         </div>
                     </div>
-                    <div className="row align-items-center">
-                        <div className="col-md-8">
+                    <div className="row">
+                        <div className="col-md-11 profile-container">
                             <h4>Books I've Read</h4>
-                        </div>
-                        <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {publicUserBooksRead.map((book: Book, index) => {
-                                if (book) {
-                                    return (
-                                        <div key={index} className="book">
-                                            <Link to={`/book/${book._id}`}>
-                                                <img src={require(`../../../images/emptyBook.jpeg`)}
-                                                    alt={book.title} />
-                                                <h5>{book.title}</h5>
-                                                <p>{book.author}</p>
-                                            </Link>
-                                        </div>
-                                    );
-                                } else {
-                                    return (
-                                        <div key={index}>
-                                            <p>Book with ID not found.</p>
-                                        </div>
-                                    );
-                                }
-                            })}
+                            <div className="col-lg book-container">
+                                {publicUserBooksRead.map((book: Book, index) => {
+                                    if (book) {
+                                        return (
+                                            <div key={index} className="book">
+                                                <Link to={`/book/${book._id}`}>
+                                                <div>
+                                                    {(book.coverImageUrl && book.coverImageUrl !== "") ? 
+                                                    <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
+                                                    : <img src={require("../../../images/emptyBook.jpeg")} alt={book.title} />}
+                                                </div>
+                                                    <h5>{book.title}</h5>
+                                                    <p className="book-author">{book.author}</p>
+                                                </Link>
+                                            </div>
+                                        );
+                                    } else {
+                                        return (
+                                            <div key={index}>
+                                                <p>Book with ID not found.</p>
+                                            </div>
+                                        );
+                                    }
+                                })}
+                            </div>
                         </div>
                     </div>
-                    <div className="row align-items-center">
-                        <div className="col-md-8">
+                    <div className="row">
+                        <div className="col-md-11 profile-container">
                             <h4>My Book Wishlist</h4>
-                        </div>
-                        <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {publicUserBooksWishlist.map((book: Book, index) => {
-                                if (book) {
-                                    return (
-                                        <div key={book._id} className="book">
-                                            <Link to={`/book/${book._id}`}>
-                                                <img src={require(`../../../images/emptyBook.jpeg`)}
-                                                    alt={book.title} />
-                                                <h5>{book.title}</h5>
-                                                <p>{book.author}</p>
-                                            </Link>
-                                        </div>
-                                    );
-                                } else {
-                                    return (
-                                        <div key={index}>
-                                            <p>Book with ID not found.</p>
-                                        </div>
-                                    );
-                                }
-                            })}
+                            <div className="col-lg book-container">
+                                {publicUserBooksWishlist.map((book: Book, index) => {
+                                    if (book) {
+                                        return (
+                                            <div key={index} className="book">
+                                                <Link to={`/book/${book._id}`}>
+                                                <div>
+                                                    {(book.coverImageUrl && book.coverImageUrl !== "") ? 
+                                                    <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
+                                                    : <img src={require("../../../images/emptyBook.jpeg")} alt={book.title} />}
+                                                </div>
+                                                    <h5>{book.title}</h5>
+                                                    <p className="book-author">{book.author}</p>
+                                                </Link>
+                                            </div>
+                                        );
+                                    } else {
+                                        return (
+                                            <div key={index}>
+                                                <p>Book with ID not found.</p>
+                                            </div>
+                                        );
+                                    }
+                                })}
+                            </div>
                         </div>
                     </div>
                 </div>

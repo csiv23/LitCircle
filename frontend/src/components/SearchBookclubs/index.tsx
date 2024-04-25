@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { User } from "../types";
 import * as client from "../../mongooseClient";
+import Header from "../Header";
 
 export default function SearchBookclubs() {
   const navigate = useNavigate();
@@ -26,12 +27,14 @@ export default function SearchBookclubs() {
   // }
 
   return (
-    <div className="container-fluid">
-      <h1>Search Bookclubs</h1>
-      <Routes>
-        <Route path="/" element={<BookclubSearch />} />
-        <Route path="/:name" element={<BookclubSearch />} />
-      </Routes>
+    <div>
+      <Header/>
+      <div className="container-fluid search-font club-bg">
+        <Routes>
+          <Route path="/" element={<BookclubSearch />} />
+          <Route path="/:name" element={<BookclubSearch />} />
+        </Routes>
+      </div>
     </div>
   );
 

@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import "./index.css";
+import "../index.css";
 import { User, Book, Club, ObjectId } from "../../types";
 import { users as dbUsers, books as dbBooks, bookclubs as dbBookclubs} from '../../../database';
 import Header from "../../Header";
@@ -117,39 +117,73 @@ function MyProfile() {
     }
 
     return (
-        <div>
+        <div className="profile-font">
             <Header />
             <div className="row">
-                <div className="col-md-3">
-                    <h2>Profile</h2>
-                    <br />
+                <div className="col-md-3 profile-column">
                     <div className="profile-avatar">
                         <img src={require(`../../images/avatar.jpeg`)} alt="Avatar" />
                     </div>
-                    <div className="profile-name">
-                        <h3>
-                            {currentUser?.firstName} {currentUser?.lastName}
+                    <div className="row profile-name">
+                        <div className="col-md-8">
+                            <h3>{currentUser?.firstName} {currentUser?.lastName}</h3>
+                        </div>
+                        <div className="col-md-4 text-right">
                             <Link to={`/myProfile/${userId}/Edit`}>
-                                <button className="btn btn-secondary ml-2">Edit</button>
+                                <button className="btn">Edit</button>
                             </Link>
-                        </h3>
+                        </div>
                     </div>
                     <div className="row">
+                        <div className="col-sm-11 profile-desc">
+                            <h5>{currentUser?.username}</h5>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-6 profile-desc">
+                            <span>Followers:</span> {currentUser?.followers.length}
+                        </div>
                         <div className="col-sm-6">
-                            <span className="mr-2">Username:</span> {currentUser?.username}
+                            <span>Following:</span> {currentUser?.following.length}
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-11 profile-desc">
+                            <span>Email:</span> {currentUser?.email}
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-11 profile-desc">
+                            <button onClick={signout} className="btn">Logout</button>
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <span className="mr-2">Followers:</span> {currentUser?.followers.length}
-                        </div>
-                        <div className="col-sm-6">
-                            <span className="mr-2">Following:</span> {currentUser?.following.length}
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-sm-6">
-                            <span className="mr-2">Email:</span> {currentUser?.email}
+                            <span className="mr-2">
+                                Your Followers:
+                                {currentUserFollowers?.map((follower: User, index) => {
+                                    if (follower) {
+                                        console.log("follower: " + JSON.stringify(follower))
+                                        return (
+                                            <div key={follower._id}>
+                                                <Link to={`/profile/${follower._id}`}>
+                                                    {(follower.avatar && follower.avatar !== "") ?
+                                                        <img src={follower.avatar} alt={follower.avatar} />
+                                                        : <img src={require("../../images/avatar.jpeg")} alt={follower.avatar} />}
+                                                </Link>
+                                                <div>{follower.username}</div>
+                                            </div>
+                                        )
+                                    } else {
+                                        return (
+                                            <div key={index}>
+                                                <p>Follower with ID not found.</p>
+                                            </div>
+                                        );
+                                    }
+                                })}
+                            </span>
+                            
                         </div>
                     </div>
                     <div className="row">
@@ -182,12 +216,12 @@ function MyProfile() {
                         </div>
                     </div>
                 </div>
-                <div className="col-md-9">
-                    <div className="row align-items-center">
+                <div className="col-md-9 profile-bg">
+                    <div className="row profile-container">
                         <div className="col-md-8 bookclub-section-title">
                             <h4>My BookClubs ({currentUserClubs.length})</h4>
                         </div>
-                        <div className="d-flex flex-wrap bookclub-pfp">
+                        <div className="d-flex flex-wrap bookclub-desc">
                             {currentUserClubs?.map((club: Club, index) => {
                                 if (club) {
                                     return (
@@ -197,7 +231,11 @@ function MyProfile() {
                                             }
                                             <Link to={`/bookclub/${club._id}`}>
                                                 <h5>{club.name}</h5>
-                                                <img src={require(`../../../images/BookclubDefault.jpeg`)} alt={club.name} className="book-cover" />
+                                                <div>
+                                                    {(club.imageUrl && club.imageUrl !== "") ? 
+                                                    <img src={club.imageUrl} alt={club.name} className="book-cover" /> 
+                                                    : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
+                                                </div>
                                             </Link>
                                             <p>Members: {club.members.length}</p>
                                         </div>
@@ -212,7 +250,7 @@ function MyProfile() {
                             })}
                         </div>
                     </div>
-                    <div className="row align-items-center">
+                    <div className="row profile-container">
                         <div className="col-md-8">
                             <h4>Books I've Read ({currentUserBooksRead.length})</h4>
                             <button onClick={() => navigate('/search-books')}>Add a Book</button>
@@ -220,7 +258,7 @@ function MyProfile() {
                         <BooksRead 
                             books={currentUserBooksRead}/>
                     </div>
-                    <div className="row align-items-center">
+                    <div className="row profile-container">
                         <div className="col-md-8">
                             <h4>My Book Wishlist ({currentUserBooksWishlist.length})</h4>
                             <button onClick={() => navigate('/search-books')}>Add a Book</button>
@@ -231,7 +269,6 @@ function MyProfile() {
                         </div>
                     </div>
                 </div>
-                <button onClick={signout}>Logout</button>
             </div>
         </div>
     );

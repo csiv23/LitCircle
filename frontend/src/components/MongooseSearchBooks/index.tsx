@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Book } from "../types";
+import '../../index.css'
 
 export default function MongooseBookSearch(
     {
@@ -48,7 +49,7 @@ export default function MongooseBookSearch(
       <input type="text" value={search}
         onChange={(e) =>
             setSearch(e.target.value)}/>
-      <button
+      <button className="btn"
         onClick={() => fullTextSearch(search)}>
         Search
       </button>

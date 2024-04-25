@@ -1,0 +1,90 @@
+.profile-font {
+    font-family:Georgia, 'Times New Roman', Times, serif;
+}
+
+.profile-column {
+    background-color: rgb(214, 207, 192);
+    min-height: 100vh;
+}
+
+.profile-bg {
+    background-color: rgb(240, 233, 225);
+    padding-left: 60px;
+    padding-top: 50px;
+    min-height: 100vh;
+}
+
+.profile-container {
+    background-color: rgba(244, 228, 210, 0.697);
+    border-radius: 10px;
+    margin: 10px;
+    padding: 10px;
+}
+
+.profile-name {
+    font-weight: bold;
+    font-size: 20px;
+    margin: 5px;
+}
+
+.bookclub-section-title {
+    size: 15px;
+}
+
+.profile-avatar img{
+    width: 170px;
+    height: 150px;
+    margin: 20px;
+}
+
+.profile-desc {
+    padding-left: 30px;
+    margin-bottom: 10px;
+}
+
+.bookclub-desc a{
+    text-decoration: none;
+    color: black;
+}
+
+.bookclub-desc img{
+    width: 120px;
+    height: 120px;
+}
+
+.book-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.book {
+    margin: 5px;
+}
+
+.book a {
+    text-decoration: none;
+    color: black;
+}
+
+.book-cover img{
+    width: 100px;
+    height: 150px;
+}
+
+.book-title {
+    margin-top: 10px;
+}
+
+.book-author {
+    color:rgb(78, 77, 77);
+}
+
+.edit-profile {
+    margin-bottom: 10px;;
+}
+
+.btn-align {
+    margin-left: 110px;
+}

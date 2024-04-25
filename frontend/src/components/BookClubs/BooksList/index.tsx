@@ -3,6 +3,7 @@ import * as mongooseClient from "../../../mongooseClient"
 import { Link } from "react-router-dom";
 import { useState, useEffect, JSXElementConstructor, Key, ReactElement, ReactNode} from "react";
 import MongooseBookSearch from "../../MongooseSearchBooks";
+import '../index.css';
 
 
 function SearchableBooksList(
@@ -24,7 +25,7 @@ function SearchableBooksList(
 
     const renderBook = (book : Book) => {
         return (
-            <div key={book._id} className="book">
+            <div key={book._id} className="book book-item">
             <Link to={`/book/${book.googleBooksId}`}>
                 <div>
                 {(book.coverImageUrl && book.coverImageUrl !== "") ? 
@@ -34,7 +35,7 @@ function SearchableBooksList(
                 <h5 className="book-title">{book.title}</h5>
                 <p className="book-author">{book.author}</p>
             </Link>
-            {isAdmin && <button onClick={() => {removeBookFromList(book._id)}}>
+            {isAdmin && <button onClick={() => {removeBookFromList(book._id)}} className="btn">
                 Remove Book
             </button>}
         </div>
@@ -43,7 +44,7 @@ function SearchableBooksList(
 
     const renderBooks = (books : Book[]) => {
         return (
-            <div>
+            <div className="books-list-container">
                 {books && books.map(renderBook)}
             </div>)
     }

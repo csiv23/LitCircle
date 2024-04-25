@@ -1,6 +1,7 @@
 import { Club, Book, User } from "../../types";
 import SearchableBooksList from "../BooksList";
 import GoogleBooksSearch from "../../SearchBooks/search";
+import '../index.css';
 import * as mongooseClient from "../../../mongooseClient"
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -72,25 +73,31 @@ export default function Wishlist(
 
     const renderBooks = (books : Book[]) => {
         return (
-          <div className="table-responsive">
-            <table className="table">
-              <tbody>
-                <tr>
-                {books.map((book) => (
-               <td className="book" key={book._id}>
-                    <button onClick={() => {addBookToWishlist(book)}}>
-                           {(book.coverImageUrl && book.coverImageUrl !== "") ? 
-                            <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
-                           : <img src={require("../../../images/emptyBook.jpeg")} 
-                           alt={book.title} className="book-cover"/>}
-                       <h3>{book.title}</h3>
-                       <p> by {book.author} </p>
-                    </button>
-               </td>
-               ))}
-                </tr>
-              </tbody>
-            </table>
+          <div className="row">
+            <div className="col-lg book-container d-flex flex-wrap">
+              {books.map((book: Book, index) => {
+                if (book) {
+                  return (
+                    <div key={index} className="book"> 
+                      <button onClick={() => {addBookToWishlist(book)}} className="book-wishlist">
+                        <div>
+                          {(book.coverImageUrl && book.coverImageUrl !== "") ? 
+                          <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
+                          : <img src={require("../../../images/emptyBook.jpeg")} alt={book.title} />}
+                        </div>
+                          <h5 className="book-title">{book.title}</h5>
+                          <p className="book-author">{book.author}</p>
+                      </button>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div key={index}>
+                      <p>Book with ID not found.</p>
+                    </div>
+                );}
+              })}
+            </div>    
           </div>
         );
      }
@@ -183,18 +190,12 @@ export default function Wishlist(
 
 return (
     <div className="d-flex flex-wrap">
-    <div>
-    {(club.imageUrl && club.imageUrl !== "") ? 
-                <img src={club.imageUrl} alt={club.imageUrl} className="book-cover" /> 
-                : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
-    </div>
-    <h4>
-        Books We Want to Read
-    </h4>
-    <br></br>
-    <h4>{wishlist.length} Books</h4>
-
-    {isAdmin && <GoogleBooksSearch renderBooks={renderBooks} searchPath={false} />}
+      <div className="col-md-11 club-container">
+        <h4>Books We Want to Read</h4>
+        <h6>{wishlist.length} Books</h6>
+      </div>
+      <div className="col-md-11 club-container">
+      {isAdmin && <GoogleBooksSearch renderBooks={renderBooks} searchPath={false} />}
     <div>
       <input type="text" value={search}
         onChange={(e) =>
@@ -209,6 +210,7 @@ return (
       </div>
 
     </div>
+      </div>
     </div>
     )
 }

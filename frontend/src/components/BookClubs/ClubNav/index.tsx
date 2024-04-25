@@ -2,6 +2,7 @@ import { Club, ObjectId, User } from "../../types";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import * as mongooseClient from "../../../mongooseClient";
+import '../index.css'
 
 export default function ClubNav(
     {
@@ -13,6 +14,7 @@ export default function ClubNav(
     }
 
 ) {
+    const location = useLocation();
 
     const links = [
         {
@@ -41,25 +43,32 @@ export default function ClubNav(
         },
     ]
 
-
     return (
     <div className="col-md-3 club-column">
-        <div className='club-text'>
+        <div className='club-text club-profile-picture'>
         {(club.imageUrl && club.imageUrl !== "") ? 
-                <img src={club.imageUrl} alt={club.name} className="book-cover" /> 
+                <img src={club.imageUrl} alt={club.name} /> 
                 : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
             <h3 className="club-heading">{club.name}</h3>
-            <br/>
-            <div className="row mr-2">
+            <div className="row mr-2 club-members">
                 <p>Members: {club.members.length}</p>
             </div>
         </div>
-        <div>
-        {links.map((link, index) => (
-            <li key={index}>
-                <Link to={link.link}>{link.label}</Link>
-            </li>
-        ))}
+        {/* highlight current page - */}
+        <div className="club-nav">
+            {links.map((link, index) => (
+                <li key={index}>
+                    <Link
+                        to={link.link}
+                        className={
+                            location.pathname.includes(link.link)
+                                ? "active"
+                                : ""
+                        }>
+                        {link.label}
+                    </Link>
+                </li>
+            ))}
         </div>
     </div>);
 }
