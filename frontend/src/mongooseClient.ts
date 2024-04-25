@@ -263,7 +263,7 @@ export async function notImplemented() {
 
  export const getUsers = async () => {
   const response = await mongooseGetCredentials('users');
-  return response
+  return response.map(cleanUser);
 };
 
  // implement this 
