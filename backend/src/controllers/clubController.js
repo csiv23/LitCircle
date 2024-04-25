@@ -2,7 +2,7 @@ const Club = require('../models/club');
 const User = require('../models/user');
 const Book = require('../models/book');
 
-const { validateBookExists, validateClubExists, validateUserExists } = require('../utilities/dataValidation');
+const { validateBookExists, validateClubExists, validateUserExists, validateBookbyId } = require('../utilities/dataValidation');
 
 // Fetches and returns all clubs
 exports.getClubs = async (req, res) => {
@@ -23,21 +23,19 @@ exports.getClub = async (req, res) => {
             // Since validateClubExists sends the response, just return here.
             return;
         }
-        
-        // Construct the NextMeeting object only if NextMeeting and Date are available
-        let nextMeeting = null;
-        if (club.NextMeeting && club.NextMeeting.Date) {
-            nextMeeting = {
+
+        const formattedClub = (club.NextMeeting && club.NextMeeting.Date)
+        ? {
+            ...club,
+            NextMeeting: {
                 ...club.NextMeeting,
                 Date: club.NextMeeting.Date.toISOString()
-            };
+            }
         }
+        : club
 
-        // Respond with the club details, including the NextMeeting if available
-        res.json({
-            ...club._doc,  // Assuming club is a Mongoose document, spread its properties
-            NextMeeting: nextMeeting  // Use the conditionally created nextMeeting object
-        });
+        res.json(formattedClub);
+
     } catch (error) {
         console.error("Error fetching club by ID:", error);
         res.status(500).json({ error: 'Internal server error while fetching the club by ID.' });
@@ -69,7 +67,7 @@ exports.createClub = async (req, res) => {
         });
 
         await newClub.save();
-        organizer.BookClubs.push({ ClubId: newClub._id, IsLeader: true, JoinDate: new Date() });
+        organizer.BookClubs.push({ ClubId: newClub._id, IsLeader: true });
         await organizer.save();
 
         res.json({ message: "Club created successfully", clubID: newClub.id });
@@ -84,19 +82,35 @@ exports.createClub = async (req, res) => {
  */
 exports.updateClubInfo = async (req, res) => {
     try {
+        const { clubId } = req.params;
+
         const club = await validateClubExists(req.params.clubId, res);
         // No need to proceed if club doesn't exist as validateClubExists handles the response
         if (!club) return;
 
-        const updateData = req.body;
+        const clubData = req.body.data;
+    
+        const updateData = (clubData && clubData.NextMeeting && clubData.NextMeeting.Date)
+        ? {
+            ...clubData,
+            NextMeeting : {
+                ...clubData.NextMeeting,
+                Date : new Date(clubData.NextMeeting.Date)
+            }
+        } : clubData;
+
+        console.log(updateData);
+
         if (updateData.Organizer) {
             const organizer = await validateUserExists(updateData.Organizer, res);
             // No need to proceed if organizer doesn't exist as validateUserExists handles the response
             if (!organizer) return;
         }
-
+        
         Object.assign(club, updateData);
         await club.save();
+        
+        console.log(club);
         res.json({ message: 'Club updated successfully', club });
     } catch (error) {
         console.error("Error updating club info:", error);
@@ -120,7 +134,7 @@ exports.joinClub = async (req, res) => {
         if (!user) return;
 
         if (club.Members.map(member => member.toString()).includes(userId)) {
-            return res.status(400).json({ message: 'User already a member of the club' });
+            return res.status(200).json({ message: 'User already a member of the club' });
         }
 
         club.Members.push(userId);
@@ -256,7 +270,7 @@ exports.setCurrentBook = async (req, res) => {
     const { bookId } = req.body;
 
     try {
-        const book = await validateBookExists(bookId, res);
+        const book = await validateBookbyId(bookId, res);
         if (!book) {
             // If the book doesn't exist, validateBookExists has already handled the response.
             return;
@@ -295,7 +309,7 @@ exports.markCurrentBookAsRead = async (req, res) => {
 
     try {
         const club = await validateClubExists(clubId, res);
-        const book = await validateBookExists(club.CurrentBook, res);
+        const book = await validateBookbyId(club.CurrentBook, res);
         if (!club || !book) return; // Already handled in validate*
 
 
@@ -358,7 +372,7 @@ exports.addBookToWishlist = async (req, res) => {
             return;
         }
 
-        const book = await validateBookExists(bookId, res);
+        const book = await validateBookbyId(bookId, res);
         if (!book) {
             return;
         }
@@ -397,7 +411,7 @@ exports.deleteBookFromWishlist = async (req, res) => {
         return;
     }
 
-    const book = await validateBookExists(bookId, res);
+    const book = await validateBookbyId(bookId, res);
     if (!book) {
         return;
     }

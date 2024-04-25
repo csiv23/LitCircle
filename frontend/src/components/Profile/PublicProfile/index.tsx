@@ -16,33 +16,62 @@ function PublicProfile() {
     const navigate = useNavigate();
     const { userId } = useParams();
 
-    // REMOVE THIS WHEN DONE TESTING
-    const user = dbUsers.users.find((user) => user.userId === userId)
-
     const [currentUser, setCurrentUser] = useState<User>();
     const [publicUser, setPublicUser] = useState<User>();
+    const [publicUserClubs, setPublicUserClubs] = useState<Club[]>([]);
+    const [publicUserBooksRead, setPublicUserBooksRead] = useState<Book[]>([]);
+    const [publicUserBooksWishlist, setPublicUserBooksWishlist] = useState<Book[]>([]);
+    const [publicUserFollowers, setPublicUserFollowers] = useState<User[]>([]);
     useEffect(() => {
-        const fetchPublicUser = async () => {
-            if (userId) {
-                const fetchedUser = await client.getUserById(userId);
-                setPublicUser(fetchedUser);
-            }
-        }
-        const fetchCurrentUser = async () => {
-            try {
-                const userSession = await client.profile();
-                setCurrentUser(userSession);
-            } catch (error) {
-                navigate("/login");
-            }
-        }
         fetchPublicUser();
         fetchCurrentUser();
     }, [])
+    useEffect(() => {
+        if (publicUser) {
+            fetchPublicUsersClubs();
+            fetchPublicUsersBooksRead();
+            fetchPublicUsersBooksWishlist();
+            fetchPublicUserFollowers();
+        }
+    }, [publicUser]);
 
+    const fetchPublicUser = async () => {
+        if (userId) {
+            const fetchedUser = await client.getUserById(userId);
+            setPublicUser(fetchedUser);
+        }
+    }
+    const fetchCurrentUser = async () => {
+        try {
+            const userSession = await client.profile();
+            setCurrentUser(userSession);
+        } catch (error) {
+            console.log("couldn't fetch currentUser");
+        }
+    }
+    const fetchPublicUsersClubs = async () => {
+        const allClubs = await client.getClubs();
+        const userBookClubIds: ObjectId[] = [];
+        publicUser?.bookClubs.map((bookClub: any) => userBookClubIds.push(bookClub["_id"]));
+        const commonClubs = allClubs.filter((club: Club) => userBookClubIds.includes(club["_id"]));
+        setPublicUserClubs(commonClubs);
+    };
+    const fetchPublicUsersBooksRead = async () => {
+        const allBooks = await client.getBooks();
+        const userBooksIds: ObjectId[] = [];
+        publicUser?.booksRead.map((bookId: ObjectId) => userBooksIds.push(bookId));
+        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book["_id"]));
+        setPublicUserBooksRead(commonBooks);
+    };
+    const fetchPublicUsersBooksWishlist = async () => {
+        const allBooks = await client.getBooks();
+        const userBooksIds: ObjectId[] = [];
+        publicUser?.wishlist.map((bookId: ObjectId) => userBooksIds.push(bookId));
+        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book["_id"]));
+        setPublicUserBooksWishlist(commonBooks);
+    };
     const follow = async () => {
         if (currentUser) {
-            console.log("follow button clicked")
             if (publicUser) {
                 try {
                     await client.followUser(currentUser._id, publicUser?._id);
@@ -52,31 +81,41 @@ function PublicProfile() {
                     console.log("PublicProfile failed to follow user");
                 }
             }
-            // Dispatch setCurrentUser to update the currentUser
         } else {
             navigate("/login");
         }
     }
-    
-
-    if (!user) {
-        return <div>User not found</div>;
+    const unfollow = async () => {
+        if (currentUser) {
+            if (publicUser) {
+                try {
+                    await client.unfollowUser(currentUser._id, publicUser?._id);
+                    setPublicUser(await client.getUserById(publicUser._id));
+                    setCurrentUser(await client.profile());
+                } catch (error) {
+                    console.log("PublicProfile failed to follow user");
+                }
+            }
+        } else {
+            navigate("/login");
+        }
     }
-
-    const findClubById = (clubId: ObjectId) => {
-        return dbBookclubs.bookclubs.find(club => club.clubId === clubId);
-    };
-
-    const findBookbyId = (bookId: ObjectId) => {
-        return dbBooks.books.find(book => book.bookId === bookId);
-    };
+    const fetchPublicUserFollowers = async () => {
+        if (publicUser) {
+            try {
+                const allUsers = await client.getUsers();
+                const followers = allUsers.filter((user: User) => publicUser.followers.includes(user._id));
+                setPublicUserFollowers(followers);
+            } catch (error) {
+                console.log("PublicProfile failed to fetch publicUser followers");
+            }
+        }
+    }
 
     if (currentUser?._id == userId) {
         navigate(`/myProfile/${currentUser?._id}`);
     }
 
-    console.log("PublicProfile. currentUser: " + JSON.stringify(currentUser));
-    console.log("PublicProfile. publicUser: " + JSON.stringify(publicUser));
     return (
         <div>
             <Header />
@@ -89,10 +128,7 @@ function PublicProfile() {
                     </div>
                     <div className="profile-name">
                         <h3>
-                            {user.firstName} {user.lastName}
-                            <Link to={"/profile/:userId"}>
-                                <button className="btn btn-secondary ml-2">Edit</button>
-                            </Link>
+                            {publicUser?.firstName} {publicUser?.lastName}
                         </h3>
                     </div>
                     <div className="row">
@@ -100,17 +136,41 @@ function PublicProfile() {
                             <span className="mr-2">Followers:</span> {publicUser?.followers.length}
                         </div>
                         <div className="col-sm-6">
-                            <span className="mr-2">Following:</span> {user.following.length}
+                            <span className="mr-2">Following:</span> {publicUser?.following.length}
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <span className="mr-2">Email:</span> {user.email}
+                            <span className="mr-2">Email:</span> {publicUser?.email}
                         </div>
                     </div>
                     <div>
                         <button onClick={follow}>Follow</button>
-                        <button>Unfollow</button>
+                        <button onClick={unfollow}>Unfollow</button>
+                    </div>
+                    <div>
+                        Followers:
+                        {publicUserFollowers?.map((follower: User, index) => {
+                            if (follower) {
+                                console.log("follower: " + JSON.stringify(follower))
+                                return (
+                                    <div key={follower._id}>
+                                        <Link to={`/profile/${follower._id}`}>
+                                            {(follower.avatar && follower.avatar !== "") ?
+                                                <img src={follower.avatar} alt={follower.avatar} />
+                                                : <img src={require("../../images/avatar.jpeg")} alt={follower.avatar} />}
+                                        </Link>
+                                        <div>{follower.username}</div>
+                                    </div>
+                                )
+                            } else {
+                                return (
+                                    <div key={index}>
+                                        <p>Follower with ID not found.</p>
+                                    </div>
+                                );
+                            }
+                        })}
                     </div>
                 </div>
                 <div className="col-md-9">
@@ -118,26 +178,22 @@ function PublicProfile() {
                         <div className="col-md-8 bookclub-section-title">
                             <h4>My BookClubs</h4>
                         </div>
-                        <div className="col-md-4 text-right">
-                            <button className="btn btn-primary">Add BookClub</button>
-                        </div>
                         <div className="d-flex flex-wrap bookclub-pfp">
-                            {user.bookClubs.map((clubId: ObjectId) => {
-                                const club = findClubById(clubId);
+                            {publicUserClubs.map((club: Club, index) => {
                                 if (club) {
                                     return (
-                                        <div key={club.clubId}>
-                                            <Link to={`/bookclub/${club.clubId}`}>
+                                        <div key={index}>
+                                            <Link to={`/bookclub/${club._id}`}>
                                                 <h5>{club.name}</h5>
-                                                <img src={require(`../../images/${club.clubImage}`)} alt={club.name} className="book-cover" />
+                                                <img src={require(`../../../images/BookclubDefault.jpeg`)} alt={club.name} className="book-cover" />
                                             </Link>
                                             <p>Members: {club.members.length}</p>
                                         </div>
                                     );
                                 } else {
                                     return (
-                                        <div key={clubId}>
-                                            <p>Club with ID {clubId} not found.</p>
+                                        <div key={index}>
+                                            <p>Club with ID not found.</p>
                                         </div>
                                     );
                                 }
@@ -148,17 +204,13 @@ function PublicProfile() {
                         <div className="col-md-8">
                             <h4>Books I've Read</h4>
                         </div>
-                        <div className="col-md-4 text-right">
-                            <button className="btn btn-primary">Add Book</button>
-                        </div>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {user.booksRead.map((bookId: ObjectId) => {
-                                const book = findBookbyId(bookId);
+                            {publicUserBooksRead.map((book: Book, index) => {
                                 if (book) {
                                     return (
-                                        <div key={book.bookId} className="book">
-                                            <Link to={`/book/${book.bookId}`}>
-                                                <img src={require(`../../images/${book.coverImage}`)}
+                                        <div key={index} className="book">
+                                            <Link to={`/book/${book._id}`}>
+                                                <img src={require(`../../../images/emptyBook.jpeg`)}
                                                     alt={book.title} />
                                                 <h5>{book.title}</h5>
                                                 <p>{book.author}</p>
@@ -167,8 +219,8 @@ function PublicProfile() {
                                     );
                                 } else {
                                     return (
-                                        <div key={bookId}>
-                                            <p>Book with ID {bookId} not found.</p>
+                                        <div key={index}>
+                                            <p>Book with ID not found.</p>
                                         </div>
                                     );
                                 }
@@ -179,17 +231,13 @@ function PublicProfile() {
                         <div className="col-md-8">
                             <h4>My Book Wishlist</h4>
                         </div>
-                        <div className="col-md-4 text-right">
-                            <button className="btn btn-primary">Add Book</button>
-                        </div>
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
-                            {user.wishlist.map((bookId: ObjectId) => {
-                                const book = findBookbyId(bookId);
+                            {publicUserBooksWishlist.map((book: Book, index) => {
                                 if (book) {
                                     return (
-                                        <div key={book.bookId} className="book">
-                                            <Link to={`/book/${book.bookId}`}>
-                                                <img src={require(`../../images/${book.coverImage}`)}
+                                        <div key={book._id} className="book">
+                                            <Link to={`/book/${book._id}`}>
+                                                <img src={require(`../../../images/emptyBook.jpeg`)}
                                                     alt={book.title} />
                                                 <h5>{book.title}</h5>
                                                 <p>{book.author}</p>
@@ -198,8 +246,8 @@ function PublicProfile() {
                                     );
                                 } else {
                                     return (
-                                        <div key={bookId}>
-                                            <p>Book with ID {bookId} not found.</p>
+                                        <div key={index}>
+                                            <p>Book with ID not found.</p>
                                         </div>
                                     );
                                 }

@@ -87,7 +87,7 @@ exports.registerUser = async (req, res) => {
 
         console.log(user);
         await user.save();
-        req.session["currentUser"] = user; // TODO: Might not work?
+        req.session["currentUser"] = user;
         res.json(user);
     } catch (error) {
         console.error("Error registering user:", error);
@@ -175,6 +175,41 @@ exports.followUser = async (req, res) => {
     }
 };
 
+// Unfollow another user
+exports.unfollowUser = async (req, res) => {
+    const { userId } = req.params; // Follower
+    const { userIdToFollow } = req.body; // Followed
+
+    try {
+        // Check if user already following
+        const user = await User.findById(userId);
+        const alreadyFollowing = user.Following.some(id => id == userIdToFollow);
+        if (!alreadyFollowing) {
+            console.log("Already unfollowed this user!")
+            return res.status(400).json({ msg: 'Already unfollowed this user!' });
+        }
+
+        // Remove userIdToFollow from the Following array of the follower
+        await User.findByIdAndUpdate(
+            userId,
+            { $pull: { Following: userIdToFollow } },
+            { new: true }
+        );
+        // Remove userId from the Followers array of the followed user
+        await User.findByIdAndUpdate(
+            userIdToFollow,
+            { $pull: { Followers: userId } },
+            { new: true }
+        );
+        const updatedUser = await User.findById(userId);
+        req.session["currentUser"] = updatedUser;
+        res.status(204).send();
+    } catch (error) {
+        console.error("Error following user:", error);
+        res.status(500).send('Server error');
+    }
+};
+
 // Handler for fetching the list of followers of a specific user.
 exports.getFollowers = async (req, res) => {
     // Extract the userId from the request parameters.
@@ -248,12 +283,15 @@ exports.addBookToWishlist = async (req, res) => {
             { $addToSet: { Wishlist: bookId } }, // Use $addToSet to avoid duplicate entries
             { new: true } // Return the updated document
         );
+        console.log("addBookToWishlist updatedUser: " + updatedUser);
 
         if (!updatedUser) {
             return res.status(404).send('User not found');
         }
 
-        res.status(200).json(updatedUser);
+        req.session["currentUser"] = updatedUser;
+        res.json(updatedUser);
+        // res.status(200).json(updatedUser);
     } catch (error) {
         console.error("Error adding book to wishlist:", error);
         res.status(500).send('Server error');
@@ -270,12 +308,15 @@ exports.removeBookFromWishlist = async (req, res) => {
             { $pull: { Wishlist: bookId } }
         );
 
+        console.log("removeBookFromWishlist updatedUser: " + JSON.stringify(updatedUser));
         // Check if the document was modified
         if (updatedUser.modifiedCount === 0) {
             return res.status(404).send('No item was removed, check your input.');
         }
 
-        res.status(200).json(updatedUser);
+        req.session["currentuser"] = updatedUser;
+        res.json(updatedUser);
+        // res.status(200).json(updatedUser);
     } catch (error) {
         // Log and send the error if something goes wrong
         console.error('Failed to remove item:', error);
@@ -343,6 +384,7 @@ exports.addBookToBooksRead = async (req, res) => {
         }
 
         // Respond with the updated user information
+        req.session["currentuser"] = updatedUser;
         res.json(updatedUser);
     } catch (error) {
         console.error("Error adding book to user's BooksRead:", error);
@@ -365,7 +407,9 @@ exports.removeBookFromBooksRead = async (req, res) => {
             return res.status(404).send('No item was removed, check your input.');
         }
 
-        res.status(200).json(updatedUser);
+        req.session["currentuser"] = updatedUser;
+        res.json(updatedUser);
+        // res.status(200).json(updatedUser);
     } catch (error) {
         // Log and send the error if something goes wrong
         console.error('Failed to remove item:', error);
