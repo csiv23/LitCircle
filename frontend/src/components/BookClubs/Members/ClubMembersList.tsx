@@ -12,14 +12,20 @@ function Members(
     club,
     currentUser,
     organizer, 
+    isAdmin,
     leaveClub,
+    removeUser,
+    searchUser,
 } : 
 { 
     members: User[],
     club: Club,
     currentUser: User, 
     organizer: User
+    isAdmin : boolean
     leaveClub: () => void,
+    removeUser : (userId:string) => void
+    searchUser : (userQuery:string) => Promise<any>
 }) 
 {   
     const renderUser = (user : User) => {
@@ -36,6 +42,7 @@ function Members(
                     <p>{user.username}</p>
                     {/* TODO: ADD ONCLICK FOR FOLLOWING*/}
                     { currentUser && currentUser._id && user._id !== currentUser._id &&
+                        <>
                         <button>
                         {
                             (currentUser 
@@ -45,7 +52,11 @@ function Members(
                             ? "Unfollow"
                             : "Follow"
                         }
-                    </button>
+                        </button>
+                        {isAdmin && <button onClick={() => {removeUser(user._id)}}>
+                            Remove 
+                        </button>}
+                        </>
                     }
                     { currentUser && currentUser._id && user._id === currentUser._id &&
                         <button onClick={leaveClub}>
@@ -72,13 +83,15 @@ function Members(
         )
     }
 
+
     
     return (
     <div className="d-flex flex-wrap">
         <div>
             <UserSearch 
                 users={members}
-                renderUsers={renderUsers} />
+                renderUsers={renderUsers}
+            searchUsers={searchUser} />
         </div>
     </div>
     )

@@ -8,6 +8,7 @@ import * as client from "../../../mongooseClient";
 import { useEffect, useState } from "react";
 import EditProfile from "./EditProfile";
 import { setCurrentUser } from "../../../reducers/usersReducer";
+import Wishlist from "./Wishlist";
 
 function getURL( book: Book  ) {
     return `/book/${book.title.replace(/\s+/g, '-').toLowerCase()}`
@@ -15,8 +16,6 @@ function getURL( book: Book  ) {
 
 function MyProfile() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-
     const { userId } = useParams();
     const [currentUser, setCurrentUser] = useState<User>();
     const [currentUserClubs, setCurrentUserClubs] = useState<Club[]>([]);
@@ -31,6 +30,7 @@ function MyProfile() {
             fetchUsersClubs();
             fetchUsersBooksRead();
             fetchUsersBooksWishlist();
+            console.log("Rerendered the 2nd useEffect")
         }
     }, [currentUser]);
 
@@ -64,10 +64,54 @@ function MyProfile() {
         setCurrentUserBooksWishlist(commonBooks);
     };
     const signout = async () => {
-        console.log("currentUser before signout: " + JSON.stringify(currentUser));
         await client.signout();
         navigate("/login");
     };
+    const addToWishlist = async (book: Book) => {
+        if (currentUser) {
+            try {
+                const mongooseBookId = await client.createBook(book);
+                const updatedUser = await client.addToWishlist(currentUser._id, mongooseBookId);
+                setCurrentUser(updatedUser);
+            } catch {
+                const updatedUser = await client.addToWishlist(currentUser._id, book._id);
+                setCurrentUser(updatedUser);
+            }
+        }
+    }
+    const addToBooksRead = async (book: Book) => {
+        if (currentUser) {
+            try {
+                const mongooseBookId = await client.createBook(book);
+                const updatedUser = await client.addToWishlist(currentUser._id, mongooseBookId);
+                setCurrentUser(updatedUser);
+            } catch {
+                const updatedUser = await client.addToBooksRead(currentUser._id, book._id);
+                setCurrentUser(updatedUser);
+            }
+        }
+    }
+    const addToMyClubs = async (club: Club) => {
+        if (currentUser) {
+            console.log("addToMyClubs");
+            
+        }
+    }
+    const removeFromWishlist = async (bookId: string) => {
+        if (currentUser) {
+            try {
+                console.log("removeFromWishlist clicked")
+                const updatedUser = await client.removeFromWishlist(currentUser._id, bookId);
+                // setCurrentUser(updatedUser);
+                // console.log("removeFromWishlist updatedUser: " + JSON.stringify(updatedUser))
+                // console.log("removeFromWishlist currentUser: " + JSON.stringify(updatedUser))
+                const updatedUserById = await client.getUserById(currentUser._id)
+                setCurrentUser(updatedUserById);
+            } catch (error) {
+                console.error("Error removing from wishlist:", error);
+            }
+        }
+    }
 
     console.log("MyProfile currentUser: " + JSON.stringify(currentUser));
     if (!currentUser || currentUser?._id !== userId) {
@@ -129,7 +173,7 @@ function MyProfile() {
                             {currentUserClubs?.map((club: Club, index) => {
                                 if (club) {
                                     return (
-                                        <div key={index}>
+                                        <div key={club._id}>
                                             <Link to={`/bookclub/${club._id}`}>
                                                 <h5>{club.name}</h5>
                                                 <div>
@@ -158,11 +202,25 @@ function MyProfile() {
                         <div className="col-md-4 text-right">
                             <button className="btn btn-primary">Add Book</button>
                         </div>
+                        <Wishlist 
+                            books={currentUserBooksRead}
+                            addToWishlist={addToBooksRead}/>
+                        {/* <div className="col-md-4 text-right">
+                            <button className="btn btn-primary" onClick={() => addToBooksRead({
+                                _id: '66285721ae48634f3257c933',
+                                title: 'e',
+                                googleBooksId: 'NKFPEAAAQBAJ',
+                                author: 'Matt Beaumont',
+                                description: 'A Novel',
+                                coverImageUrl: 'http://books.google.com/books/content?id=NKFPEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api',
+                                clubsReading: []
+                            })}>Add Book</button>
+                        </div> */}
                         <div className="col-lg d-flex flex-wrap">
                             {currentUserBooksRead?.map((book: Book, index) => {
                                 if (book) {
                                     return (
-                                        <div key={index} className="book">
+                                        <div key={book._id} className="book">
                                             <Link to={`/book/${book._id}`}>
                                             <div>
                                                 {(book.coverImageUrl && book.coverImageUrl !== "") ? 
@@ -188,23 +246,37 @@ function MyProfile() {
                         <div className="col-md-8">
                             <h4>My Book Wishlist</h4>
                         </div>
-                        <div className="col-md-4 text-right">
-                            <button className="btn btn-primary">Add Book</button>
-                        </div>
+                        <Wishlist 
+                            books={currentUserBooksWishlist}
+                            addToWishlist={addToWishlist}/>
+                        {/* <div className="col-md-4 text-right">
+                            <button className="btn btn-primary" onClick={() => addToWishlist({
+                                _id: '66285721ae48634f3257c933',
+                                title: 'e',
+                                googleBooksId: 'NKFPEAAAQBAJ',
+                                author: 'Matt Beaumont',
+                                description: 'A Novel',
+                                coverImageUrl: 'http://books.google.com/books/content?id=NKFPEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api',
+                                clubsReading: []
+                            })}>Add Book</button>
+                        </div> */}
                         <div className="col-lg book-container d-flex flex-wrap">
                             {currentUserBooksWishlist?.map((book: Book, index) => {
                                 if (book) {
                                     return (
-                                        <div key={index} className="book">
-                                            <Link to={`/book/${book._id}`}>
-                                            <div>
-                                                {(book.coverImageUrl && book.coverImageUrl !== "") ? 
-                                                <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
-                                                : <img src={require("../../../images/emptyBook.jpeg")} alt={book.title} />}
+                                        <div>
+                                            <button onClick={() => removeFromWishlist(book._id)}>Remove Book</button>
+                                            <div key={book._id} className="book">
+                                                <Link to={`/book/${book._id}`}>
+                                                <div>
+                                                    {(book.coverImageUrl && book.coverImageUrl !== "") ? 
+                                                    <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
+                                                    : <img src={require("../../../images/emptyBook.jpeg")} alt={book.title} />}
+                                                </div>
+                                                    <h5>{book.title}</h5>
+                                                    <p className="book-author">{book.author}</p>
+                                                </Link>
                                             </div>
-                                                <h5>{book.title}</h5>
-                                                <p className="book-author">{book.author}</p>
-                                            </Link>
                                         </div>
                                     );
                                 } else {

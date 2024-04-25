@@ -1,12 +1,15 @@
 import { Club, Book } from "../../types";
 import SearchableBooksList from "../BooksList";
-import GoogleBooksSearch from "../../SearchBooks/ search";
+import GoogleBooksSearch from "../../SearchBooks/search";
 import '../index.css';
 
 export default function Wishlist(
-    {books, club, addToWishlist}
+    {books, club, addToWishlist, removeFromWishlist, isAdmin}
     : 
-    {books : Book[], club : Club, addToWishlist : (book : Book) => void}) {
+    {books : Book[], club : Club, isAdmin : boolean
+      addToWishlist : (book : Book) => void,
+      removeFromWishlist : (bookId : string) => Promise<void>}
+  ) {
     const renderBooks = (books : Book[]) => {
         return (
           <div className="row">
@@ -51,7 +54,7 @@ return (
         </div>
         <div> 
           <h5>Search Our Wishlist</h5>
-          <SearchableBooksList booksList={books} />
+          <SearchableBooksList booksList={books} removeBook={removeFromWishlist} isAdmin={isAdmin}  />
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import GoogleBooksSearch from "./ search";
+import GoogleBooksSearch from "./search";
 import { Routes, Route, Navigate } from "react-router";
 import { Link } from "react-router-dom";
 import { Book } from "../types";

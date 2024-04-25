@@ -22,6 +22,7 @@ function PublicProfile() {
     const [publicUserBooksRead, setPublicUserBooksRead] = useState<Book[]>([]);
     const [publicUserBooksWishlist, setPublicUserBooksWishlist] = useState<Book[]>([]);
     const [isFollowing, setIsFollowing] = useState<boolean>();
+    const [publicUserFollowers, setPublicUserFollowers] = useState<User[]>([]);
     useEffect(() => {
         fetchPublicUser();
         fetchCurrentUser();
@@ -31,6 +32,7 @@ function PublicProfile() {
             fetchPublicUsersClubs();
             fetchPublicUsersBooksRead();
             fetchPublicUsersBooksWishlist();
+            fetchPublicUserFollowers();
         }
     }, [publicUser]);
 
@@ -106,6 +108,20 @@ function PublicProfile() {
             navigate("/login");
         }
     }
+    const fetchPublicUserFollowers = async () => {
+        if (publicUser) {
+            try {
+                const allUsers = await client.getUsers();
+                console.log("allUsers: " + JSON.stringify(allUsers));
+                const followers = allUsers.filter((user: User) => publicUser.followers.includes(user._id));
+                console.log("followers: " + JSON.stringify(followers));
+                setPublicUserFollowers(followers);
+                console.log("publicUserFollowers: " + JSON.stringify(publicUserFollowers))
+            } catch (error) {
+
+            }
+        }
+    }
 
     if (currentUser?._id == userId) {
         navigate(`/myProfile/${currentUser?._id}`);
@@ -143,6 +159,54 @@ function PublicProfile() {
                         ) : (
                             <button onClick={follow} className="btn">Follow</button>
                         )}
+                    </div>
+                    <div>
+                        Followers:
+                        {publicUserFollowers?.map((follower: User, index) => {
+                            if (follower) {
+                                console.log("follower: " + JSON.stringify(follower))
+                                return (
+                                    <div key={follower._id}>
+                                        <div>{follower.username}</div>
+                                        <Link to={`/profile/${follower._id}`}>
+                                            {(follower.avatar && follower.avatar !== "") ?
+                                                <img src={follower.avatar} alt={follower.avatar} />
+                                                : <img src={require("../../images/avatar.jpeg")} alt={follower.avatar} />}
+                                        </Link>
+                                    </div>
+                                )
+                            } else {
+                                return (
+                                    <div key={index}>
+                                        <p>Follower with ID not found.</p>
+                                    </div>
+                                );
+                            }
+                        })}
+                    </div>
+                    <div>
+                        Followers:
+                        {publicUserFollowers?.map((follower: User, index) => {
+                            if (follower) {
+                                console.log("follower: " + JSON.stringify(follower))
+                                return (
+                                    <div key={follower._id}>
+                                        <div>{follower.username}</div>
+                                        <Link to={`/profile/${follower._id}`}>
+                                            {(follower.avatar && follower.avatar !== "") ?
+                                                <img src={follower.avatar} alt={follower.avatar} />
+                                                : <img src={require("../../images/avatar.jpeg")} alt={follower.avatar} />}
+                                        </Link>
+                                    </div>
+                                )
+                            } else {
+                                return (
+                                    <div key={index}>
+                                        <p>Follower with ID not found.</p>
+                                    </div>
+                                );
+                            }
+                        })}
                     </div>
                 </div>
                 <div className="col-md-9 profile-bg">

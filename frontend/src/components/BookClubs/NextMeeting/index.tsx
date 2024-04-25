@@ -2,9 +2,9 @@ import { Book, Club, ClubMeeting } from "../../types";
 import { Link, useParams } from "react-router-dom";
 
 export default function NextMeeting(
-    {currentBook, club, meeting} 
+    {currentBook, club, meeting, isAdmin} 
     : 
-    {currentBook : Book, club : Club, meeting : ClubMeeting}) {
+    {currentBook : Book, club : Club, meeting : ClubMeeting, isAdmin:boolean}) {
 
     const { clubId } = useParams();
     console.log(clubId);
