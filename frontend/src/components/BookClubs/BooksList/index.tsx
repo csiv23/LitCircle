@@ -9,7 +9,7 @@ function SearchableBooksList(
 { 
     booksList,
     removeBook,
-    isAdmin,
+    isAdmin = true,
 } : 
 { 
     booksList: Book[],

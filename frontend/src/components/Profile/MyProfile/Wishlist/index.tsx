@@ -1,5 +1,5 @@
 import { Club, Book } from "../../../types";
-import SearchableBooksList from "../../../BookClubs/BooksList";
+import MongooseBookSearch from "../../../MongooseSearchBooks";
 import GoogleBooksSearch from "../../../SearchBooks/search";
 
 export default function Wishlist(
@@ -45,7 +45,7 @@ export default function Wishlist(
             <h4>{books.length} Books</h4>
 
             <GoogleBooksSearch renderBooks={renderBooks} searchPath={false} />
-            <SearchableBooksList booksList={books} />
+            <MongooseBookSearch books={books} renderBooks={renderBooks}/>
         </div>
     )
 }

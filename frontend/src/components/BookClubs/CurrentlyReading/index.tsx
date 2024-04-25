@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Book, Club } from "../../types";
-import GoogleBooksSearch from "../../SearchBooks/ search";
+import GoogleBooksSearch from "../../SearchBooks/search";
 
 export default function CurrentlyReading(
     {currentBook, club, isAdmin, setCurrentBook, markAsRead} 
