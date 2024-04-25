@@ -64,7 +64,7 @@ exports.createClub = async (req, res) => {
         });
 
         await newClub.save();
-        organizer.BookClubs.push({ ClubId: newClub._id, IsLeader: true, JoinDate: new Date() });
+        organizer.BookClubs.push({ ClubId: newClub._id, IsLeader: true });
         await organizer.save();
 
         res.json({ message: "Club created successfully", clubID: newClub.id });

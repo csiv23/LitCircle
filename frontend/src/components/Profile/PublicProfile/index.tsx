@@ -72,7 +72,6 @@ function PublicProfile() {
     };
     const follow = async () => {
         if (currentUser) {
-            console.log("follow button clicked")
             if (publicUser) {
                 try {
                     await client.followUser(currentUser._id, publicUser?._id);
@@ -88,7 +87,6 @@ function PublicProfile() {
     }
     const unfollow = async () => {
         if (currentUser) {
-            console.log("unfollow button clicked")
             if (publicUser) {
                 try {
                     await client.unfollowUser(currentUser._id, publicUser?._id);
@@ -106,13 +104,10 @@ function PublicProfile() {
         if (publicUser) {
             try {
                 const allUsers = await client.getUsers();
-                console.log("allUsers: " + JSON.stringify(allUsers));
                 const followers = allUsers.filter((user: User) => publicUser.followers.includes(user._id));
-                console.log("followers: " + JSON.stringify(followers));
                 setPublicUserFollowers(followers);
-                console.log("publicUserFollowers: " + JSON.stringify(publicUserFollowers))
             } catch (error) {
-
+                console.log("PublicProfile failed to fetch publicUser followers");
             }
         }
     }
@@ -160,12 +155,12 @@ function PublicProfile() {
                                 console.log("follower: " + JSON.stringify(follower))
                                 return (
                                     <div key={follower._id}>
-                                        <div>{follower.username}</div>
                                         <Link to={`/profile/${follower._id}`}>
                                             {(follower.avatar && follower.avatar !== "") ?
                                                 <img src={follower.avatar} alt={follower.avatar} />
                                                 : <img src={require("../../images/avatar.jpeg")} alt={follower.avatar} />}
                                         </Link>
+                                        <div>{follower.username}</div>
                                     </div>
                                 )
                             } else {

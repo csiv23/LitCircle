@@ -4,9 +4,9 @@ import GoogleBooksSearch from "../../../SearchBooks/search";
 import { Link } from "react-router-dom";
 
 export default function Wishlist(
-    { books, addToWishlist, removeFromWishlist }
+    { books }
         :
-        { books: Book[], addToWishlist: (book: Book) => void, removeFromWishlist: (bookId: string) => void }) {
+        { books: Book[] }) {
     const renderBooks = (books: Book[]) => {
         return (
             <div className="table-responsive">
@@ -24,15 +24,6 @@ export default function Wishlist(
                                         <h5 className="book-title">{book.title}</h5>
                                         <p className="book-author">{book.author}</p>
                                     </Link>
-                                    <button onClick={() => removeFromWishlist(book._id)}>Remove Book</button>
-                                    {/* <button onClick={() => { addToWishlist(book) }}>
-                                        {(book.coverImageUrl && book.coverImageUrl !== "") ?
-                                            <img src={book.coverImageUrl} alt={book.title} className="book-cover" />
-                                            : <img src={require("../../../../images/emptyBook.jpeg")}
-                                                alt={book.title} className="book-cover" />}
-                                        <h3>{book.title}</h3>
-                                        <p> by {book.author} </p>
-                                    </button> */}
                                 </td>
                             ))}
                         </tr>
@@ -45,8 +36,6 @@ export default function Wishlist(
     return (
         <div className="d-flex flex-wrap">
             <br></br>
-            {/* <h4>{books.length} Books</h4> */}
-            {/* <GoogleBooksSearch renderBooks={renderBooks} searchPath={false} /> */}
             <MongooseBookSearch books={books} renderBooks={renderBooks}/>
         </div>
     )

@@ -18,7 +18,7 @@ type User = {
     following: ObjectId[];
     wishlist: ObjectId[];
     booksRead: ObjectId[];
-    bookClubs: ObjectId[];
+    bookClubs: UserBookClub[];
     avatar: string;
 }
 
@@ -30,6 +30,11 @@ type PurchaseLink = {
 type ClubMeeting = {
     meetingDate: Date,
     location: string
+}
+
+type UserBookClub = {
+    clubId: string,
+    isLeader: Boolean
 }
 
 type NextMeeting = {
