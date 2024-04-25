@@ -26,48 +26,50 @@ type MongooseClub = {
   Organizer : string
 }
 
-function cleanBookObj (bookData: any) : Book {
+function cleanBookObj(bookData: any): Book {
   let bookClean = {
-    _id: "",
-    googleBooksId: "",
-    title: "Untitled",
-    author: "N/A",
-    coverImageUrl: "",
-    description: "N/A",
-    clubsReading: [],
+      _id: "",
+      googleBooksId: "",
+      title: "Untitled",
+      author: "N/A",
+      coverImageUrl: "",
+      description: "N/A",
+      clubsReading: [],
+  };
+
+  // Check if bookData is not null before accessing its properties
+  if (bookData && bookData._id) {
+      bookClean._id = bookData._id;
   }
 
-  if (bookData._id) {
-    bookClean._id = bookData._id;
+  if (bookData && bookData.GoogleBooksId) {
+      bookClean.googleBooksId = bookData.GoogleBooksId;
   }
 
-  if (bookData.GoogleBooksId) {
-    bookClean.googleBooksId = bookData.GoogleBooksId;
-  }
-
-  if (bookData.Title) {
-    bookClean.title = bookData.Title;
+  if (bookData && bookData.Title) {
+      bookClean.title = bookData.Title;
   }
 
   // TODO: EMBED HTML FROM DESCRIPTION? 
-  if (bookData.Description) {
-    bookClean.description = bookData.Description;
+  if (bookData && bookData.Description) {
+      bookClean.description = bookData.Description;
   }
 
-  if (bookData.Author) {
-    bookClean.author = bookData.Author;
+  if (bookData && bookData.Author) {
+      bookClean.author = bookData.Author;
   }
 
-  if (bookData.CoverImageUrl) {
-    bookClean.coverImageUrl = bookData.CoverImageUrl;
+  if (bookData && bookData.CoverImageUrl) {
+      bookClean.coverImageUrl = bookData.CoverImageUrl;
   }
 
-  if (bookData.ClubsReading) {
-    bookClean.clubsReading = bookData.ClubsReading;
+  if (bookData && bookData.ClubsReading) {
+      bookClean.clubsReading = bookData.ClubsReading;
   }
 
   return bookClean;
 }
+
 
 function cleanUser (userData: any) : User {
   let userClean = {

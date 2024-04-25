@@ -224,8 +224,10 @@ exports.fetchClubAttribute = (attributeName) => {
 
         try {
             const populatedClub = await Club.findById(club._id).populate(attributeName);
-            if (!populatedClub || !populatedClub[attributeName]) {
-                return res.status(404).json({ message: `${attributeName} not found in club details` });
+            // Check if attributeName is "currentBook" and if populatedClub or the attribute is null
+            if (attributeName === "currentBook" && (!populatedClub || !populatedClub[attributeName])) {
+                // Return an empty string if currentBook doesn't exist or is null
+                return res.json({ [attributeName]: "" });
             }
 
             res.json({ [attributeName]: populatedClub[attributeName] });
