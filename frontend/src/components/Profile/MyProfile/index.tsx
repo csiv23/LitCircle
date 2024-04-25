@@ -184,17 +184,6 @@ function MyProfile() {
                         <BooksRead 
                             books={currentUserBooksRead}
                             addToBooksRead={addToBooksRead}/>
-                        {/* <div className="col-md-4 text-right">
-                            <button className="btn btn-primary" onClick={() => addToBooksRead({
-                                _id: '66285721ae48634f3257c933',
-                                title: 'e',
-                                googleBooksId: 'NKFPEAAAQBAJ',
-                                author: 'Matt Beaumont',
-                                description: 'A Novel',
-                                coverImageUrl: 'http://books.google.com/books/content?id=NKFPEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api',
-                                clubsReading: []
-                            })}>Add Book</button>
-                        </div> */}
                         {/* <div className="col-lg book-container book-cover d-flex flex-wrap">
                             {currentUserBooksRead?.map((book: Book, index) => {
                                 if (book) {
