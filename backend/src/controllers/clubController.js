@@ -35,11 +35,14 @@ exports.getClub = async (req, res) => {
         : club
 
         res.json(formattedClub);
+
     } catch (error) {
         console.error("Error fetching club by ID:", error);
         res.status(500).json({ error: 'Internal server error while fetching the club by ID.' });
     }
 };
+
+
 
 /**
  * Creates a new club with the given details in the request body.
