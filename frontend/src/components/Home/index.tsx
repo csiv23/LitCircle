@@ -16,13 +16,17 @@ function Home() {
     const fetchProfileAndRelatedData = async () => {
       try {
         const userSession = await client.profile();
-        console.log(userSession);
         if (userSession && userSession._id) {
           setCurrentUser(userSession);
-          const meetings = await client.getUserNextMeetings(userSession._id);
-          if (meetings) {
-            setNextMeetings(meetings);
-          }
+          let meetings = await client.getUserNextMeetings(userSession._id);
+          // Fetch additional club details for each meeting
+          meetings = await Promise.all(
+            meetings.map(async (meeting: any) => {
+              const clubDetails = await client.getBookClubById(meeting.ClubId);
+              return { ...meeting, ...clubDetails };
+            })
+          );
+          setNextMeetings(meetings);
           const followers = await client.getNewFollowers(userSession._id);
           if (followers) {
             setNewFollowers(followers);
@@ -35,7 +39,6 @@ function Home() {
         );
         setCurrentUser(null);
         const recentUsersResponse = await client.getRecentUsers();
-        console.log("Recent Users Response:", recentUsersResponse);
         setRecentUsers(recentUsersResponse);
       }
     };
@@ -81,7 +84,15 @@ function Home() {
                   return (
                     <div key={`meeting-${index}`} className="col-md-3 mb-3">
                       <div className="card">
+                        <img
+                          src={meeting.imageUrl || "path/to/default/image.jpg"}
+                          className="card-img-top"
+                          alt="Club Image"
+                        />
                         <div className="card-body">
+                          <h5 className="card-title">
+                            {meeting.name || "Club Name"}
+                          </h5>
                           <p className="card-text">
                             Next meeting at{" "}
                             {meeting.NextMeetingLocation || "location not set"}{" "}

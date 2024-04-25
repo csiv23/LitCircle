@@ -13,6 +13,8 @@ import Members from './Members/ClubMembersList';
 import NextMeeting from './NextMeeting';
 import BooksRead from './BooksRead';
 import Wishlist from './Wishlist';
+import BookclubJoin from '../BookclubJoin';
+import { current } from '@reduxjs/toolkit';
 
 function BookClubs() {
     const navigate = useNavigate();
@@ -75,11 +77,24 @@ function BookClubs() {
     });
     const [booksRead, setBooksRead] = useState([] as Book[]);
     const [wishlist, setWishlist] = useState([] as Book[]);
+    const [userInClub, setUserInClub] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [removedItem, setRemovedItem] = useState(true);
 
     const leaveClub = async () => {
         if (clubId && currentUser && currentUser._id) {
             await mongooseClient.leaveClub(clubId, currentUser._id);
+            setUserInClub(false);
             navigate(`/profile/${currentUser._id}`);
+        }   
+    }
+
+    const removeUser = async (userId : string) => {
+        if (clubId) {
+            await mongooseClient.leaveClub(clubId, userId);
+            setClubMembers(clubMembers.filter(user => user._id !== userId));
+            setRemovedItem(true);
+            console.log(removedItem);
         }   
     }
 
@@ -91,6 +106,52 @@ function BookClubs() {
             const response = await mongooseClient.getWishlistByClub(clubId);
             setWishlist(response);
         }
+    }
+
+    const removeFromWishlist = async (bookId : string) => {
+        if (clubId) {
+            await mongooseClient.removeBookFromClubWishlist(clubId, bookId);
+            const newWishlist = await mongooseClient.getWishlistByClub(clubId);
+            setWishlist(newWishlist);
+        }
+    }
+
+    const markAsRead = async () => {
+        if (clubId) {
+            const updatedClub = await mongooseClient.markCurrentBookAsRead(clubId);
+            setCurrBook({
+                _id: "",
+                googleBooksId: "",
+                title: "Untitled",
+                author: "N/A",
+                coverImageUrl: "",
+                description: "N/A",
+                clubsReading: [],
+              });
+            setClub(updatedClub);
+        }
+    }
+
+    const setCurrentBook = async (book : Book) => {
+        if (clubId) {
+            const mongooseBookId = await mongooseClient.createBook(book);
+            await mongooseClient.setCurrentBook(clubId, mongooseBookId);
+            const newCurrentBook = await mongooseClient.getClubCurrentBook(clubId);
+            setCurrBook(newCurrentBook);
+        }
+    }
+
+    const joinClub = async () => {
+        if (clubId && currentUser && currentUser._id) {
+            await mongooseClient.joinClub(clubId, currentUser._id);
+            setUserInClub(true);
+        }
+    }
+
+    const updateClub = async () => {
+        console.log(club);
+        const updatedClub = await mongooseClient.updateClub(club);
+        setClub(updatedClub);
     }
 
     const setup = async (clubId : ObjectId) => {
@@ -105,6 +166,13 @@ function BookClubs() {
             const currentMembers = await mongooseClient.getMembersByClub(clubId);
             setClubMembers(currentMembers);
 
+            const userJoined = currentClub.members.includes(userSession._id)
+            setUserInClub(userJoined)
+
+            const userIsAdmin = currentClub.organizer === userSession._id
+            setIsAdmin(userIsAdmin)
+            console.log("user is admin: " + userIsAdmin);
+
             const currentOrganizer = await mongooseClient.getClubOrganizer(clubId);
             setClubOrganizer(currentOrganizer);
 
@@ -116,6 +184,9 @@ function BookClubs() {
 
             const response = await mongooseClient.getWishlistByClub(clubId);
             setWishlist(response);
+
+            setRemovedItem(false);
+            console.log(removedItem);
         }
         else {
             navigate("/login");
@@ -127,12 +198,25 @@ function BookClubs() {
         setCurrentUser(userSession);
     }
 
+
+    const searchUsers = async (userQuery : string)  => {
+        if (club._id) {
+            const currentMembers = await mongooseClient.getMembersByClub(club._id);
+            setClubMembers(currentMembers);
+            setRemovedItem(true);
+            if (currentMembers)
+                return currentMembers.filter((currentMember : User) => currentMember.username.toLowerCase().startsWith(userQuery.toLowerCase()));
+        }
+        return [] as User[];
+    }
+
     useEffect(() => {
         if (clubId) {
             console.log(clubId);
             setup(clubId);
         }
-    }, [clubId]);
+    }, [clubId, userInClub, isAdmin, removedItem]);
+
 
     if (!currentUser) {
         navigate("/login");
@@ -142,12 +226,19 @@ function BookClubs() {
         <div className="club-font">
             <Header />
             <div className="row">
+                { userInClub
+                ? 
+                <div className="row">
                 <ClubNav club={club}/>
                 <div className="col-md-9 club-bg">
                     <div className="row align-items-center">
                     <Routes>
                         <Route path="/" element={<Navigate to="about" />} />
-                        <Route path="about" element={<About club={club}/>} />
+                        <Route path="about" element={<About 
+                            club={club}
+                            setClub={setClub}
+                            updateClub={updateClub}
+                            isAdmin={isAdmin}/>} />
                         <Route path="members" 
                         element={<Members
                             members={clubMembers}
@@ -155,17 +246,24 @@ function BookClubs() {
                             currentUser={currentUser}
                             organizer={clubOrganizer}
                             leaveClub={leaveClub}
+                            isAdmin={isAdmin}
+                            removeUser={removeUser}
+                            searchUser={searchUsers}
                         />} />
                         <Route path="currently-reading" 
                         element={<CurrentlyReading
                             currentBook={currBook}
                             club={club}
+                            isAdmin={isAdmin}
+                            setCurrentBook={setCurrentBook}
+                            markAsRead={markAsRead}
                         />} />
                         <Route path="next-meeting" 
                         element={<NextMeeting
                             currentBook={currBook}
                             club={club}
                             meeting={club.nextMeeting}
+                            isAdmin={isAdmin}
                         />} />
                         <Route path="books-read" 
                         element={<BooksRead
@@ -175,84 +273,24 @@ function BookClubs() {
                         <Route path="wishlist" element={<Wishlist
                             books={wishlist}
                             club={club}
+                            isAdmin={isAdmin}
                             addToWishlist={addToWishlist}
+                            removeFromWishlist={removeFromWishlist}
                         />} /> 
                     </Routes>
-                        {/* <div className="col-md-11 club-container">
-                            <div className="d-flex justify-content-between align-items-center">
-                                <h4 className="m-0">Books We've Read</h4>
-                                <button className="btn btn-primary book-btn">Add Book</button>
-                            </div>
-                            <BooksList books={booksRead} />
-                        </div>
-                    </div>
-                    <div className="row align-items-center">
-                        <div className="col-md-11 club-container">
-                            <div className="d-flex justify-content-between align-items-center">
-                                <h4 className="m-0">Book Wishlist</h4>
-                                <button className="btn btn-primary book-btn">Add Book</button>
-                            </div>
-                            <BooksList books={wishlist} />
-                        </div>
-                    </div>
-                    <div className="row align-items-center">
-                        <div className="col-md-11 club-container">
-                            <h4>Members</h4>
-                            <ClubMembersList members={clubMembers} />
-                        </div> */}
-                    </div> 
                 </div>
+                </div>
+            </div>
+            :
+            <BookclubJoin
+                club={club}
+                currentBook={currBook}
+                booksRead={booksRead}
+                wishlist={wishlist}
+                joinClub={joinClub} /> }
             </div>
         </div>
     );
 }
 
-export default BookClubs;
-
-// const [clubOrganizer, setClubOrganizer] = useState<any>({ _id: "" });
-// const [currBook, setCurrBook] = useState<Book>({  _id: "",
-//     googleBooksId: "",
-//     title: "Untitled",
-//     author: "N/A",
-//     coverImageUrl: "",
-//     description: "N/A",
-//     clubsReading: [],
-//  });
-// const [booksRead, setBooksRead] = useState([] as Book[]);
-// const [wishlist, setWishlist] = useState([] as Book[]);
-
-
-// const findOrganizer = async () => {
-//     if (!clubId)
-//         return;
-//     const response = await mongooseClient.getClubOrganizer(clubId);
-//     setClubOrganizer(response);
-// }
-
-// const findCurrBook = async () => {
-//     if (!clubId)
-//         return;
-//     const response = await mongooseClient.getClubCurrentBook(clubId);
-//     setCurrBook(response);
-// }
-
-// const getBooksRead = async () => {
-//     if (!clubId)
-//         return;
-//     const response = await mongooseClient.getBooksReadByClub(clubId);
-//     setBooksRead(response);
-// }
-
-// const getWishlist = async () => {
-//     if (!clubId)
-//         return;
-//     const response = await mongooseClient.getWishlistByClub(clubId);
-//     setWishlist(response);
-// }
-
-// const getMembers = async () => {
-//     if (!clubId)
-//         return;
-//     const response = await mongooseClient.getMembersByClub(clubId);
-//     setClubMembers(response);
-// }
+export default BookClubs; 
