@@ -1,17 +1,19 @@
+// Import necessary hooks and types
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { Book, Club } from "../../types";
 import GoogleBooksSearch from "../../SearchBooks/search";
-import axios from "axios"; // Import axios for making HTTP requests
+import * as mongooseClient from "../../../mongooseClient";
 
 export default function CurrentlyReading(
     { currentBook, club, isAdmin, setCurrentBook, markAsRead }
-    : 
-    { currentBook : Book, club : Club, isAdmin : boolean, 
+    :
+    {
+        currentBook : Book, club : Club, isAdmin : boolean, 
         setCurrentBook : (book:Book) => void,
         markAsRead : ()=>void;
     }) {
-    
+
     // Function to render a list of books
     const renderBooks = (books : Book[]) => {
         return (
@@ -38,12 +40,12 @@ export default function CurrentlyReading(
         );
     }
 
-    // Function to fetch current book from the backend
+    // Function to fetch current book from the backend using Mongoose Client
     const fetchCurrentBook = async () => {
         try {
             if (club.currentBook !== "") { // Check if club's current book is not empty
-                const response = await axios.get(`/api/clubs/${club._id}/currentBook`);
-                setCurrentBook(response.data);
+                const response = await mongooseClient.mongooseGet(`clubs/${club._id}/currentBook`);
+                setCurrentBook(response);
             }
         } catch (error) {
             console.error("Failed to fetch current book:", error);
