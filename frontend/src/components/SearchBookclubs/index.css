@@ -5,6 +5,18 @@
     min-height: 100vh;
 }
 
+.club {
+    margin-right: 50px;
+}
+
 .club-bg {
     min-height: 100vh;
+}
+
+.club-name {
+    margin-top: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
 }

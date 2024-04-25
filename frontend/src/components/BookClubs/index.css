@@ -117,10 +117,12 @@
 
 .book-title {
     margin-top: 10px;
+    margin-bottom: 0px;
 }
 
 .book-author {
     color:rgb(78, 77, 77);
+    margin-top: 0px;
 }
 
 .books-list-container {
@@ -133,6 +135,11 @@
 .book-btn button{
     color: whitesmoke;
     background-color: rgb(126, 135, 96);
+    border: none;
+}
+
+.book-wishlist {
+    background-color: rgba(244, 228, 210, 0.697);
     border: none;
 }
 

@@ -4,28 +4,32 @@ import { Book } from "../types";
 export default function GoogleBooks(
   { books }: { books: Book[] }) {
 
- return (
-   <div className="table-responsive">
-     <table className="table">
-       <tbody>
-         <tr>
-         {books.map((book) => (
-        <td className="book" key={book._id}>
-            <Link
-                to={`/book/${book.googleBooksId}`}>
+  return (
+    <div className="row">
+      <div className="col-lg book-container d-flex flex-wrap">
+        {books.map((book: Book, index) => {
+          if (book) {
+            return (
+              <div key={index} className="book book-item">
+                <Link to={`/book/${book._id}`}>
+                <div>
                     {(book.coverImageUrl && book.coverImageUrl !== "") ? 
-                     <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
-                    : <img src={require("../../images/emptyBook.jpeg")} 
-                    alt={book.title} className="book-cover"/>}
-                <h3>{book.title}</h3>
-                <p> Author: {book.author} </p>
-                <p> Description: {book.description} </p>
-            </Link>
-        </td>
-        ))}
-         </tr>
-       </tbody>
-     </table>
-   </div>
- );
-}
+                    <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
+                    : <img src={require("../../images/emptyBook.jpeg")} alt={book.title} />}
+                </div>
+                    <h5 className="book-title">{book.title}</h5>
+                    <p className="book-author">{book.author}</p>
+                </Link>
+              </div>
+              );
+                  } else {
+                      return (
+                          <div key={index}>
+                              <p>Book with ID not found.</p>
+                          </div>
+                      );
+                  }
+              })}
+          </div>
+      </div>
+  );}

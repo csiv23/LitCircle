@@ -1,0 +1,42 @@
+.table-container {
+    flex-wrap: wrap;
+    margin: 0 auto; /* Center the container horizontally */
+}
+  
+.table tbody {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.book-item {
+    margin-right: 5px; /* Adjust margin between books */
+    margin-bottom: 5px;
+}
+
+.book a {
+    text-decoration: none;
+    color: black;
+}
+
+.book-title {
+    margin-top: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100px;
+}
+
+.book-author {
+    color:rgb(78, 77, 77);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100px; 
+}
+
+.books-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin: 10px;
+}

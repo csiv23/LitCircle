@@ -9,25 +9,31 @@ export default function Wishlist(
     {books : Book[], club : Club, addToWishlist : (book : Book) => void}) {
     const renderBooks = (books : Book[]) => {
         return (
-          <div className="table-responsive">
-            <table className="table">
-              <tbody>
-                <tr>
-                {books.map((book) => (
-               <td className="book" key={book._id}>
-                    <button onClick={() => {addToWishlist(book)}}>
-                           {(book.coverImageUrl && book.coverImageUrl !== "") ? 
-                            <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
-                           : <img src={require("../../../images/emptyBook.jpeg")} 
-                           alt={book.title} className="book-cover"/>}
-                       <h3>{book.title}</h3>
-                       <p> by {book.author} </p>
-                    </button>
-               </td>
-               ))}
-                </tr>
-              </tbody>
-            </table>
+          <div className="row">
+            <div className="col-lg book-container d-flex flex-wrap">
+              {books.map((book: Book, index) => {
+                if (book) {
+                  return (
+                    <div key={index} className="book"> 
+                      <button onClick={() => {addToWishlist(book)}} className="book-wishlist">
+                        <div>
+                          {(book.coverImageUrl && book.coverImageUrl !== "") ? 
+                          <img src={book.coverImageUrl} alt={book.title} className="book-cover" /> 
+                          : <img src={require("../../../images/emptyBook.jpeg")} alt={book.title} />}
+                        </div>
+                          <h5 className="book-title">{book.title}</h5>
+                          <p className="book-author">{book.author}</p>
+                      </button>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div key={index}>
+                      <p>Book with ID not found.</p>
+                    </div>
+                );}
+              })}
+            </div>    
           </div>
         );
       }

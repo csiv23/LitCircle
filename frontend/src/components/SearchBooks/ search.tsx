@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import GoogleBooks from "./books";
 import { useParams, Link } from "react-router-dom";
 import { Book } from "../types";
-import '../../index.css';
+import './index.css';
 
 export default function GoogleBooksSearch(
   {renderBooks, searchPath}
@@ -45,9 +45,10 @@ export default function GoogleBooksSearch(
         </button>
         )
       }
-      
-      {results &&
-        results.length > 0 && renderBooks(results)}
+      <div>
+        {results &&
+          results.length > 0 && renderBooks(results)}
+      </div>
    </div>
 
 )}
