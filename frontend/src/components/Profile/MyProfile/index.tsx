@@ -66,38 +66,29 @@ function MyProfile() {
         setCurrentUserBooksWishlist(commonBooks);
     };
     const signout = async () => {
-        console.log("currentUser before signout: " + JSON.stringify(currentUser));
         await client.signout();
         navigate("/login");
     };
     const addToWishlist = async (book: Book) => {
         if (currentUser) {
-            console.log("addToWishlist")
             try {
                 const mongooseBookId = await client.createBook(book);
                 const updatedUser = await client.addToWishlist(currentUser._id, mongooseBookId);
                 setCurrentUser(updatedUser);
             } catch {
-                console.log("addToWishlist catch statement");
-                const gotBook = await client.getBookById(book._id);
-                const updatedUser = await client.addToWishlist(currentUser._id, gotBook._id);
-                console.log("addToWishlist updatedUser: " + JSON.stringify(updatedUser));
+                const updatedUser = await client.addToWishlist(currentUser._id, book._id);
                 setCurrentUser(updatedUser);
             }
         }
     }
     const addToBooksRead = async (book: Book) => {
         if (currentUser) {
-            console.log("addToBooksRead")
             try {
                 const mongooseBookId = await client.createBook(book);
                 const updatedUser = await client.addToWishlist(currentUser._id, mongooseBookId);
                 setCurrentUser(updatedUser);
             } catch {
-                console.log("addToBooksRead catch statement");
-                const gotBook = await client.getBookById(book._id);
-                const updatedUser = await client.addToBooksRead(currentUser._id, gotBook._id);
-                console.log("addToBooksRead updatedUser: " + JSON.stringify(updatedUser));
+                const updatedUser = await client.addToBooksRead(currentUser._id, book._id);
                 setCurrentUser(updatedUser);
             }
         }
@@ -209,7 +200,7 @@ function MyProfile() {
                         <Wishlist 
                             books={currentUserBooksWishlist}
                             addToWishlist={addToBooksRead}/>
-                        <div className="col-md-4 text-right">
+                        {/* <div className="col-md-4 text-right">
                             <button className="btn btn-primary" onClick={() => addToBooksRead({
                                 _id: '66285721ae48634f3257c933',
                                 title: 'e',
@@ -219,7 +210,7 @@ function MyProfile() {
                                 coverImageUrl: 'http://books.google.com/books/content?id=NKFPEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api',
                                 clubsReading: []
                             })}>Add Book</button>
-                        </div>
+                        </div> */}
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
                             {currentUserBooksRead?.map((book: Book, index) => {
                                 if (book) {
@@ -250,7 +241,7 @@ function MyProfile() {
                         <Wishlist 
                             books={currentUserBooksWishlist}
                             addToWishlist={addToWishlist}/>
-                        <div className="col-md-4 text-right">
+                        {/* <div className="col-md-4 text-right">
                             <button className="btn btn-primary" onClick={() => addToWishlist({
                                 _id: '66285721ae48634f3257c933',
                                 title: 'e',
@@ -260,7 +251,7 @@ function MyProfile() {
                                 coverImageUrl: 'http://books.google.com/books/content?id=NKFPEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api',
                                 clubsReading: []
                             })}>Add Book</button>
-                        </div>
+                        </div> */}
                         <div className="col-lg book-container book-cover d-flex flex-wrap">
                             {currentUserBooksWishlist?.map((book: Book, index) => {
                                 if (book) {
