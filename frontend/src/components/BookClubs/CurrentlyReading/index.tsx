@@ -73,7 +73,7 @@ export default function CurrentlyReading(
             }
             <div className="d-flex flex-wrap">    
                 {/* Display current book information */}
-                {currentBook.title ? ( // Check if current book title exists
+                {currentBook && currentBook.title !== "Untitled" && currentBook.author !== "N/A" && currentBook.description !== "N/A" && (
                     <div key={currentBook._id} className="book">
                         <Link to={`/book/${currentBook.googleBooksId}`}>
                             <div>
@@ -91,7 +91,8 @@ export default function CurrentlyReading(
                             </button>
                         }
                     </div>
-                ) : (
+                )}
+                {(!currentBook || currentBook.title === "Untitled" || currentBook.author === "N/A" || currentBook.description === "N/A") && (
                     // Display message when no current book is being read
                     <p>No current book being read</p>
                 )}
