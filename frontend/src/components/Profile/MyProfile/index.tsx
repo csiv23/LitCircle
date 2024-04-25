@@ -195,7 +195,7 @@ function MyProfile() {
                             <button className="btn btn-primary">Add Book</button>
                         </div>
                         <Wishlist 
-                            books={currentUserBooksWishlist}
+                            books={currentUserBooksRead}
                             addToWishlist={addToBooksRead}/>
                         {/* <div className="col-md-4 text-right">
                             <button className="btn btn-primary" onClick={() => addToBooksRead({

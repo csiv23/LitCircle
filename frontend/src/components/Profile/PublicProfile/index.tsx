@@ -159,7 +159,7 @@ function PublicProfile() {
                             if (follower) {
                                 console.log("follower: " + JSON.stringify(follower))
                                 return (
-                                    <div>
+                                    <div key={follower._id}>
                                         <div>{follower.username}</div>
                                         {/* <Link to={`/profile/${follower._id}`}>
                                             {(follower.avatar && follower.avatar !== "") ?
