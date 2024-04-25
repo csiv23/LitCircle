@@ -84,16 +84,6 @@ function Members({leaveClub} : {leaveClub : () => Promise<void>})
                     <p>{user.username}</p>
                     { currentUser && currentUser._id && user._id !== currentUser._id &&
                         <>
-                        <button onClick={() => {toggleFollowing(user._id)}}>
-                        {
-                            (currentUser 
-                            && currentUser.following 
-                            && currentUser.following.length > 0
-                            && currentUser.following.includes(user._id)) 
-                            ? "Unfollow"
-                            : "Follow"
-                        }
-                        </button>
                         {isAdmin && <button onClick={() => {removeUserFromList(user._id)}}>
                             Remove 
                         </button>}
