@@ -24,18 +24,27 @@ exports.getClub = async (req, res) => {
             return;
         }
         
-        res.json( {
-            ...club,
-            NextMeeting: {
+        // Construct the NextMeeting object only if NextMeeting and Date are available
+        let nextMeeting = null;
+        if (club.NextMeeting && club.NextMeeting.Date) {
+            nextMeeting = {
                 ...club.NextMeeting,
                 Date: club.NextMeeting.Date.toISOString()
-            }
+            };
+        }
+
+        // Respond with the club details, including the NextMeeting if available
+        res.json({
+            ...club._doc,  // Assuming club is a Mongoose document, spread its properties
+            NextMeeting: nextMeeting  // Use the conditionally created nextMeeting object
         });
     } catch (error) {
         console.error("Error fetching club by ID:", error);
         res.status(500).json({ error: 'Internal server error while fetching the club by ID.' });
     }
 };
+
+
 
 /**
  * Creates a new club with the given details in the request body.
