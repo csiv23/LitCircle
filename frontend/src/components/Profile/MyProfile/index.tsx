@@ -16,8 +16,6 @@ function getURL( book: Book  ) {
 
 function MyProfile() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-
     const { userId } = useParams();
     const [currentUser, setCurrentUser] = useState<User>();
     const [currentUserClubs, setCurrentUserClubs] = useState<Club[]>([]);
@@ -100,16 +98,15 @@ function MyProfile() {
         }
     }
     const removeFromWishlist = async (bookId: string) => {
-        // const filteredWishlist = currentUserBooksWishlist.filter(book => book._id !== bookToRemove._id);
         if (currentUser) {
             try {
                 console.log("removeFromWishlist clicked")
-                await client.removeFromWishlist(currentUser._id, bookId);
-                // const filteredWishlist = currentUserBooksWishlist.filter(book => book._id !== bookId);
-                // setCurrentUserBooksWishlist(filteredWishlist);
-                // fetchUsersBooksWishlist();
+                const updatedUser = await client.removeFromWishlist(currentUser._id, bookId);
                 // setCurrentUser(updatedUser);
-                console.log("Successfully removed book from wishlist")
+                // console.log("removeFromWishlist updatedUser: " + JSON.stringify(updatedUser))
+                // console.log("removeFromWishlist currentUser: " + JSON.stringify(updatedUser))
+                const updatedUserById = await client.getUserById(currentUser._id)
+                setCurrentUser(updatedUserById);
             } catch (error) {
                 console.error("Error removing from wishlist:", error);
             }
@@ -172,7 +169,7 @@ function MyProfile() {
                             {currentUserClubs?.map((club: Club, index) => {
                                 if (club) {
                                     return (
-                                        <div key={index}>
+                                        <div key={club._id}>
                                             <Link to={`/bookclub/${club._id}`}>
                                                 <h5>{club.name}</h5>
                                                 <img src={require(`../../../images/BookclubDefault.jpeg`)} alt={club.name} className="book-cover" />
@@ -215,7 +212,7 @@ function MyProfile() {
                             {currentUserBooksRead?.map((book: Book, index) => {
                                 if (book) {
                                     return (
-                                        <div key={index} className="book">
+                                        <div key={book._id} className="book">
                                             <Link to={`/book/${book._id}`}>
                                                 <img src={require(`../../../images/emptyBook.jpeg`)}
                                                     alt={book.title} />
@@ -258,7 +255,7 @@ function MyProfile() {
                                     return (
                                         <div>
                                             <button onClick={() => removeFromWishlist(book._id)}>Remove Book</button>
-                                            <div key={index} className="book">
+                                            <div key={book._id} className="book">
                                                 <Link to={`/book/${book._id}`}>
                                                     <img src={require(`../../../images/emptyBook.jpeg`)}
                                                         alt={book.title} />
