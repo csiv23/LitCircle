@@ -5,31 +5,24 @@ export default function UserSearch(
     {
         users,
         renderUsers,
+        searchUsers,
     } :
     {
         users: User[],
-        renderUsers: (users : User[]) => JSX.Element
+        renderUsers: (users : User[]) => JSX.Element,
+        searchUsers: (userQuery : string) => Promise<any>
     }
 ) {
     const [search, setSearch] = useState("");
     const [results, setResults] = useState(users);
-    console.log(users);
 
-    const searchUsers = (userQuery : string) : User[] => {
-        if (users && users.length > 0) {
-            return users.filter((user : User) => {
-                return user.username.toLowerCase().startsWith(userQuery.toLowerCase());
-            })
-        }
-
-        return users;
-    }
 
     const fullTextSearch = async (text="") => {
+        console.log("search triggered")
         setSearch(text);
 
         if (text !== "") {
-         const results = searchUsers(text);
+         const results = await searchUsers(text);
          setResults(results);
          console.log(results);
         }
@@ -41,6 +34,7 @@ export default function UserSearch(
     useEffect(() => {
         fullTextSearch(search);
         console.log("rerendered");
+        console.log(users.length);
      }, []);
     
      return (
@@ -61,8 +55,8 @@ export default function UserSearch(
         Refresh
       </button>
       <div>
-      {results &&
-        results.length > 0 && renderUsers(results) }
+      {(results &&
+        results.length > 0) ? renderUsers(results) : renderUsers(users)}
       </div>
 
     </div>
