@@ -52,6 +52,7 @@ export default function Wishlist(
       await mongooseClient.removeBookFromClubWishlist(clubId, bookId);
       setWishlist(wishlist.filter(book => book._id !== bookId));
       setResults(results.filter(book => book._id !== bookId));
+      setSearch("");
   }
 }
 
@@ -62,8 +63,9 @@ export default function Wishlist(
         await mongooseClient.addToClubWishlist(clubId, mongooseBookId);
         console.log(mongooseBook);
         setWishlist([...wishlist, mongooseBook]);
-        // setResults([...wishlist, mongooseBook]);
+        setResults([...wishlist, mongooseBook]);
         console.log(results);
+        setSearch("");
       }
       
     }
@@ -141,12 +143,8 @@ export default function Wishlist(
            console.log(results);
           }
           else {
-              if (results && results.length > 0) {
-                setResults(results);
-              }
-              else setResults(wishlist);
+            setResults(wishlist);
           }
-          console.log(results);
       };
 
       const setup = async () => {
@@ -184,7 +182,7 @@ export default function Wishlist(
       useEffect(() => {
         console.log("rerender");
         fullTextSearch(search);
-     }, [results]);
+     }, [search]);
 
 return (
     <div className="d-flex flex-wrap">
@@ -210,7 +208,7 @@ return (
       </button>
       <div>
       {(results &&
-        results.length > 0) ? renderWishlist(results)  : renderWishlist(wishlist)}
+        (results.length > 0 || search !== "")) ? renderWishlist(results)  : renderWishlist(wishlist)}
       </div>
 
     </div>
