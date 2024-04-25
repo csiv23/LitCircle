@@ -87,7 +87,7 @@ exports.registerUser = async (req, res) => {
 
         console.log(user);
         await user.save();
-        req.session["currentUser"] = user; // TODO: Might not work?
+        req.session["currentUser"] = user;
         res.json(user);
     } catch (error) {
         console.error("Error registering user:", error);
@@ -189,6 +189,41 @@ exports.followUser = async (req, res) => {
     }
 };
 
+// Unfollow another user
+exports.unfollowUser = async (req, res) => {
+    const { userId } = req.params; // Follower
+    const { userIdToFollow } = req.body; // Followed
+
+    try {
+        // Check if user already following
+        const user = await User.findById(userId);
+        const alreadyFollowing = user.Following.some(id => id == userIdToFollow);
+        if (!alreadyFollowing) {
+            console.log("Already unfollowed this user!")
+            return res.status(400).json({ msg: 'Already unfollowed this user!' });
+        }
+
+        // Remove userIdToFollow from the Following array of the follower
+        await User.findByIdAndUpdate(
+            userId,
+            { $pull: { Following: userIdToFollow } },
+            { new: true }
+        );
+        // Remove userId from the Followers array of the followed user
+        await User.findByIdAndUpdate(
+            userIdToFollow,
+            { $pull: { Followers: userId } },
+            { new: true }
+        );
+        const updatedUser = await User.findById(userId);
+        req.session["currentUser"] = updatedUser;
+        res.status(204).send();
+    } catch (error) {
+        console.error("Error following user:", error);
+        res.status(500).send('Server error');
+    }
+};
+
 // Handler for fetching the list of followers of a specific user.
 exports.getFollowers = async (req, res) => {
     // Extract the userId from the request parameters.
@@ -262,34 +297,40 @@ exports.addBookToWishlist = async (req, res) => {
             { $addToSet: { Wishlist: bookId } }, // Use $addToSet to avoid duplicate entries
             { new: true } // Return the updated document
         );
+        console.log("addBookToWishlist updatedUser: " + updatedUser);
 
         if (!updatedUser) {
             return res.status(404).send('User not found');
         }
 
-        res.status(200).json(updatedUser);
+        req.session["currentUser"] = updatedUser;
+        res.json(updatedUser);
+        // res.status(200).json(updatedUser);
     } catch (error) {
         console.error("Error adding book to wishlist:", error);
         res.status(500).send('Server error');
     }
 };
 
-exports.removeBookFromWishlist = async (req, res ) => {
+exports.removeBookFromWishlist = async (req, res) => {
     const { userId } = req.params;
     const { bookId } = req.body;
 
     try {
         const updatedUser = await User.updateOne(
             { _id: userId },
-            { $pull: { Wishlist: bookId} }
+            { $pull: { Wishlist: bookId } }
         );
 
+        console.log("removeBookFromWishlist updatedUser: " + JSON.stringify(updatedUser));
         // Check if the document was modified
         if (updatedUser.modifiedCount === 0) {
             return res.status(404).send('No item was removed, check your input.');
         }
 
-        res.status(200).json(updatedUser);
+        req.session["currentuser"] = updatedUser;
+        res.json(updatedUser);
+        // res.status(200).json(updatedUser);
     } catch (error) {
         // Log and send the error if something goes wrong
         console.error('Failed to remove item:', error);
@@ -357,6 +398,7 @@ exports.addBookToBooksRead = async (req, res) => {
         }
 
         // Respond with the updated user information
+        req.session["currentuser"] = updatedUser;
         res.json(updatedUser);
     } catch (error) {
         console.error("Error adding book to user's BooksRead:", error);
@@ -364,7 +406,7 @@ exports.addBookToBooksRead = async (req, res) => {
     }
 };
 
-exports.removeBookFromBooksRead = async (req, res ) => {
+exports.removeBookFromBooksRead = async (req, res) => {
     const { userId } = req.params;
     const { bookId } = req.body;
 
@@ -379,7 +421,9 @@ exports.removeBookFromBooksRead = async (req, res ) => {
             return res.status(404).send('No item was removed, check your input.');
         }
 
-        res.status(200).json(updatedUser);
+        req.session["currentuser"] = updatedUser;
+        res.json(updatedUser);
+        // res.status(200).json(updatedUser);
     } catch (error) {
         // Log and send the error if something goes wrong
         console.error('Failed to remove item:', error);
@@ -430,33 +474,33 @@ exports.getUserNextMeetings = async (req, res) => {
     try {
         // Find the user by ID and deeply populate the BookClubs field with the associated club details
         const user = await User.findById(userId).populate({
-            path: 'BookClubs.ClubId',  // Corrected the path to populate
-            populate: { path: 'NextMeeting' }  // Populate the NextMeeting field of the Club
+            path: 'BookClubs.ClubId',  // Ensure we are populating the ClubId from BookClubs
+            populate: { path: 'NextMeeting' }  // Further populate the NextMeeting field of the Club
         });
-
-        console.log(user);
 
         if (!user) {
             return res.status(404).send('User not found');
         }
 
-        // Map through the populated BookClubs to extract the next meeting details
-        const nextMeetings = user.BookClubs.filter(bookClub => bookClub.ClubId.NextMeeting 
-            && bookClub.ClubId.NextMeeting.Date && bookClub.ClubId.NextMeeting.Location);
+        // Filter out any book clubs that do not have a valid ClubId and a scheduled next meeting
+        const nextMeetings = user.BookClubs.filter(bookClub =>
+            bookClub.ClubId && bookClub.ClubId.NextMeeting &&
+            bookClub.ClubId.NextMeeting.Date && bookClub.ClubId.NextMeeting.Location);
 
+        // Map through the filtered book clubs to create a structured array of next meeting details
         const meetingsClean = nextMeetings.map(bookClub => ({
             ClubId: bookClub.ClubId._id,  // Extracting the Club ID
-            ClubName: bookClub.ClubId.Name,  // Optional: also provide the club name
-            NextMeetingDate: bookClub.ClubId.NextMeeting.Date.toISOString(),  // Extract the next meeting date
-            NextMeetingLocation: bookClub.ClubId.NextMeeting.Location  // Extract the meeting location
+            ClubName: bookClub.ClubId.Name,  // Optionally also provide the club name for display
+            NextMeetingDate: bookClub.ClubId.NextMeeting.Date.toISOString(),  // Format the date to ISO string
+            NextMeetingLocation: bookClub.ClubId.NextMeeting.Location  // Include the meeting location
         }));
 
-        res.json(meetingsClean);  // Send the next meetings info as a response
+        res.json(meetingsClean);  // Send the formatted next meetings data as a response
     } catch (error) {
-        console.error("Error fetching user's next meetings:", error);
         res.status(500).send('Server error');
     }
 };
+
 
 exports.getUserClubsWithoutBookRec = async (req, res) => {
     const { userId, bookId } = req.params;

@@ -14,7 +14,7 @@ function Header() {
                 const userSession = await client.profile();
                 setCurrentUser(userSession);
             } catch (error) {
-                navigate("/login");
+                console.log("Header. Couldn't fetch currentUser");
             }
         }
         fetchProfile();

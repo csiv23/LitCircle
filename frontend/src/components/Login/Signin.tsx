@@ -10,6 +10,7 @@ export default function Signin() {
         email: "",
         password: ""
     });
+    const [error, setError] = useState(""); 
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const signin = async () => {
@@ -20,18 +21,19 @@ export default function Signin() {
             navigate(`/myProfile/${user._id}`);
         }
         catch (err: any) {
-            console.log(err.response.data.message);
+            setError(err.response?.data.message || "Failed to sign in. Please check your credentials and try again.");
         }
     }
 
     return (
         <div>
             <h1>Sign In</h1>
+            {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error message if there is an error */}
             <input value={credentials.email} placeholder="Email" type="email" onChange={(e) =>
                 setCredentials({ ...credentials, email: e.target.value })} />
             <input value={credentials.password} placeholder="Password" type="password" onChange={(e) =>
                 setCredentials({ ...credentials, password: e.target.value })} />
-            <button onClick={signin}> Sign In </button>
+            <button onClick={signin}>Sign In</button>
         </div>
     )
 }
