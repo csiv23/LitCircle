@@ -151,8 +151,11 @@ function Home() {
         <Link to="/search-clubs">
           <button className="btn btn-primary mr-2">Join a Club</button>
         </Link>
+        <Link to="/create-club">
+          <button className="btn btn-primary">Create a Club</button>{" "}
+        </Link>
         <Link to="/search-books">
-          <button className="btn btn-primary">Find a Book</button>
+          <button className="btn btn-primary mr-2">Find a Book</button>
         </Link>
       </div>
     </div>
