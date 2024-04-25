@@ -262,8 +262,9 @@ function BookClubs() {
                         element={<NextMeeting
                             currentBook={currBook}
                             club={club}
-                            meeting={club.nextMeeting}
                             isAdmin={isAdmin}
+                            setClub={setClub}
+                            updateClub={updateClub}
                         />} />
                         <Route path="books-read" 
                         element={<BooksRead/>} />

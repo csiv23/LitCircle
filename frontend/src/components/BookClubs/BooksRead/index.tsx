@@ -49,9 +49,10 @@ export default function BooksRead(
 
   const removeBookFromList = async (bookId : string) => {
     if (clubId) {
-      await mongooseClient.removeBookFromClubWishlist(clubId, bookId);
+      await mongooseClient.removeFromClubBooksRead(clubId, bookId);
       setBooksRead(booksRead.filter(book => book._id !== bookId));
       setResults(results.filter(book => book._id !== bookId));
+      setSearch("");
   }
 }
 
@@ -59,12 +60,12 @@ export default function BooksRead(
       if (clubId) {
         const mongooseBookId = await mongooseClient.createBook(book);
         const mongooseBook = await mongooseClient.getBookById(mongooseBookId);
-        await mongooseClient.addToClubWishlist(clubId, mongooseBookId);
+        await mongooseClient.addToClubBooksRead(clubId, mongooseBookId);
         console.log(mongooseBook);
         setBooksRead([...booksRead, mongooseBook]);
-    
         setResults([...booksRead, mongooseBook]);
         console.log(results);
+        setSearch("");
       }
       
     }
@@ -136,18 +137,14 @@ export default function BooksRead(
     }
   
       const fullTextSearch = async (text="") => {
-          if (text !== "") {
-           const results = await searchBooks(text);
-           setResults(results);
-           console.log(results);
-          }
-          else {
-              if (results && results.length > 0) {
-                setResults(results);
-              }
-              else setResults(booksRead);
-          }
-          console.log(results);
+        if (text !== "") {
+            const results = await searchBooks(text);
+            setResults(results);
+            console.log(results);
+           }
+           else {
+             setResults(booksRead);
+           }
       };
 
       const setup = async () => {
@@ -185,7 +182,7 @@ export default function BooksRead(
       useEffect(() => {
         console.log("rerender");
         fullTextSearch(search);
-     }, [results]);
+     }, [search]);
 
 return (
     <div className="d-flex flex-wrap">
@@ -211,7 +208,7 @@ return (
       </button>
       <div>
       {(results &&
-        results.length > 0) ? renderBooksRead(results)  : renderBooksRead(booksRead)}
+        (results.length > 0 || search !== "")) ? renderBooksRead(results)  : renderBooksRead(booksRead)}
       </div>
 
     </div>

@@ -471,6 +471,24 @@ export const addToClubWishlist = async (clubId : string, bookId : string) => {
   return response;
 }
 
+
+export const removeBookFromClubWishlist = async (clubId : string, bookId : string) => {
+  const updatedClub = await mongooseDelete(`clubs/${clubId}/wishlist/${bookId}`);
+  return cleanClub(updatedClub.club);
+}
+
+
+export const addToClubBooksRead = async (clubId : string, bookId : string) => {
+  const response = await mongoosePost(`clubs/${clubId}/booksRead`, {bookId : bookId})
+  return response;
+}
+
+
+export const removeFromClubBooksRead = async (clubId : string, bookId : string) => {
+  const updatedClub = await mongooseDelete(`clubs/${clubId}/booksRead/${bookId}`);
+  return cleanClub(updatedClub.club);
+}
+
 export const getUserWishlist = async (userId : string) => {
   console.log("getUserWishlist")
   const response = await mongooseGet(`users/${userId}/wishlist`)
@@ -573,10 +591,5 @@ export const setCurrentBook = async (clubId : string, bookId : string) => {
 
 export const markCurrentBookAsRead = async (clubId : string) => {
   const updatedClub = await mongoosePost(`clubs/${clubId}/markCurrentBookAsRead`);
-  return cleanClub(updatedClub.club);
-}
-
-export const removeBookFromClubWishlist = async (clubId : string, bookId : string) => {
-  const updatedClub = await mongooseDelete(`clubs/${clubId}/wishlist/${bookId}`);
   return cleanClub(updatedClub.club);
 }

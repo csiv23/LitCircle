@@ -426,6 +426,65 @@ exports.deleteBookFromWishlist = async (req, res) => {
     res.status(200).json({ message: 'Book removed from the wishlist successfully', club });
 }
 
+exports.addBookToBooksRead = async (req, res) => {
+    const { clubId } = req.params;
+    const { bookId } = req.body;
+
+    try {
+        const club = await validateClubExists(clubId, res);
+        if (!club) {
+            return;
+        }
+
+        const book = await validateBookbyId(bookId, res);
+        if (!book) {
+            return;
+        }
+
+        // Check if the book is already in booksRead
+        const isInBooksRead = club.BooksRead.some(b => b.toString() === bookId);
+        if (isInBooksRead) {
+            return res.status(200).json({ message: 'Book is already in the list of books read.' });
+        }
+
+        // Add the book to the booksRead
+        club.BooksRead.push(bookId);
+        await club.save();
+
+        res.status(200).json({ message: 'Book added to books read list successfully', club });
+    } catch (error) {
+        console.error('Error adding book to the club\'s books read list :', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+exports.deleteBookFromBooksRead = async (req, res) => {
+    const { clubId, bookId } = req.params;
+
+    const club = await validateClubExists(clubId, res);
+    if (!club) {
+        return;
+    }
+
+    console.log(bookId);
+    const book = await validateBookbyId(bookId, res);
+    if (!book) {
+        return;
+    }
+
+    // Check if the book is in the list
+    const isInBooksRead = club.BooksRead.some(b => b.toString() === bookId);
+    if (!isInBooksRead) {
+        return res.status(400).json({ message: 'Book is not in the list of books read.' });
+    }
+
+    // Remove the book from the list
+    club.BooksRead = club.BooksRead.filter(b => b.toString() !== bookId);
+    await club.save();
+
+    res.status(200).json({ message: 'Book removed from the list of books read successfully', club });
+}
+
 
 exports.setNewMeeting = async (req, res) => {
     const { clubId } = req.params;
