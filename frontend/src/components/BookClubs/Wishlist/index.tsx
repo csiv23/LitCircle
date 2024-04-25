@@ -3,9 +3,12 @@ import SearchableBooksList from "../BooksList";
 import GoogleBooksSearch from "../../SearchBooks/search";
 
 export default function Wishlist(
-    {books, club, addToWishlist}
+    {books, club, addToWishlist, removeFromWishlist, isAdmin}
     : 
-    {books : Book[], club : Club, addToWishlist : (book : Book) => void}) {
+    {books : Book[], club : Club, isAdmin : boolean
+      addToWishlist : (book : Book) => void,
+      removeFromWishlist : (bookId : string) => Promise<void>}
+  ) {
     const renderBooks = (books : Book[]) => {
         return (
           <div className="table-responsive">
@@ -45,7 +48,7 @@ return (
     <h4>{books.length} Books</h4>
 
     <GoogleBooksSearch renderBooks={renderBooks} searchPath={false} />
-    <SearchableBooksList booksList={books} />
+    <SearchableBooksList booksList={books} removeBook={removeFromWishlist} isAdmin={isAdmin}  />
     </div>
     )
 }

@@ -8,9 +8,13 @@ import MongooseBookSearch from "../../MongooseSearchBooks";
 function SearchableBooksList(
 { 
     booksList,
+    removeBook,
+    isAdmin,
 } : 
 { 
     booksList: Book[],
+    removeBook : (bookId : string) => void,
+    isAdmin : boolean
 }) 
 {   
     const renderBook = (book : Book) => {
@@ -25,6 +29,9 @@ function SearchableBooksList(
                 <h5 className="book-title">{book.title}</h5>
                 <p className="book-author">{book.author}</p>
             </Link>
+            {isAdmin && <button onClick={() => {removeBook(book._id)}}>
+                Remove Book
+            </button>}
         </div>
         );
     }

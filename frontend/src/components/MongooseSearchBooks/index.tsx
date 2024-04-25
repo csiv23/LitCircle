@@ -12,7 +12,7 @@ export default function MongooseBookSearch(
     }
 ) {
     const [search, setSearch] = useState("");
-    const [results, setResults] = useState(books);
+    const [results, setResults] = useState([] as Book[]);
 
     const searchBooks = (bookQuery : string) : Book[] => {
         if (books && books.length > 0) {
@@ -34,10 +34,11 @@ export default function MongooseBookSearch(
             setResults(books);
         }
     };
+    
 
     useEffect(() => {
         fullTextSearch(search);
-     }, []);
+     }, [results]);
     
      return (
     <div>
@@ -49,8 +50,8 @@ export default function MongooseBookSearch(
         Search
       </button>
       <div>
-      {results &&
-        results.length > 0 && renderBooks(results) }
+      {(results &&
+        results.length > 0) ? renderBooks(results)  : renderBooks(books)}
       </div>
 
     </div>
