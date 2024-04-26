@@ -67,6 +67,11 @@ exports.createClub = async (req, res) => {
             return res.status(404).json({ error: 'Organizer not found. You must specify a valid organizer ID.' });
         }
 
+        const nextMeeting = {
+            NextMeetingDate: new Date(),
+            NextMeetingLocation: "",
+        }
+
         // Create a new club with the provided data
         const newClub = new Club({
             Name: name,
@@ -76,7 +81,8 @@ exports.createClub = async (req, res) => {
             Wishlist: [],
             CurrentBook: null,
             Organizer: organizer,
-            ImageUrl: imageUrl || "" // Use an empty string as default if no image URL is provided
+            ImageUrl: imageUrl || "", // Use an empty string as default if no image URL is provided
+            NextMeeting: nextMeeting
         });
 
         // Save the new club to the database
