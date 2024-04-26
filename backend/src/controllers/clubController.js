@@ -392,7 +392,7 @@ exports.deleteClub = async (req, res) => {
         const club = await validateClubExists(clubId, res);
         if (!club) {
             // validateClubExists handles the response if the club is not found.
-            return;
+            res.status(200).json({ message: 'Club already does not exist' });
         }
 
         // Iterate through all members of the club and remove the club from their BookClubs list.
@@ -403,6 +403,14 @@ exports.deleteClub = async (req, res) => {
                 await member.save();
             }
         }));
+        
+        if (club.CurrentBook) {
+            const currentBook = await Club.findById(club.CurrentBook)
+            if (currentBook) {
+                currentBook.ClubsReading = currentBook.ClubsReading.filter(bookClub => bookClub.ClubId.toString() !== clubId);
+                await currentBook.save();
+            }
+        }
 
         // After updating all members, delete the club.
         await Club.findByIdAndDelete(clubId);

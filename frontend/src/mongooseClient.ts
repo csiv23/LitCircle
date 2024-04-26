@@ -660,3 +660,8 @@ export const markCurrentBookAsRead = async (clubId: string) => {
   );
   return cleanClub(updatedClub.club);
 };
+
+export const deleteClub = async (clubId : string) => {
+  const response = await mongooseDelete(`clubs/${clubId}/delete`);
+  return response;
+}

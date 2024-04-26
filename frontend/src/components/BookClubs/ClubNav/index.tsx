@@ -41,6 +41,10 @@ export default function ClubNav(
             label: "Books We Want to Read",
             link: "wishlist"
         },
+        {
+            label: "Delete Club",
+            link: "delete"
+        }
     ]
 
     return (
