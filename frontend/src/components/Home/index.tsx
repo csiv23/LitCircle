@@ -78,33 +78,33 @@ function Home() {
           {nextMeetings.length > 0 && (
             <div className="home-container">
               <h4>Upcoming Meetings:</h4>
-              <div className="row">
+              <div className="row meeting-container">
                 {nextMeetings.map((meeting, index) => {
                   const meetingDate = meeting.NextMeetingDate
                     ? new Date(meeting.NextMeetingDate).toLocaleDateString()
                     : "Date not set";
                   return (
                     <div key={`meeting-${index}`} className="col-md-3 mb-3">
-                      <div className="card">
-                      <Link
-                          to={`/bookclub/${meeting.clubId}/next-meeting`}
-                          className="card-link">
-                        <img
-                          src={meeting.imageUrl || "path/to/default/image.jpg"}
-                          className="card-img-top"
-                          alt="Club Image"
-                        />
-                        <div className="card-body">
-                          <h5 className="card-title">
-                            {meeting.name || "Club Name"}
-                          </h5>
-                          <p className="card-text">
-                            Next meeting at{" "}
-                            {meeting.NextMeetingLocation || "location not set"}{" "}
-                            on {meetingDate}
-                          </p>
-                        </div>
-                        </Link>
+                      <div className="card card-meetings">
+                        <Link
+                            to={`/bookclub/${meeting.clubId}/next-meeting`}
+                            className="card-link">
+                          <img
+                            src={meeting.imageUrl || "path/to/default/image.jpg"}
+                            className="card-img-top"
+                            alt="Club Image"
+                          />
+                          <div className="card-body">
+                            <h5 className="card-title">
+                              {meeting.name || "Club Name"}
+                            </h5>
+                            <p className="card-text">
+                              Next meeting at{" "}
+                              {meeting.NextMeetingLocation || "location not set"}{" "}
+                              on {meetingDate}
+                            </p>
+                          </div>
+                          </Link>
                       </div>
                     </div>
                   );
@@ -118,7 +118,7 @@ function Home() {
               <div className="row">
                 {newFollowers.map((follower) => (
                   <div key={follower._id} className="col-md-3 mb-3">
-                    <div className="card">
+                    <div className="card card-followers">
                     <Link
                           to={`/profile/${follower._id}`}
                           className="card-link">
@@ -140,7 +140,7 @@ function Home() {
               <div className="row">
                 {recentUsers.map((user) => (
                   <div key={user._id} className="col-md-3 mb-3">
-                    <div className="card">
+                    <div className="card card-followers">
                     <Link to={`/profile/${user._id}`} className="card-link">
                       <div className="card-body">
                           {user.username}
