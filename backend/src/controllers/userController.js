@@ -124,15 +124,16 @@ exports.signOut = async (req, res) => {
 // Update user profile
 exports.updateUserProfile = async (req, res) => {
     const { userId } = req.params;
-    const { Email, FirstName, LastName, Username, AvatarUrl } = req.body;
+    const { email, firstName, lastName, username, password, avatar } = req.body;
 
     // Build the update object dynamically
     const updateData = {};
-    if (Email) updateData.Email = Email;
-    if (FirstName) updateData.FirstName = FirstName;
-    if (LastName) updateData.LastName = LastName;
-    if (Username) updateData.Username = Username;
-    if (AvatarUrl) updateData.AvatarUrl = AvatarUrl;
+    if (email) updateData.Email = email;
+    if (firstName) updateData.FirstName = firstName;
+    if (lastName) updateData.LastName = lastName;
+    if (username) updateData.Username = username;
+    if (password) updateData.Password = password;
+    if (avatar) updateData.Avatar = avatar;
 
     try {
         // Perform the update operation
@@ -141,10 +142,8 @@ exports.updateUserProfile = async (req, res) => {
             { $set: updateData },
             { new: true } // Return the updated document
         );
-
         // Update the session user
         req.session["currentUser"] = updatedUser;
-
         // Send the updated user as a response
         res.json(updatedUser);
     } catch (error) {
