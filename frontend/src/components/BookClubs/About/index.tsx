@@ -1,3 +1,4 @@
+import { useParams } from "react-router";
 import { Club, User } from "../../types";
 import '../index.css';
 
@@ -10,6 +11,8 @@ export default function About(
         updateClub : () => void,
         setClub : (club : Club) => void;
     }) {
+
+    const {clubId} = useParams();
     
     return (
         <div>

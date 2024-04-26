@@ -17,6 +17,7 @@ import BookclubJoin from '../BookclubJoin';
 import { current } from '@reduxjs/toolkit';
 import AdminLeave from '../AdminLeave/adminleave';
 import Delete from './Delete';
+import ClubNotFound from './ClubNotFound/ClubNotFound';
 
 function BookClubs() {
     const navigate = useNavigate();
@@ -243,6 +244,8 @@ function BookClubs() {
 
     return (
         <div className="club-font">
+            {clubId ? 
+            <>
             <Header />
             <div>
                 { userInClub
@@ -287,6 +290,8 @@ function BookClubs() {
                 wishlist={wishlist}
                 joinClub={joinClub} /> }
             </div>
+            </>
+            : <ClubNotFound />}
         </div>
     );
 }
