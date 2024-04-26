@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Book, Club, ObjectId, User } from "./components/types";
+import { createNoSubstitutionTemplateLiteral } from "typescript";
 
 // TODO : MOVE THIS TO BACKEND ENV 
 const MONGOOSE_URL = process.env.REACT_APP_MONGOOSE_URL || "http://localhost:4000/api"
@@ -465,8 +466,8 @@ export const signout = async () => {
 };
 
 export const profile = async () => {
-  const response = await axios.post(`${USERS_API_URL}/profile`);
-  return cleanUser(response.data);
+    const response = await axios.post(`${USERS_API_URL}/profile`);
+    return cleanUser(response.data);
 }
 
 export const updateUserProfile = async (id: string | undefined, username: string | undefined, password: string | undefined) => {

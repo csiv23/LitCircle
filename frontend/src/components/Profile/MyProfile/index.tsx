@@ -36,6 +36,17 @@ function MyProfile() {
         }
     }, [currentUser]);
 
+    const setup = async () => {
+
+        if (userId) {
+            await fetchProfile();
+            await fetchUsersClubs();
+            await fetchUsersBooksRead();
+            await fetchUsersBooksWishlist();
+            await fetchUsersFollowers();
+        }
+    }
+
     const fetchProfile = async () => {
         try {
             const userSession = await client.profile();
@@ -70,6 +81,10 @@ function MyProfile() {
         const followers = allUsers.filter((user: User) => currentUser?.followers.includes(user._id));
         setCurrentUserFollowers(followers);
     }
+
+
+
+
     const signout = async () => {
         await client.signout();
         navigate("/login");
