@@ -79,7 +79,7 @@ function MyProfile() {
     }
     const signout = async () => {
         await client.signout();
-        navigate("/login");
+        navigate("/home");
     };
     const addToWishlist = async (book: Book) => {
         if (currentUser) {
