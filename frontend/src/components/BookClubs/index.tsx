@@ -170,44 +170,45 @@ function BookClubs() {
         setClub(updatedClub);
     }
 
-    const setup = async (clubId : ObjectId) => {
-        const userSession = await mongooseClient.profile();
-        setCurrentUser(userSession);
-
-        if (userSession) {
-            const currentClub = await mongooseClient.getBookClubById(clubId);
-            setClub(currentClub);
-            console.log(currentClub)
-
-            const currentMembers = await mongooseClient.getMembersByClub(clubId);
-            setClubMembers(currentMembers);
-
-            const userJoined = currentClub.members.includes(userSession._id)
-            setUserInClub(userJoined)
-
-            const userIsAdmin = currentClub.organizer === userSession._id
-            setIsAdmin(userIsAdmin)
-            console.log("user is admin: " + userIsAdmin);
-
-            const currentOrganizer = await mongooseClient.getClubOrganizer(clubId);
-            setClubOrganizer(currentOrganizer);
-
-            const currentBook = await mongooseClient.getClubCurrentBook(clubId);
-            setCurrBook(currentBook);
-
-            const clubBooksRead = await mongooseClient.getBooksReadByClub(clubId);
-            setBooksRead(clubBooksRead);
-
-            const response = await mongooseClient.getWishlistByClub(clubId);
-            setWishlist(response);
-
-            setRemovedItem(false);
-            console.log(removedItem);
+    const setup = async (clubId: ObjectId) => {
+        try {
+            const userSession = await mongooseClient.profile();
+            setCurrentUser(userSession);
+    
+            if (userSession) {
+                const currentClub = await mongooseClient.getBookClubById(clubId);
+                setClub(currentClub);
+    
+                const currentMembers = await mongooseClient.getMembersByClub(clubId);
+                setClubMembers(currentMembers);
+    
+                const userJoined = currentClub.members.includes(userSession._id);
+                setUserInClub(userJoined);
+    
+                const userIsAdmin = currentClub.organizer === userSession._id;
+                setIsAdmin(userIsAdmin);
+    
+                const currentOrganizer = await mongooseClient.getClubOrganizer(clubId);
+                setClubOrganizer(currentOrganizer);
+    
+                const currentBook = await mongooseClient.getClubCurrentBook(clubId);
+                setCurrBook(currentBook);
+    
+                const clubBooksRead = await mongooseClient.getBooksReadByClub(clubId);
+                setBooksRead(clubBooksRead);
+    
+                const response = await mongooseClient.getWishlistByClub(clubId);
+                setWishlist(response);
+            }
+        } catch (error : any) {
+            console.error('Setup failed:', error);
+            if (error.message === 'Resource not found') {
+                navigate('/club-not-found');
+            }
         }
-        else {
-            navigate("/login");
-        };
     }
+    
+    
 
     const fetchProfile = async () => {
         const userSession = await mongooseClient.profile();
