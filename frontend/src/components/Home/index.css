@@ -67,13 +67,40 @@
 
 .card {
     background-color: rgb(240, 233, 225)!important;
+}
 
+.card-meetings {
+    flex: 0 0 calc(25% - 10px); /* Adjust width of each card */
+    width: 250px;
+    height: 300px;
+    margin: 5px;
+    margin-right: 5px!important;
+}
+
+.card-meetings img {
+    height: 140px;
+    width: 248px;
 }
 
 .card a{
     text-decoration: none;
     color: black;
     pointer-events: auto;
+}
+
+.meeting-container {
+    display: flex;
+    flex-wrap: wrap; 
+}
+
+@media (max-width: 1199px) {
+    .card-meetings {
+      flex: 0 0 calc(50% - 10px); /* Two cards per row for smaller screens */
+    }
+}
+
+.card-followers {
+    width: 250px;
 }
 
 
