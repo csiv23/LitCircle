@@ -76,11 +76,11 @@ exports.createClub = async (req, res) => {
             Wishlist: [],
             CurrentBook: null,
             Organizer: organizer,
-            ImageUrl: imageUrl || "" // Use an empty string as default if no image URL is provided
-            // NextMeeting: {
-            //     Date: "2024-04-28T22:01:00.000+00:00",
-            //     Location: "Unspecified location"
-            // }
+            ImageUrl: imageUrl || "", // Use an empty string as default if no image URL is provided
+            NextMeeting: {
+                Date: "2024-04-28T22:01:00.000+00:00",
+                Location: "Unspecified location"
+            }
         });
 
         // Save the new club to the database
