@@ -416,8 +416,21 @@ export const getClubOrganizer = async (clubId : ObjectId) => {
 }
 
 export const createBook = async (book : Book) => {
-  const response = await mongoosePost(`books/`, book);
-  return response.bookId;
+  try {
+    const response = await mongoosePost(`books/`, book);
+    return response.bookId;
+  }
+  catch (error) {
+    return {
+      _id: "",
+      googleBooksId: "",
+      title: "Untitled",
+      author: "N/A",
+      description: "N/A",
+      coverImageUrl: "",
+      clubsReading: [],
+  };
+  }
 }
 
 export const getClubsReadingPerBook = async (bookId : ObjectId) => {
