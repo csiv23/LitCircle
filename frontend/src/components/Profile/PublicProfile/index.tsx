@@ -110,7 +110,13 @@ function PublicProfile() {
         if (publicUser) {
             try {
                 const allUsers = await client.getUsers();
-                const followers = allUsers.filter((user: User) => publicUser.followers.includes(user._id));
+                const followers = allUsers.filter((user: User) => {
+                    if (publicUser.followers.includes(user._id) && user._id == currentUser?._id) {
+                        console.log("setIsFollowing(true)")
+                        setIsFollowing(true);
+                    }
+                    return publicUser.followers.includes(user._id)
+                });
                 setPublicUserFollowers(followers);
             } catch (error) {
                 console.log("PublicProfile failed to fetch publicUser followers");
