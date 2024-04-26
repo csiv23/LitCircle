@@ -29,6 +29,7 @@ function App() {
     <div>
       <HashRouter>
         <Routes>
+          {/* profile/ should be myprofile, profile/:userId should be public profile. Use session to get id  */}
           <Route path="/" element={<Navigate to="home" />} />
           <Route path="home" element={<Home />} />
           <Route path='login' element={<Login />} />
