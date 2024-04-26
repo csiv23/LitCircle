@@ -578,19 +578,13 @@ export const getUserNextMeetings = async (userId: string) => {
 };
 
 export const leaveClub = async (clubId : string, userId : string) => {
-  const response = await mongoosePost(
-    `clubs/${clubId}/leave`,
-    { userId : userId}
-  );
-  return response; 
+  const response = await mongoosePost(`clubs/${clubId}/leave`, {userId : userId});
+  return cleanClub(response); 
 }
 
 export const joinClub = async (clubId : string, userId : string) => {
-  const response = await mongoosePost(
-    `clubs/${clubId}/join`,
-    { userId : userId}
-  );
-  return response; 
+  const response = await mongoosePost(`clubs/${clubId}/join`, {userId: userId});
+  return cleanClub(response); 
 }
 
 export const updateClub = async (club : Club) => {
