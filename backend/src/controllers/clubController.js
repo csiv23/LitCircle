@@ -76,7 +76,11 @@ exports.createClub = async (req, res) => {
             Wishlist: [],
             CurrentBook: null,
             Organizer: organizer,
-            ImageUrl: imageUrl || "" // Use an empty string as default if no image URL is provided
+            ImageUrl: imageUrl || "", // Use an empty string as default if no image URL is provided
+            NextMeeting: {
+                Date: "2024-04-28T22:01:00.000+00:00",
+                Location: "Unspecified location"
+            }
         });
 
         // Save the new club to the database
@@ -85,7 +89,7 @@ exports.createClub = async (req, res) => {
         // Update the organizer's document to include the new club
         organizerExists.BookClubs.push({ ClubId: newClub._id, IsLeader: true, JoinDate: new Date() });
         await organizerExists.save();
-
+        req.session["currentUser"] = organizerExists;
         // Respond with success message and the ID of the newly created club
         res.json({ message: "Club created successfully", clubID: newClub._id });
     } catch (error) {
