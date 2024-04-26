@@ -8,11 +8,16 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    height: 100%; 
+    min-height: 100vh; 
+}
+
+.book-author-lg {
+    color:rgb(78, 77, 77);
 }
 
 .book-cover-lg img{
     margin: 20px;
+    margin-top: 60px;
     width: 320px;
     height: 500px;
 }
@@ -35,4 +40,8 @@
 .club a{
     text-decoration: none;
     color: black;
+}
+
+.list-button li{
+    list-style: none;
 }
