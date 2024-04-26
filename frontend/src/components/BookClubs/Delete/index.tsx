@@ -69,6 +69,7 @@ export default function Delete() {
 
     return (
         <div>
+            <h4>Delete Club</h4>
             Are you sure you want to delete this club?
             <button onClick={deleteClub} className="btn">
                 Yes

@@ -145,46 +145,41 @@ export default function CurrentlyReading() {
     return (
         <div>
             <div className="col-md-11 club-container">
-                {(club.imageUrl && club.imageUrl !== "") ? 
-                <img src={club.imageUrl} alt={club.name} className="book-cover" /> 
-                : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
-            </div>
-            <div className="col-md-11 club-container">
                 <h4>Currently Reading</h4>
-            </div>
-            {isAdmin && 
-                <div>
-                    <h4>Change Book</h4>
-                    <GoogleBooksSearch renderBooks={renderBooks} searchPath={false} />
-                </div>
-            }
-            <div className="d-flex flex-wrap">    
-                {/* Display current book information */}
-                {currBook && (
-                    <div key={currBook._id} className="col-md-11 club-container book">
-                        <Link to={`/book/${currBook.googleBooksId}`} className="d-flex align-items-center">
-                            <div>
-                                    {(currBook.coverImageUrl && currBook.coverImageUrl !== "") ? 
-                                   <img src={currBook.coverImageUrl} alt={currBook.title} className="book-cover" /> 
-                                    : <img src={require("../../../images/emptyBook.jpeg")} alt={currBook.title} />}
+                    {isAdmin && 
+                        <div>
+                            <h5>Change Book</h5>
+                            <GoogleBooksSearch renderBooks={renderBooks} searchPath={false} />
+                        </div>
+                    }
+                    <div className="d-flex flex-wrap">    
+                        {/* Display current book information */}
+                        {currBook && (
+                            <div key={currBook._id} className="col-md-11 club-container book">
+                                <Link to={`/book/${currBook.googleBooksId}`} className="d-flex align-items-center">
+                                    <div>
+                                            {(currBook.coverImageUrl && currBook.coverImageUrl !== "") ? 
+                                        <img src={currBook.coverImageUrl} alt={currBook.title} className="book-cover" /> 
+                                            : <img src={require("../../../images/emptyBook.jpeg")} alt={currBook.title} />}
+                                    </div>
+                        <div className="book-details">
+                                        <h5 className="book-curr-title">{currBook.title}</h5>
+                                        <p className="book-curr-author">{currBook.author}</p>
+                                        <p className="book-description">{currBook.description}</p>
+                        </div>
+                                </Link>
+                                {isAdmin && 
+                                    <button onClick={markAsRead} className="btn">
+                                        Archive Book
+                                    </button>
+                                }
                             </div>
-                <div className="book-details">
-                                <h5 className="book-curr-title">{currBook.title}</h5>
-                                <p className="book-curr-author">{currBook.author}</p>
-                                <p className="book-description">{currBook.description}</p>
-                </div>
-                        </Link>
-                        {isAdmin && 
-                            <button onClick={markAsRead}>
-                                Archive Book
-                            </button>
-                        }
+                        )}
+                        {(!currBook || (currBook.title === "Untitled" && currBook.author === "N/A" && currBook.description === "N/A")) && (
+                            // Display message when no current book is being read
+                            <p>No current book being read</p>
+                        )}
                     </div>
-                )}
-                {(!currBook || (currBook.title === "Untitled" && currBook.author === "N/A" && currBook.description === "N/A")) && (
-                    // Display message when no current book is being read
-                    <p>No current book being read</p>
-                )}
             </div>
         </div>
     );

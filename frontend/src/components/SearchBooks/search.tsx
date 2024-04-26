@@ -34,7 +34,7 @@ export default function GoogleBooksSearch(
 
  return (
     <div>
-      <label htmlFor="searchInput"><h2>Search Books</h2>
+      <label htmlFor="searchInput"><p>Search Books</p>
         <input type="text" 
           className="search-bar"
           id="searchInput"
