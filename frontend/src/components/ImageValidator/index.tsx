@@ -34,3 +34,5 @@ const ImageValidator = ({ url, altText, altImagePath} : {
         </div>
     );
 };
+
+export default ImageValidator;

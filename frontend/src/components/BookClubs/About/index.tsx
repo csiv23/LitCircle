@@ -1,5 +1,6 @@
 import { Club, User } from "../../types";
 import '../index.css';
+import ImageValidator from "../../ImageValidator";
 
 export default function About(
     {club, isAdmin, updateClub, setClub} 
