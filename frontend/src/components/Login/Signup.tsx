@@ -37,6 +37,7 @@ export default function Signup() {
 
     return (
         <div className="signin-container">
+            <div className="signin-border-container">
             <h2>Sign Up</h2>
             <input value={credentials.firstName} placeholder="First Name" onChange={(e) =>
                 setCredentials({ ...credentials, firstName: e.target.value })} />
@@ -49,6 +50,7 @@ export default function Signup() {
             <input value={credentials.password} placeholder="Password" type="password" onChange={(e) =>
                 setCredentials({ ...credentials, password: e.target.value })} />
             <button onClick={signup}> Sign Up </button>
+            </div>
         </div>
     )
 }
