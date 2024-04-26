@@ -1,6 +1,9 @@
 .login {
     font-family:Georgia, 'Times New Roman', Times, serif;
     background-color: rgb(214, 207, 192);;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .login-align {

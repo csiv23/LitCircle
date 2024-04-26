@@ -17,32 +17,44 @@ export default function About(
                 <h2>About Our Club</h2>
             </div>
             <div className="col-md-11 club-container club-about">
-                {(club.imageUrl && club.imageUrl !== "") ? 
-                <img src={club.imageUrl} alt={club.name} /> 
-                : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
+                <div className="club-about-pic">
+                    {(club.imageUrl && club.imageUrl !== "") ? 
+                    <img src={club.imageUrl} alt={club.name} /> 
+                    : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
+                </div>
                 {isAdmin && 
-                <><input value={club.imageUrl} className="form-control inline"
-                        onChange={(e) => { setClub({ ...club, imageUrl: e.target.value }); } } />
-                        <button onClick={updateClub}>Save</button></>}
+                <>
+                <label htmlFor="clubImageInput">Change Club Image:</label>
+                <input placeholder={club.imageUrl ? club.imageUrl : "No image"}
+                    className="form-control inline"
+                    id="clubImageInput"
+                    onChange={(e) => { setClub({ ...club, imageUrl: e.target.value }); } } />
+                    <button onClick={updateClub} className="btn">Save</button></>}
             </div>
             <div className="col-md-11 club-container">
                 <h3>{club.name}</h3>
                 {isAdmin &&
                 <>
-                <input value={club.name} className="form-control inline"
+                <label htmlFor="clubNameInput">Change Club Name:</label>
+                <input placeholder={club.name}
+                    id="clubNameInput"
+                    className="form-control inline"
                     onChange={(e) => {setClub({...club, name: e.target.value});
                     }}/>
-                <button onClick={updateClub}>Save</button>
+                <button onClick={updateClub} className="btn">Save</button>
                 </>
                 }
             </div>
             <div className="col-md-11 club-container">
-                <p>{club.description}</p>
+                <h5>{club.description}</h5>
                 {isAdmin &&
                 <>
-                 <input value={club.description} className="form-control inline"
+                <label htmlFor="clubDescInput">Change Club Description:</label>
+                <input placeholder={club.description} 
+                    id="changeDescInput"
+                    className="form-control inline"
                     onChange={(e) => {setClub({...club, description: e.target.value})}}/>
-                <button onClick={updateClub}>Save</button>
+                <button onClick={updateClub} className="btn">Save</button>
                 </>}
             </div>
         </div>

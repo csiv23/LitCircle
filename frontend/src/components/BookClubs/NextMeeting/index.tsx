@@ -19,12 +19,18 @@ export default function NextMeeting(
             <p>{club.nextMeeting.meetingDate.toLocaleString('en-us', {  weekday: 'long' })} {' '}
                 {club.nextMeeting.meetingDate.toLocaleString()}
             </p>
-           {isAdmin &&  <input type="datetime-local" value={club.nextMeeting.meetingDate.toISOString()}
-                onChange={(e) => { setClub({...club, nextMeeting: {...club.nextMeeting, meetingDate: new Date(e.target.value)}})}}
-            >
-            </input>}
+           {isAdmin &&  
+            <label htmlFor="dateInput"><h5>Set Date and Time:</h5>
+                <input type="datetime-local" 
+                    value={club.nextMeeting.meetingDate.toISOString()}
+                    id="dateInput"
+                    placeholder="No date specified"
+                    onChange={(e) => { setClub({...club, nextMeeting: {...club.nextMeeting, meetingDate: new Date(e.target.value)}})}}
+                    >
+            </input></label>}
         </div>
         <div key={currentBook._id} className="col-md-11 club-container book">
+            <h5>Current Book:</h5>
             <Link to={`/book/${currentBook.googleBooksId}`}>
                 <div>
                 {(currentBook.coverImageUrl && currentBook.coverImageUrl !== "") ? 
@@ -36,14 +42,21 @@ export default function NextMeeting(
                 <p className="book-author">{currentBook.description}</p>
             </Link>
         </div>
-        <div><p>{club.nextMeeting.location}</p>  
-            {isAdmin &&  <input value={club.nextMeeting.location}
-                onChange={(e) => { setClub({...club, 
-                    nextMeeting: {...club.nextMeeting, location: e.target.value}})}}
-                >
-                </input>}
+        <div className="col-md-11 club-container book">
+            {isAdmin &&  
+                <label htmlFor="locationInput"><h5>Set Location:</h5>
+                    <p>{club.nextMeeting.location}</p>  
+                    <input value={club.nextMeeting.location}
+                        id="locationInput"
+                        placeholder="No Location"
+                        onChange={(e) => { setClub({...club, 
+                            nextMeeting: {...club.nextMeeting, location: e.target.value}})}}
+                        >
+                </input></label>}
         </div>
-        {isAdmin && <button onClick={updateClub}>Save Changes</button>}
+        <div className="col-md-11 club-container book">
+            {isAdmin && <button onClick={updateClub} className="btn">Save Changes</button>}
+        </div>
     </div>
     );
 }

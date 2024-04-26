@@ -5,6 +5,9 @@
     min-height: 100vh;
 }
 
+.search-bar {
+    width: 250px;
+}
 .club {
     margin-right: 50px;
 }

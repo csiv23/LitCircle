@@ -39,16 +39,34 @@ export default function Signup() {
         <div className="signin-container">
             <div className="signin-border-container">
                 <h2>Sign Up</h2>
-                <input value={credentials.firstName} placeholder="First Name" onChange={(e) =>
-                    setCredentials({ ...credentials, firstName: e.target.value })} />
-                <input value={credentials.lastName} placeholder="Last Name" onChange={(e) =>
-                    setCredentials({ ...credentials, lastName: e.target.value })} />
-                <input value={credentials.username} placeholder="Username" onChange={(e) =>
-                    setCredentials({ ...credentials, username: e.target.value })} />
-                <input value={credentials.email} placeholder="Email" type="email" onChange={(e) =>
-                    setCredentials({ ...credentials, email: e.target.value })} />
-                <input value={credentials.password} placeholder="Password" type="password" onChange={(e) =>
-                    setCredentials({ ...credentials, password: e.target.value })} />
+                <label htmlFor="signupInput"></label>
+                <input value={credentials.firstName} 
+                    id="signupInput"
+                    placeholder="First Name" 
+                    onChange={(e) =>
+                        setCredentials({ ...credentials, firstName: e.target.value })} />
+                <input value={credentials.lastName} 
+                    id="signupInput"
+                    placeholder="Last Name" 
+                    onChange={(e) =>
+                        setCredentials({ ...credentials, lastName: e.target.value })} />
+                <input value={credentials.username} 
+                    placeholder="Username"
+                    id="signupInput"
+                    onChange={(e) =>
+                        setCredentials({ ...credentials, username: e.target.value })} />
+                <input value={credentials.email} 
+                    placeholder="Email" 
+                    id="signupInput"
+                    type="email" 
+                    onChange={(e) =>
+                        setCredentials({ ...credentials, email: e.target.value })} />
+                <input value={credentials.password} 
+                    id="signupInput"
+                    placeholder="Password" 
+                    type="password" 
+                    onChange={(e) =>
+                        setCredentials({ ...credentials, password: e.target.value })} />
                 <button onClick={signup}> Sign Up </button>
             </div>
         </div>

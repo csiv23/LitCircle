@@ -129,7 +129,7 @@ export default function Wishlist(
                 <h5 className="book-title">{book.title}</h5>
                 <p className="book-author">{book.author}</p>
             </Link>
-            {isAdmin && <button onClick={() => {removeBookFromList(book._id)}}>
+            {isAdmin && <button onClick={() => {removeBookFromList(book._id)}} className="btn">
                 Remove Book
             </button>}
         </div>
@@ -138,7 +138,7 @@ export default function Wishlist(
 
     const renderWishlist = (books : Book[]) => {
         return (
-            <div>
+            <div className="books-list-container">
                 {books && books.map(renderWishlistBook)}
             </div>)
     }
@@ -189,28 +189,30 @@ export default function Wishlist(
      }, [search]);
 
 return (
-    <div className="d-flex flex-wrap">
-      <div className="col-md-11 club-container">
-        <h4>Books We Want to Read</h4>
-        <h6>{wishlist.length} Books</h6>
-      </div>
-      <div className="col-md-11 club-container">
-      <GoogleBooksSearch renderBooks={renderBooks} searchPath={false} />
+  <div className="d-flex flex-wrap">
+  <div className="col-md-11 club-container">
+    <h4>Books We Want to Read ({wishlist.length})</h4>
+    {isAdmin && <GoogleBooksSearch renderBooks={renderBooks} searchPath={false} />}
     <div>
-      <input type="text" value={search}
+      <label htmlFor="searchBookInput"></label>
+      <input type="text" 
+        className="search-bar"
+        id="searchBookInput"
+        placeholder="Add book to wishlist"
+        value={search}
         onChange={(e) =>
             setSearch(e.target.value)}/>
-      <button
+      <button className="btn"
         onClick={() => {fullTextSearch(search)}}>
         Search
       </button>
       <div>
       {(results &&
-        (results.length > 0 || search !== "")) ? renderWishlist(results)  : renderWishlist(wishlist)}
-      </div>
-
-    </div>
+          (results.length > 0 || search !== "")) ? renderWishlist(results)  : renderWishlist(wishlist)}
       </div>
     </div>
+  </div>
+</div>
+    
     )
 }
