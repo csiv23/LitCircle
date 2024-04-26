@@ -224,7 +224,7 @@ function MyProfile() {
                                     return (
                                         <div key={club._id} className="bookclub-container">
                                             <Link to={`/bookclub/${club._id}`}>
-                                                <h5>{club.name}</h5>
+                                                <h5 className="bookclub-name-overflow">{club.name}</h5>
                                                 <div>
                                                     {(club.imageUrl && club.imageUrl !== "") ? 
                                                     <img src={club.imageUrl} alt={club.name} className="book-cover" /> 
