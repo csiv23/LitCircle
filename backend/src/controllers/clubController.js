@@ -225,7 +225,7 @@ exports.leaveClub = async (req, res) => {
         });
         await user.save();
 
-        req.session["currentUser"] = user;
+        // req.session["currentUser"] = user;
         res.json(club);
     } catch (error) {
         console.error("Error removing user from club:", error);
