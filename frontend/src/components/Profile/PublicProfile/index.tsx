@@ -30,7 +30,7 @@ function PublicProfile() {
     useEffect(() => {
         fetchPublicUser();
         fetchCurrentUser();
-    }, [])
+    }, [userId])
     useEffect(() => {
         if (publicUser) {
             fetchPublicUsersClubs();
