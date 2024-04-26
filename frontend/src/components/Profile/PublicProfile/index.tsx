@@ -42,10 +42,17 @@ function PublicProfile() {
     }, [publicUser]);
 
     const fetchPublicUser = async () => {
-        if (userId) {
-            const fetchedUser = await client.getUserById(userId);
-            setPublicUser(fetchedUser);
+        try {
+            if (userId) {
+                const fetchedUser = await client.getUserById(userId);
+                setPublicUser(fetchedUser);
+            }
         }
+        catch (e) {
+            navigate('/profile')
+        }
+
+
     }
     const fetchCurrentUser = async () => {
         try {
