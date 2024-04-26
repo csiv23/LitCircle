@@ -42,6 +42,7 @@ type NextMeeting = {
     NextMeetingLocation: string,
     imageUrl: string,
     name:string
+    clubId : string,
 }
 
 type Club = {

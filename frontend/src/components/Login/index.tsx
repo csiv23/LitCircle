@@ -7,6 +7,7 @@ import Signup from "./Signup";
 import Header from '../Header';
 import { User } from '../types';
 import * as client from '../../mongooseClient';
+import { Link } from 'react-router-dom';
 
 function Login() {
     // const currentUser = useSelector((state: any) => state.users.currentUser);
@@ -33,22 +34,10 @@ function Login() {
         <div className='login'>
             <Signin />
             <Signup />
+            <Link to="/home">
+            <p>Continue as Guest (this will bring you back to the Home page!)</p>
+            </Link>
         </div>
     )
-    // return (
-    //     <div className='login'>
-    //         {currentUser ? (
-    //             <>
-    //                 {navigate('/home')}
-    //             </>
-    //         ) : (
-    //             <div>
-    //                 {/* <Header /> */}
-    //                 <Signin />
-    //                 <Signup />
-    //             </div>
-    //         )}
-    //     </div>
-    // )
 }
 export default Login;
