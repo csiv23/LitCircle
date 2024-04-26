@@ -33,6 +33,13 @@
     padding-top: 50px;
 }
 
+.book-bg {
+    background-color: rgb(240, 233, 225);
+    padding-left: 60px;
+    padding-top: 50px;
+    height: 100vh;
+}
+
 .club {
     margin: 5px;
 }
