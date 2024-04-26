@@ -19,7 +19,7 @@ export default function Signin() {
             const user = await client.signin(credentials);
             console.log("Signin user: " + JSON.stringify(user));
             dispatch(setCurrentUser(user))
-            navigate(`/myProfile/${user._id}`);
+            navigate('/home');
         }
         catch (err: any) {
             setError(err.response?.data.message || "Failed to sign in. Please check your credentials and try again.");

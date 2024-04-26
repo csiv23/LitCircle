@@ -14,7 +14,7 @@ function Login() {
         <div className='login'>
             {currentUser ? (
                 <>
-                    {navigate(`/MyProfile/${currentUser._id}`)}
+                    {navigate('/home')}
                 </>
             ) : (
                 <div>
