@@ -31,6 +31,7 @@
     background-color: rgb(240, 233, 225);
     padding-left: 60px;
     padding-top: 50px;
+    margin-right: 0px;
 }
 
 .club-container {
@@ -58,6 +59,12 @@
 .club-nav li {
     margin-left: 40px;
     margin-bottom: 5px; 
+}
+
+.club-about-pic img{
+    width: 300px;
+    height: 200px;
+    margin-bottom: 10px;
 }
 
 .active {
@@ -150,4 +157,17 @@
 
 .text-right {
     text-align: right;
+}
+
+.users-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.user-item {
+    margin-right: 10px; /* Adjust margin as needed */
+    margin-bottom: 10px; /* Adjust margin as needed */
+    overflow: hidden;
+    text-overflow: clip;
+    width: 100px;
 }

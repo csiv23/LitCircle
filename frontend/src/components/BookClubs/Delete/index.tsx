@@ -70,10 +70,10 @@ export default function Delete() {
     return (
         <div>
             Are you sure you want to delete this club?
-            <button onClick={deleteClub}>
+            <button onClick={deleteClub} className="btn">
                 Yes
             </button>
-            <button onClick={() => {navigate(`/bookclub/${clubId}`)}}>
+            <button onClick={() => {navigate(`/bookclub/${clubId}`)}} className="btn">
                 No
             </button>
         </div>

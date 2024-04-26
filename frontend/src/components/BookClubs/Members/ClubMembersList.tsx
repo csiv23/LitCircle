@@ -73,7 +73,7 @@ function Members({leaveClub} : {leaveClub : () => Promise<void>})
 
     const renderUser = (user : User) => {
         return (
-            <div key={user._id} className="member book-btn">
+            <div key={user._id} className="member book-btn user-item">
                 <Link to={`/profile/${user._id}`}>
                     {(user.avatar && user.avatar !== "") ? 
                     <img src={user.avatar} alt={user.avatar}/> 
@@ -106,10 +106,10 @@ function Members({leaveClub} : {leaveClub : () => Promise<void>})
         const restMembers = users.filter(user => user._id !== currentUser._id && user._id !== club.organizer);
         
         return (
-            <div>
-                {currentUserInUsers && renderUser(currentUserInUsers)}
+            <div className="users-container">
                 {organizerInUsers && renderUser(organizerInUsers)}
-                {restMembers && restMembers.map(renderUser)}
+                <div className="users-container">{currentUserInUsers && renderUser(currentUserInUsers)}</div>
+                <div className="users-container">{restMembers && restMembers.map(renderUser)}</div>
             </div>
             
         ) 
@@ -174,37 +174,27 @@ function Members({leaveClub} : {leaveClub : () => Promise<void>})
 
     return (
     <div className="d-flex flex-wrap">
-    <div>
-    {(club.imageUrl && club.imageUrl !== "") ? 
-                <img src={club.imageUrl} alt={club.imageUrl} className="book-cover" /> 
-                : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
-    </div>
-    <div>
-    <div>
-        <div>
-            <h4>Members </h4>
-            <p>{clubMembers.length} Members</p>
-        </div>
-      <input type="text" value={search}
-        onChange={(e) =>
-            setSearch(e.target.value)}/>
-      <button
-        onClick={() => fullTextSearch(search)}>
-        Search
-      </button>
-      <button
-        onClick={() => fullTextSearch("")}>
-        Refresh
-      </button>
-      <div>
-      {(results &&
-        (results.length > 0 || search !=="")) ? renderUsers(results) : renderUsers(clubMembers)}
-      </div>
-
-    </div>
-    </div>
-
-    
+            <div className="col-md-11 club-container">
+                <div>
+                    <h4>Members </h4>
+                    <p>{clubMembers.length} Members</p>
+                </div>
+                <input type="text" value={search}
+                    onChange={(e) =>
+                        setSearch(e.target.value)}/>
+                <button className="btn"
+                    onClick={() => fullTextSearch(search)}>
+                    Search
+                </button>
+                <button className="btn"
+                    onClick={() => fullTextSearch("")}>
+                    Refresh
+                </button>
+                <div>
+                    {(results &&
+                        (results.length > 0 || search !=="")) ? renderUsers(results) : renderUsers(clubMembers)}
+                </div>
+            </div>
     </div>
     )
 }

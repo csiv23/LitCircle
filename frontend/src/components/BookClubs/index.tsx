@@ -244,39 +244,39 @@ function BookClubs() {
     return (
         <div className="club-font">
             <Header />
-            <div className="row">
+            <div>
                 { userInClub
                 ? 
                 <div className="row">
-                <ClubNav club={club}/>
-                <div className="col-md-9 club-bg">
-                    <div className="row align-items-center">
-                    <Routes>
-                        <Route path="/" element={<Navigate to="about" />} />
-                        <Route path="leave" element={<AdminLeave appointAsOrganizer={appointAsOrganizer}/>}/>
-                        <Route path="about" element={<About 
-                            club={club}
-                            setClub={setClub}
-                            updateClub={updateClub}
-                            isAdmin={isAdmin}/>} />
-                        <Route path="members" 
-                        element={<Members leaveClub={leaveClub}/>} />
-                        <Route path="currently-reading" 
-                        element={<CurrentlyReading/>} />
-                        <Route path="next-meeting" 
-                        element={<NextMeeting
-                            currentBook={currBook}
-                            club={club}
-                            isAdmin={isAdmin}
-                            setClub={setClub}
-                            updateClub={updateClub}
-                        />} />
-                        <Route path="books-read" 
-                        element={<BooksRead/>} />
-                        <Route path="wishlist" element={<Wishlist/>} /> 
-                        <Route path="delete" element={<Delete/>} /> 
-                    </Routes>
-                </div>
+                    <ClubNav club={club}/>
+                    <div className="col-md-9 club-bg">
+                        <div className="row align-items-center">
+                        <Routes>
+                            <Route path="/" element={<Navigate to="about" />} />
+                            <Route path="leave" element={<AdminLeave appointAsOrganizer={appointAsOrganizer}/>}/>
+                            <Route path="about" element={<About 
+                                club={club}
+                                setClub={setClub}
+                                updateClub={updateClub}
+                                isAdmin={isAdmin}/>} />
+                            <Route path="members" 
+                            element={<Members leaveClub={leaveClub}/>} />
+                            <Route path="currently-reading" 
+                            element={<CurrentlyReading/>} />
+                            <Route path="next-meeting" 
+                            element={<NextMeeting
+                                currentBook={currBook}
+                                club={club}
+                                isAdmin={isAdmin}
+                                setClub={setClub}
+                                updateClub={updateClub}
+                            />} />
+                            <Route path="books-read" 
+                            element={<BooksRead/>} />
+                            <Route path="wishlist" element={<Wishlist/>} /> 
+                            <Route path="delete" element={<Delete/>} /> 
+                        </Routes>
+                    </div>
                 </div>
             </div>
             :

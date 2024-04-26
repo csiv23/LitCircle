@@ -69,9 +69,19 @@ function CreateBookClub() {
                     <div className="create-club-container">
                         <h2>Create Club</h2>
                         <form onSubmit={handleCreateClub}>
-                                <input type="text" placeholder="Club Name" value={clubName} onChange={e => setClubName(e.target.value)} />
-                                <textarea placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} />
-                                <button type="submit" className='btn'>Create Club</button>
+                                <label htmlFor='createClub'></label>
+                                <input type="text" 
+                                    id="createClub"
+                                    placeholder="Club Name" 
+                                    value={clubName} 
+                                    onChange={e => setClubName(e.target.value)} />
+                                <textarea placeholder="Description" 
+                                    id='createClub'
+                                    value={description} 
+                                    onChange={e => setDescription(e.target.value)} />
+                                <button type="submit"  
+                                    id='createClub' 
+                                    className='btn'>Create Club</button>
                         </form>
                     </div>
                 </div>
