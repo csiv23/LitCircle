@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import * as mongooseClient from "../../mongooseClient"; // Confirm this is the correct path
 import { User } from "../types"; // Make sure the path to types is correct
+import './index.css';
+import Header from '../Header';
 
 interface ClubData {
     name: string;
@@ -61,12 +63,19 @@ function CreateBookClub() {
 
     return (
         <div>
-            <h2>Create Club</h2>
-            <form onSubmit={handleCreateClub}>
-                <input type="text" placeholder="Club Name" value={clubName} onChange={e => setClubName(e.target.value)} />
-                <textarea placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} />
-                <button type="submit">Create Club</button>
-            </form>
+            <Header/>
+            <div className='create-club-bg'>
+                <div className='border-container'>
+                    <div className="create-club-container">
+                        <h2>Create Club</h2>
+                        <form onSubmit={handleCreateClub}>
+                                <input type="text" placeholder="Club Name" value={clubName} onChange={e => setClubName(e.target.value)} />
+                                <textarea placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} />
+                                <button type="submit" className='btn'>Create Club</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
