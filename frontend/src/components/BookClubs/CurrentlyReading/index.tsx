@@ -1,19 +1,101 @@
 // Import necessary hooks and types
-import { Link } from "react-router-dom";
-import { useEffect } from "react";
-import { Book, Club } from "../../types";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Book, Club, ObjectId, User } from "../../types";
 import '../index.css';
 import GoogleBooksSearch from "../../SearchBooks/search";
 import * as mongooseClient from "../../../mongooseClient";
 
-export default function CurrentlyReading(
-    { currentBook, club, isAdmin, setCurrentBook, markAsRead }
-    :
-    {
-        currentBook : Book, club : Club, isAdmin : boolean, 
-        setCurrentBook : (book:Book) => void,
-        markAsRead : ()=>void;
-    }) {
+export default function CurrentlyReading() {
+    const navigate = useNavigate();
+    const {clubId} = useParams();
+    const [club, setClub] = useState<Club>({
+        _id: "",
+        name: "",
+        description: "",
+        members: [],
+        booksRead: [],
+        wishlist: [],
+        currentBook: "",
+        nextMeeting: {
+        meetingDate: new Date(),
+        location: ""
+        },
+        organizer: "",
+        imageUrl: ""
+    });
+    const [currentUser, setCurrentUser] = useState<User>(
+        {
+            _id: "",
+            username: "",
+            firstName: "",
+            lastName: "",
+            email: "",
+            password: "",
+            followers: [],
+            following: [],
+            wishlist: [],
+            booksRead: [],
+            bookClubs: [],
+            avatar: "",
+        }
+    );
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [currBook, setCurrBook] = useState<Book>({  _id: "",
+    googleBooksId: "",
+    title: "Untitled",
+    author: "N/A",
+    coverImageUrl: "",
+    description: "N/A",
+    clubsReading: [],
+    });
+    const markAsRead = async () => {
+        if (clubId && currBook && currBook._id) {
+            const updatedClub = await mongooseClient.markCurrentBookAsRead(clubId);
+            setCurrBook({
+                _id: "",
+                googleBooksId: "",
+                title: "Untitled",
+                author: "N/A",
+                coverImageUrl: "",
+                description: "N/A",
+                clubsReading: [],
+              });
+            setClub(updatedClub);
+        }
+    }
+
+    const setCurrentBook = async (book : Book) => {
+        if (clubId) {
+            const mongooseBookId = await mongooseClient.createBook(book);
+            await mongooseClient.setCurrentBook(clubId, mongooseBookId);
+            const newCurrentBook = await mongooseClient.getClubCurrentBook(clubId);
+            console.log("new book " + newCurrentBook);
+            setCurrBook(newCurrentBook);
+            setClub({...club, currentBook: mongooseBookId});
+        }
+    }
+
+    const setup = async (clubId : ObjectId) => {
+        const userSession = await mongooseClient.profile();
+        setCurrentUser(userSession);
+
+        if (userSession) {
+            const currentClub = await mongooseClient.getBookClubById(clubId);
+            setClub(currentClub);
+            console.log(currentClub);
+
+            const userIsAdmin = currentClub.organizer === userSession._id
+            setIsAdmin(userIsAdmin)
+            console.log("user is admin: " + userIsAdmin);
+
+            const currentBook = await mongooseClient.getClubCurrentBook(clubId);
+            setCurrBook(currentBook);
+        }
+        else {
+            navigate("/login");
+        };
+    }
 
     // Function to render a list of books
     const renderBooks = (books : Book[]) => {
@@ -46,7 +128,7 @@ export default function CurrentlyReading(
         try {
             if (club.currentBook !== "") { // Check if club's current book is not empty
                 const response = await mongooseClient.mongooseGet(`clubs/${club._id}/currentBook`);
-                setCurrentBook(response);
+                await setCurrentBook(response);
             }
         } catch (error) {
             console.error("Failed to fetch current book:", error);
@@ -55,8 +137,10 @@ export default function CurrentlyReading(
 
     // Fetch current book when component mounts
     useEffect(() => {
-        fetchCurrentBook();
-    }, []); // Empty dependency array to fetch only once when component mounts
+        if (clubId) {
+            setup(clubId);
+        }
+    }, [clubId]); 
 
     return (
         <div>
@@ -76,18 +160,18 @@ export default function CurrentlyReading(
             }
             <div className="d-flex flex-wrap">    
                 {/* Display current book information */}
-                {currentBook && currentBook.title !== "Untitled" && currentBook.author !== "N/A" && currentBook.description !== "N/A" && (
-                    <div key={currentBook._id} className="col-md-11 club-container book">
-                        <Link to={`/book/${currentBook.googleBooksId}`} className="d-flex align-items-center">
+                {currBook && (
+                    <div key={currBook._id} className="col-md-11 club-container book">
+                        <Link to={`/book/${currBook.googleBooksId}`} className="d-flex align-items-center">
                             <div>
-                                    {(currentBook.coverImageUrl && currentBook.coverImageUrl !== "") ? 
-                                   <img src={currentBook.coverImageUrl} alt={currentBook.title} className="book-cover" /> 
-                                    : <img src={require("../../../images/emptyBook.jpeg")} alt={currentBook.title} />}
+                                    {(currBook.coverImageUrl && currBook.coverImageUrl !== "") ? 
+                                   <img src={currBook.coverImageUrl} alt={currBook.title} className="book-cover" /> 
+                                    : <img src={require("../../../images/emptyBook.jpeg")} alt={currBook.title} />}
                             </div>
                 <div className="book-details">
-                                <h5 className="book-curr-title">{currentBook.title}</h5>
-                                <p className="book-curr-author">{currentBook.author}</p>
-                                <p className="book-description">{currentBook.description}</p>
+                                <h5 className="book-curr-title">{currBook.title}</h5>
+                                <p className="book-curr-author">{currBook.author}</p>
+                                <p className="book-description">{currBook.description}</p>
                 </div>
                         </Link>
                         {isAdmin && 
@@ -97,7 +181,7 @@ export default function CurrentlyReading(
                         }
                     </div>
                 )}
-                {(!currentBook || currentBook.title === "Untitled" || currentBook.author === "N/A" || currentBook.description === "N/A") && (
+                {(!currBook || (currBook.title === "Untitled" && currBook.author === "N/A" && currBook.description === "N/A")) && (
                     // Display message when no current book is being read
                     <p>No current book being read</p>
                 )}
