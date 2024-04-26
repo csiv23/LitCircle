@@ -27,8 +27,13 @@
     margin: 5px;
 }
 
-.bookclub-section-title {
-    size: 15px;
+.bookclub-container {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 20px; 
+    margin-right: 20px;
 }
 
 .profile-avatar img{
@@ -87,4 +92,36 @@
 
 .btn-align {
     margin-left: 110px;
+}
+
+.avatar-pfp img{
+    height: 100px;
+    width: 100px;
+}
+
+.club-admin-title {
+    font-weight: bold;
+    margin-bottom: 0px;
+}
+
+.followers-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.follower-item {
+    width: calc(33.33% - 10px); /* Adjust width and margin as needed */
+    margin-right: 10px; /* Adjust margin as needed */
+    margin-bottom: 10px; /* Adjust margin as needed */
+}
+
+.follower-item img {
+    max-width: 100%;
+    height: auto;
+}
+
+.username-container {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: none;
 }

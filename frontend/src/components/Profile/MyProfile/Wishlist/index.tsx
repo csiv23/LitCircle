@@ -40,7 +40,6 @@ export default function Wishlist(
 
     return (
         <div>
-            <h6>{books.length} Books</h6>
             <MongooseBookSearch books={books} renderBooks={renderBooks}/>
         </div>
     )
