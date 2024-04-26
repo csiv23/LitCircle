@@ -43,18 +43,41 @@ function cleanBookObj (bookData: any) : Book {
 }
 
 export const searchBooks = async (title: string) => {
+  try {
     const url = `${GOOGLE_BOOKS_URL}/volumes?q=${title}&orderBy=relevance&maxResults=40&key=${API_KEY}`;
     console.log(url);
     const response = await axios
       .get(url);
-
-    response.data.items = response.data.items.map(cleanBookObj);
-    return response.data.items;
+      response.data.items = response.data.items.map(cleanBookObj);
+      return response.data.items;
+  } 
+  catch (error) {
+    console.log(error);
+    return [] as Book[];
+  }
 };  
 
 export const getBookDetails= async (volumeId: string) => {
-  const response = await axios
+
+  try {
+    const response = await axios
     .get(`${GOOGLE_BOOKS_URL}/volumes/${volumeId}?key=${API_KEY}`);
-    console.log(response.data);
-  return cleanBookObj(response.data);
+
+    if (response) {
+      console.log(response.data);
+      return cleanBookObj(response.data);
+    }
+  }
+  catch (error) { 
+    console.log(error);
+    return {
+      _id: "",
+      googleBooksId: "",
+      title: "Untitled",
+      author: "N/A",
+      description: "N/A",
+      coverImageUrl: "",
+      clubsReading: [],
+  };
+  }
 };  
