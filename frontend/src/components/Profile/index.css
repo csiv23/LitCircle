@@ -30,11 +30,14 @@
 
 .bookclub-container {
     max-width: 150px;
+    margin-bottom: 20px; 
+    margin-right: 20px;
+}
+
+.bookclub-name-overflow {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-bottom: 20px; 
-    margin-right: 20px;
 }
 
 .profile-avatar img{
