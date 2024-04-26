@@ -26,15 +26,7 @@ export default function MongooseBook(
 
     }) {
     
-    // const [addBookOpen, setAddBookOpen] = React.useState(false);
-    // const [recClubOpen, setRecClubOpen] = React.useState(false);
 
-
-    // console.log(addBookOpen);
-    console.log(currentUser);
-    // const handleAddBookOpen = () => setAddBookOpen(!addBookOpen);
-
-    //   const handleRecClubOpen = () => setRecClubOpen(!recClubOpen);
 
     return (
         <div className="book-font">
@@ -57,7 +49,6 @@ export default function MongooseBook(
                             {/* <button className="btn btn-secondary dropdown-toggle" onClick={handleAddBookOpen}>
                                 Add Book to ...
                             </button> */}
-
                                 <ul className="">
                                     <li className="">
                                         <button onClick={toggleBookInBooksRead}> 

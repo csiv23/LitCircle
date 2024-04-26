@@ -5,24 +5,41 @@ import Signin from "./Signin";
 import { useNavigate } from "react-router";
 import Signup from "./Signup";
 import Header from '../Header';
+import { User } from '../types';
+import * as client from '../../mongooseClient';
+import { Link } from 'react-router-dom';
 
 function Login() {
-    const currentUser = useSelector((state: any) => state.users.currentUser);
+    // const currentUser = useSelector((state: any) => state.users.currentUser);
+    const [currentUser, setCurrentUser] = useState<User>();
     console.log("Login currentUser: " + JSON.stringify(currentUser));
     const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchProfile();
+    }, []);
+
+    const fetchProfile = async () => {
+        try {
+            const userSession = await client.profile();
+            if (userSession) {
+                navigate("/home")
+            }
+        } catch (error) {
+            console.log("No user logged in");
+        }
+    }
+
     return (
         <div className='login'>
-            {currentUser ? (
-                <>
-                    {navigate(`/MyProfile/${currentUser._id}`)}
-                </>
-            ) : (
-                <div>
-                    {/* <Header /> */}
-                    <Signin />
-                    <Signup />
-                </div>
-            )}
+            <Header />
+            <div>
+                <Signin />
+            </div>
+            <Signup />
+            <Link to="/home">
+            <p>Continue as Guest (this will bring you back to the Home page!)</p>
+            </Link>
         </div>
     )
 }

@@ -23,6 +23,7 @@ function MyProfile() {
     const [currentUserBooksRead, setCurrentUserBooksRead] = useState<Book[]>([]);
     const [currentUserBooksWishlist, setCurrentUserBooksWishlist] = useState<Book[]>([]);
     const [currentUserFollowers, setCurrentUserFollowers] = useState<User[]>();
+    const [currentUserFollowing, setCurrentUserFollowing] = useState<User[]>();
     useEffect(() => {
         fetchProfile();
     }, []);
@@ -33,6 +34,7 @@ function MyProfile() {
             fetchUsersBooksRead();
             fetchUsersBooksWishlist();
             fetchUsersFollowers();
+            fetchUsersFollowing();
         }
     }, [currentUser]);
 
@@ -55,14 +57,14 @@ function MyProfile() {
         const allBooks = await client.getBooks();
         const userBooksIds: ObjectId[] = [];
         currentUser?.booksRead.map((bookId: ObjectId) => userBooksIds.push(bookId));
-        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book["_id"]));
+        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book._id));
         setCurrentUserBooksRead(commonBooks);
     };
     const fetchUsersBooksWishlist = async () => {
         const allBooks = await client.getBooks();
         const userBooksIds: ObjectId[] = [];
         currentUser?.wishlist.map((bookId: ObjectId) => userBooksIds.push(bookId));
-        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book["_id"]));
+        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book._id));
         setCurrentUserBooksWishlist(commonBooks);
     };
     const fetchUsersFollowers = async () => {
@@ -70,9 +72,14 @@ function MyProfile() {
         const followers = allUsers.filter((user: User) => currentUser?.followers.includes(user._id));
         setCurrentUserFollowers(followers);
     }
+    const fetchUsersFollowing = async () => {
+        const allUsers = await client.getUsers();
+        const following = allUsers.filter((user: User) => currentUser?.following.includes(user._id));
+        setCurrentUserFollowing(following);
+    }
     const signout = async () => {
         await client.signout();
-        navigate("/login");
+        navigate("/home");
     };
     const addToWishlist = async (book: Book) => {
         if (currentUser) {
@@ -140,14 +147,6 @@ function MyProfile() {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-sm-6 profile-desc">
-                            <span>Followers:</span> {currentUser?.followers.length}
-                        </div>
-                        <div className="col-sm-6">
-                            <span>Following:</span> {currentUser?.following.length}
-                        </div>
-                    </div>
-                    <div className="row">
                         <div className="col-sm-11 profile-desc">
                             <span>Email:</span> {currentUser?.email}
                         </div>
@@ -158,20 +157,20 @@ function MyProfile() {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-sm-6">
-                            <span className="mr-2">
-                                Your Followers:
+                        <div className="profile-desc">
+                            Your Followers ({currentUser?.followers.length}):
+                            <div className="followers-container">
                                 {currentUserFollowers?.map((follower: User, index) => {
                                     if (follower) {
                                         console.log("follower: " + JSON.stringify(follower))
                                         return (
-                                            <div key={follower._id}>
+                                            <div key={follower._id} className="follower-item">
                                                 <Link to={`/profile/${follower._id}`}>
                                                     {(follower.avatar && follower.avatar !== "") ?
                                                         <img src={follower.avatar} alt={follower.avatar} />
                                                         : <img src={require("../../images/avatar.jpeg")} alt={follower.avatar} />}
                                                 </Link>
-                                                <div>{follower.username}</div>
+                                                <div className="username-container">{follower.username}</div>
                                             </div>
                                         )
                                     } else {
@@ -182,53 +181,48 @@ function MyProfile() {
                                         );
                                     }
                                 })}
-                            </span>
-                            
+                            </div>
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-sm-6">
-                            <span className="mr-2">
-                                Your Followers:
-                                {currentUserFollowers?.map((follower: User, index) => {
-                                    if (follower) {
-                                        console.log("follower: " + JSON.stringify(follower))
+                        <div className="profile-desc">
+                            Your Following ({currentUser?.following.length}):
+                            <div className="followers-container">
+                                {currentUserFollowing?.map((following: User, index) => {
+                                    if (following) {
+                                        console.log("following: " + JSON.stringify(following))
                                         return (
-                                            <div key={follower._id}>
-                                                <Link to={`/profile/${follower._id}`}>
-                                                    {(follower.avatar && follower.avatar !== "") ?
-                                                        <img src={follower.avatar} alt={follower.avatar} />
-                                                        : <img src={require("../../images/avatar.jpeg")} alt={follower.avatar} />}
+                                            <div key={following._id} className="follower-item">
+                                                <Link to={`/profile/${following._id}`}>
+                                                    {(following.avatar && following.avatar !== "") ?
+                                                        <img src={following.avatar} alt={following.avatar} />
+                                                        : <img src={require("../../images/avatar.jpeg")} alt={following.avatar} />}
                                                 </Link>
-                                                <div>{follower.username}</div>
+                                                <div className="username-container">{following.username}</div>
                                             </div>
                                         )
                                     } else {
                                         return (
                                             <div key={index}>
-                                                <p>Follower with ID not found.</p>
+                                                <p>Following with ID not found.</p>
                                             </div>
                                         );
                                     }
                                 })}
-                            </span>
-                            
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div className="col-md-9 profile-bg">
-                    <div className="row profile-container">
-                        <div className="col-md-8 bookclub-section-title">
+                    <div className="row col-md-11 profile-container">
+                        <div className="col-md-8 ">
                             <h4>My BookClubs ({currentUserClubs.length})</h4>
                         </div>
                         <div className="d-flex flex-wrap bookclub-desc">
                             {currentUserClubs?.map((club: Club, index) => {
                                 if (club) {
                                     return (
-                                        <div key={club._id}>
-                                            {(club.organizer && currentUser && currentUser._id && club.organizer === currentUser._id) &&
-                                                (<p> User is admin of club </p>)
-                                            }
+                                        <div key={club._id} className="bookclub-container">
                                             <Link to={`/bookclub/${club._id}`}>
                                                 <h5>{club.name}</h5>
                                                 <div>
@@ -237,6 +231,9 @@ function MyProfile() {
                                                     : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
                                                 </div>
                                             </Link>
+                                            {(club.organizer && currentUser && currentUser._id && club.organizer === currentUser._id) &&
+                                                (<p className="club-admin-title"> Club Admin </p>)
+                                            }
                                             <p>Members: {club.members.length}</p>
                                         </div>
                                     );
@@ -250,23 +247,23 @@ function MyProfile() {
                             })}
                         </div>
                     </div>
-                    <div className="row profile-container">
-                        <div className="col-md-8">
+                    <div className="row col-md-11 profile-container">
+                        <div className="col-md-10">
                             <h4>Books I've Read ({currentUserBooksRead.length})</h4>
-                            <button onClick={() => navigate('/search-books')}>Add a Book</button>
                         </div>
-                        <BooksRead 
-                            books={currentUserBooksRead}/>
+                        <div className="col-md-2 text-right">
+                            <button onClick={() => navigate('/search-books')} className="btn">Add a Book</button>
+                        </div>
+                        <BooksRead books={currentUserBooksRead}/>
                     </div>
-                    <div className="row profile-container">
-                        <div className="col-md-8">
+                    <div className="row col-md-11 profile-container">
+                        <div className="col-md-10">
                             <h4>My Book Wishlist ({currentUserBooksWishlist.length})</h4>
-                            <button onClick={() => navigate('/search-books')}>Add a Book</button>
                         </div>
-                        <Wishlist 
-                            books={currentUserBooksWishlist}/>
-                        <div className="col-lg book-container book-cover d-flex flex-wrap">
+                        <div className="col-md-2 text-right">
+                            <button onClick={() => navigate('/search-books')} className="btn">Add a Book</button>
                         </div>
+                        <Wishlist books={currentUserBooksWishlist}/>
                     </div>
                 </div>
             </div>

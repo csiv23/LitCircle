@@ -168,7 +168,8 @@ exports.joinClub = async (req, res) => {
             await user.save();
         }
 
-        res.json({ message: 'User added to club successfully', club });
+        req.session["currentUser"] = user;
+        res.json(club);
     } catch (error) {
         console.error("Error adding user to club:", error);
         res.status(500).json({ error: 'Internal server error while adding a user to the club.' });
@@ -224,7 +225,8 @@ exports.leaveClub = async (req, res) => {
         });
         await user.save();
 
-        res.json({ message: 'User removed from club successfully', club });
+        req.session["currentUser"] = user;
+        res.json(club);
     } catch (error) {
         console.error("Error removing user from club:", error);
         res.status(500).json({ error: 'Internal server error while removing a user from the club.' });

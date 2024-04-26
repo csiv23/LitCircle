@@ -124,15 +124,16 @@ exports.signOut = async (req, res) => {
 // Update user profile
 exports.updateUserProfile = async (req, res) => {
     const { userId } = req.params;
-    const { Email, FirstName, LastName, Username, AvatarUrl } = req.body;
+    const { email, firstName, lastName, username, password, avatar } = req.body;
 
     // Build the update object dynamically
     const updateData = {};
-    if (Email) updateData.Email = Email;
-    if (FirstName) updateData.FirstName = FirstName;
-    if (LastName) updateData.LastName = LastName;
-    if (Username) updateData.Username = Username;
-    if (AvatarUrl) updateData.AvatarUrl = AvatarUrl;
+    if (email) updateData.Email = email;
+    if (firstName) updateData.FirstName = firstName;
+    if (lastName) updateData.LastName = lastName;
+    if (username) updateData.Username = username;
+    if (password) updateData.Password = password;
+    if (avatar) updateData.Avatar = avatar;
 
     try {
         // Perform the update operation
@@ -141,10 +142,8 @@ exports.updateUserProfile = async (req, res) => {
             { $set: updateData },
             { new: true } // Return the updated document
         );
-
         // Update the session user
         req.session["currentUser"] = updatedUser;
-
         // Send the updated user as a response
         res.json(updatedUser);
     } catch (error) {
@@ -304,6 +303,7 @@ exports.addBookToWishlist = async (req, res) => {
         }
 
         req.session["currentUser"] = updatedUser;
+        
         res.json(updatedUser);
         // res.status(200).json(updatedUser);
     } catch (error) {
@@ -317,9 +317,10 @@ exports.removeBookFromWishlist = async (req, res) => {
     const { bookId } = req.body;
 
     try {
-        const updatedUser = await User.updateOne(
+        const updatedUser = await User.findByIdAndUpdate(
             { _id: userId },
-            { $pull: { Wishlist: bookId } }
+            { $pull: { Wishlist: bookId } },
+            { new: true }
         );
 
         console.log("removeBookFromWishlist updatedUser: " + JSON.stringify(updatedUser));
@@ -328,9 +329,8 @@ exports.removeBookFromWishlist = async (req, res) => {
             return res.status(404).send('No item was removed, check your input.');
         }
 
-        req.session["currentuser"] = updatedUser;
+        req.session["currentUser"] = updatedUser;
         res.json(updatedUser);
-        // res.status(200).json(updatedUser);
     } catch (error) {
         // Log and send the error if something goes wrong
         console.error('Failed to remove item:', error);
@@ -397,8 +397,11 @@ exports.addBookToBooksRead = async (req, res) => {
             return res.status(404).send('User not found');
         }
 
+        console.log(updatedUser);
+
         // Respond with the updated user information
-        req.session["currentuser"] = updatedUser;
+        req.session["currentUser"] = updatedUser;
+        console.log(req.session["currentUser"]);
         res.json(updatedUser);
     } catch (error) {
         console.error("Error adding book to user's BooksRead:", error);
@@ -411,9 +414,10 @@ exports.removeBookFromBooksRead = async (req, res) => {
     const { bookId } = req.body;
 
     try {
-        const updatedUser = await User.updateOne(
+        const updatedUser = await User.findByIdAndUpdate(
             { _id: userId },
-            { $pull: { BooksRead: bookId } }
+            { $pull: { BooksRead: bookId } },
+            { new: true }
         );
 
         // Check if the document was modified
@@ -421,7 +425,7 @@ exports.removeBookFromBooksRead = async (req, res) => {
             return res.status(404).send('No item was removed, check your input.');
         }
 
-        req.session["currentuser"] = updatedUser;
+        req.session["currentUser"] = updatedUser;
         res.json(updatedUser);
         // res.status(200).json(updatedUser);
     } catch (error) {

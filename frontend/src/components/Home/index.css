@@ -73,5 +73,8 @@
 .card a{
     text-decoration: none;
     color: black;
+    pointer-events: auto;
 }
+
+
 /* light-yellow color #fae4ba */

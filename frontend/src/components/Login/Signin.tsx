@@ -19,7 +19,7 @@ export default function Signin() {
             const user = await client.signin(credentials);
             console.log("Signin user: " + JSON.stringify(user));
             dispatch(setCurrentUser(user))
-            navigate(`/myProfile/${user._id}`);
+            navigate('/home');
         }
         catch (err: any) {
             setError(err.response?.data.message || "Failed to sign in. Please check your credentials and try again.");
@@ -28,13 +28,15 @@ export default function Signin() {
 
     return (
         <div className='signin-container'>
-            <h2>Sign In</h2>
-            {error && <div style={{ color: 'red' }}>{error}</div>}
-            <input value={credentials.email} placeholder="Email" type="email" onChange={(e) =>
-                setCredentials({ ...credentials, email: e.target.value })} />
-            <input value={credentials.password} placeholder="Password" type="password" onChange={(e) =>
-                setCredentials({ ...credentials, password: e.target.value })} />
-            <button onClick={signin}>Sign In</button>
+            <div className='signin-border-container'>
+                <h2>Sign In</h2>
+                {error && <div style={{ color: 'red' }}>{error}</div>}
+                <input value={credentials.email} placeholder="Email" type="email" onChange={(e) =>
+                    setCredentials({ ...credentials, email: e.target.value })} />
+                <input value={credentials.password} placeholder="Password" type="password" onChange={(e) =>
+                    setCredentials({ ...credentials, password: e.target.value })} />
+                <button onClick={signin}>Sign In</button>
+            </div>
         </div>
     )
 }

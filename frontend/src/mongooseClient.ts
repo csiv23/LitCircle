@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Book, Club, ObjectId, User } from "./components/types";
+import { createNoSubstitutionTemplateLiteral } from "typescript";
 
 // TODO : MOVE THIS TO BACKEND ENV
 const MONGOOSE_URL =
@@ -428,10 +429,23 @@ export const getClubOrganizer = async (clubId: ObjectId) => {
   return cleanUser(response.Organizer);
 };
 
-export const createBook = async (book: Book) => {
-  const response = await mongoosePost(`books/`, book);
-  return response.bookId;
-};
+export const createBook = async (book : Book) => {
+  try {
+    const response = await mongoosePost(`books/`, book);
+    return response.bookId;
+  }
+  catch (error) {
+    return {
+      _id: "",
+      googleBooksId: "",
+      title: "Untitled",
+      author: "N/A",
+      description: "N/A",
+      coverImageUrl: "",
+      clubsReading: [],
+  };
+  }
+}
 
 export const getClubsReadingPerBook = async (bookId: ObjectId) => {
   const response = await mongooseGet(`books/${bookId}/clubsReading`);
@@ -465,9 +479,9 @@ export const signout = async () => {
 };
 
 export const profile = async () => {
-  const response = await axios.post(`${USERS_API_URL}/profile`);
-  return cleanUser(response.data);
-};
+    const response = await axios.post(`${USERS_API_URL}/profile`);
+    return cleanUser(response.data);
+}
 
 export const updateUserProfile = async (
   id: string | undefined,
@@ -614,19 +628,15 @@ export const getUserNextMeetings = async (userId: string) => {
   return response;
 };
 
-export const leaveClub = async (clubId: string, userId: string) => {
-  const response = await mongoosePost(`clubs/${clubId}/leave`, {
-    userId: userId,
-  });
-  return response;
-};
+export const leaveClub = async (clubId : string, userId : string) => {
+  const response = await mongoosePost(`clubs/${clubId}/leave`, {userId : userId});
+  return cleanClub(response); 
+}
 
-export const joinClub = async (clubId: string, userId: string) => {
-  const response = await mongoosePost(`clubs/${clubId}/join`, {
-    userId: userId,
-  });
-  return response;
-};
+export const joinClub = async (clubId : string, userId : string) => {
+  const response = await mongoosePost(`clubs/${clubId}/join`, {userId: userId});
+  return cleanClub(response); 
+}
 
 export const updateClub = async (club: Club) => {
   const clubMongoose = cleanClubMongoose(club);

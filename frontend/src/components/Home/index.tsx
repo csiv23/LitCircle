@@ -23,7 +23,8 @@ function Home() {
           meetings = await Promise.all(
             meetings.map(async (meeting: any) => {
               const clubDetails = await client.getBookClubById(meeting.ClubId);
-              return { ...meeting, ...clubDetails };
+              console.log(clubDetails);
+              return { ...meeting, ...clubDetails, clubId:clubDetails._id};
             })
           );
           setNextMeetings(meetings);
@@ -85,6 +86,9 @@ function Home() {
                   return (
                     <div key={`meeting-${index}`} className="col-md-3 mb-3">
                       <div className="card">
+                      <Link
+                          to={`/bookclub/${meeting.clubId}/next-meeting`}
+                          className="card-link">
                         <img
                           src={meeting.imageUrl || "path/to/default/image.jpg"}
                           className="card-img-top"
@@ -100,6 +104,7 @@ function Home() {
                             on {meetingDate}
                           </p>
                         </div>
+                        </Link>
                       </div>
                     </div>
                   );
@@ -114,15 +119,16 @@ function Home() {
                 {newFollowers.map((follower) => (
                   <div key={follower._id} className="col-md-3 mb-3">
                     <div className="card">
-                      <div className="card-body">
-                        <Link
+                    <Link
                           to={`/profile/${follower._id}`}
-                          className="card-link"
-                        >
+                          className="card-link">
+                      <div className="card-body">
+                        
                           {follower.username}
-                        </Link>
                       </div>
+                      </Link>
                     </div>
+                   
                   </div>
                 ))}
               </div>
@@ -135,11 +141,11 @@ function Home() {
                 {recentUsers.map((user) => (
                   <div key={user._id} className="col-md-3 mb-3">
                     <div className="card">
+                    <Link to={`/profile/${user._id}`} className="card-link">
                       <div className="card-body">
-                        <Link to={`/profile/${user._id}`} className="card-link">
                           {user.username}
-                        </Link>
                       </div>
+                      </Link>
                     </div>
                   </div>
                 ))}

@@ -28,7 +28,7 @@ export default function Signup() {
             const user = await client.signup(credentials);
             console.log("Signed in!");
             dispatch(setCurrentUser(user));
-            navigate(`/myProfile/${user._id}`);
+            navigate('/home');
         }
         catch (err: any) {
             console.log(err.response.data.message);
@@ -37,18 +37,20 @@ export default function Signup() {
 
     return (
         <div className="signin-container">
-            <h2>Sign Up</h2>
-            <input value={credentials.firstName} placeholder="First Name" onChange={(e) =>
-                setCredentials({ ...credentials, firstName: e.target.value })} />
-            <input value={credentials.lastName} placeholder="Last Name" onChange={(e) =>
-                setCredentials({ ...credentials, lastName: e.target.value })} />
-            <input value={credentials.username} placeholder="Username" onChange={(e) =>
-                setCredentials({ ...credentials, username: e.target.value })} />
-            <input value={credentials.email} placeholder="Email" type="email" onChange={(e) =>
-                setCredentials({ ...credentials, email: e.target.value })} />
-            <input value={credentials.password} placeholder="Password" type="password" onChange={(e) =>
-                setCredentials({ ...credentials, password: e.target.value })} />
-            <button onClick={signup}> Sign Up </button>
+            <div className="signin-border-container">
+                <h2>Sign Up</h2>
+                <input value={credentials.firstName} placeholder="First Name" onChange={(e) =>
+                    setCredentials({ ...credentials, firstName: e.target.value })} />
+                <input value={credentials.lastName} placeholder="Last Name" onChange={(e) =>
+                    setCredentials({ ...credentials, lastName: e.target.value })} />
+                <input value={credentials.username} placeholder="Username" onChange={(e) =>
+                    setCredentials({ ...credentials, username: e.target.value })} />
+                <input value={credentials.email} placeholder="Email" type="email" onChange={(e) =>
+                    setCredentials({ ...credentials, email: e.target.value })} />
+                <input value={credentials.password} placeholder="Password" type="password" onChange={(e) =>
+                    setCredentials({ ...credentials, password: e.target.value })} />
+                <button onClick={signup}> Sign Up </button>
+            </div>
         </div>
     )
 }

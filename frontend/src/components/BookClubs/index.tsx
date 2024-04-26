@@ -260,13 +260,7 @@ function BookClubs() {
                         <Route path="members" 
                         element={<Members leaveClub={leaveClub}/>} />
                         <Route path="currently-reading" 
-                        element={<CurrentlyReading
-                            currentBook={currBook}
-                            club={club}
-                            isAdmin={isAdmin}
-                            setCurrentBook={setCurrentBook}
-                            markAsRead={markAsRead}
-                        />} />
+                        element={<CurrentlyReading/>} />
                         <Route path="next-meeting" 
                         element={<NextMeeting
                             currentBook={currBook}

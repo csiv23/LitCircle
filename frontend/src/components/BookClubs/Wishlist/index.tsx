@@ -195,7 +195,7 @@ return (
         <h6>{wishlist.length} Books</h6>
       </div>
       <div className="col-md-11 club-container">
-      {isAdmin && <GoogleBooksSearch renderBooks={renderBooks} searchPath={false} />}
+      <GoogleBooksSearch renderBooks={renderBooks} searchPath={false} />
     <div>
       <input type="text" value={search}
         onChange={(e) =>

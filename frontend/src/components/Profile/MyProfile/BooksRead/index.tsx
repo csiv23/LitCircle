@@ -7,15 +7,14 @@ export default function BooksRead(
     { books }
         :
         { books: Book[] }) {
-    const renderBooks = (books: Book[]) => {
-        return (
-            <div className="table-responsive">
-                <table className="table">
-                    <tbody>
-                        <tr>
-                            {books.map((book) => (
-                                <td className="book" key={book._id}>
-                                    <Link to={`/book/${book.googleBooksId}`}>
+            const renderBooks = (books : Book[]) => {
+                return (
+                    <div className="col-lg book-container d-flex flex-wrap">
+                      {books.map((book: Book, index) => {
+                        if (book) {
+                          return (
+                            <div key={index} className="book"> 
+                              <Link to={`/book/${book.googleBooksId}`}>
                                         <div>
                                             {(book.coverImageUrl && book.coverImageUrl !== "") ?
                                                 <img src={book.coverImageUrl} alt={book.title} className="book-cover" />
@@ -24,18 +23,21 @@ export default function BooksRead(
                                         <h5 className="book-title">{book.title}</h5>
                                         <p className="book-author">{book.author}</p>
                                     </Link>
-                                </td>
-                            ))}
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        );
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div key={index}>
+                              <p>Book with ID not found.</p>
+                            </div>
+                        );}
+                      })}
+                    </div>    
+                );
     }
 
     return (
         <div className="d-flex flex-wrap">
-            <br></br>
             <MongooseBookSearch books={books} renderBooks={renderBooks}/>
         </div>
     )
