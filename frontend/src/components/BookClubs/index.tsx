@@ -16,6 +16,7 @@ import Wishlist from './Wishlist';
 import BookclubJoin from '../BookclubJoin';
 import { current } from '@reduxjs/toolkit';
 import AdminLeave from '../AdminLeave/adminleave';
+import Delete from './Delete';
 
 function BookClubs() {
     const navigate = useNavigate();
@@ -274,6 +275,7 @@ function BookClubs() {
                         <Route path="books-read" 
                         element={<BooksRead/>} />
                         <Route path="wishlist" element={<Wishlist/>} /> 
+                        <Route path="delete" element={<Delete/>} /> 
                     </Routes>
                 </div>
                 </div>
