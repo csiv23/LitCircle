@@ -57,14 +57,14 @@ function MyProfile() {
         const allBooks = await client.getBooks();
         const userBooksIds: ObjectId[] = [];
         currentUser?.booksRead.map((bookId: ObjectId) => userBooksIds.push(bookId));
-        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book["_id"]));
+        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book._id));
         setCurrentUserBooksRead(commonBooks);
     };
     const fetchUsersBooksWishlist = async () => {
         const allBooks = await client.getBooks();
         const userBooksIds: ObjectId[] = [];
         currentUser?.wishlist.map((bookId: ObjectId) => userBooksIds.push(bookId));
-        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book["_id"]));
+        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book._id));
         setCurrentUserBooksWishlist(commonBooks);
     };
     const fetchUsersFollowers = async () => {

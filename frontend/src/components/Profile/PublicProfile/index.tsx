@@ -56,22 +56,22 @@ function PublicProfile() {
     const fetchPublicUsersClubs = async () => {
         const allClubs = await client.getClubs();
         const userBookClubIds: ObjectId[] = [];
-        publicUser?.bookClubs.map((bookClub: any) => userBookClubIds.push(bookClub["_id"]));
-        const commonClubs = allClubs.filter((club: Club) => userBookClubIds.includes(club["_id"]));
+        publicUser?.bookClubs.map((bookClub: any) => userBookClubIds.push(bookClub.ClubId));
+        const commonClubs = allClubs.filter((club: Club) => userBookClubIds.includes(club._id));
         setPublicUserClubs(commonClubs);
     };
     const fetchPublicUsersBooksRead = async () => {
         const allBooks = await client.getBooks();
         const userBooksIds: ObjectId[] = [];
         publicUser?.booksRead.map((bookId: ObjectId) => userBooksIds.push(bookId));
-        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book["_id"]));
+        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book._id));
         setPublicUserBooksRead(commonBooks);
     };
     const fetchPublicUsersBooksWishlist = async () => {
         const allBooks = await client.getBooks();
         const userBooksIds: ObjectId[] = [];
         publicUser?.wishlist.map((bookId: ObjectId) => userBooksIds.push(bookId));
-        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book["_id"]));
+        const commonBooks = allBooks.filter((book: Book) => userBooksIds.includes(book._id));
         setPublicUserBooksWishlist(commonBooks);
     };
     const follow = async () => {
