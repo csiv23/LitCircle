@@ -27,7 +27,7 @@ function App() {
     <div>
       <HashRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="login" />} />
+          <Route path="/" element={<Navigate to="home" />} />
           <Route path="home" element={<Home />} />
           <Route path='login' element={<Login />} />
           <Route path="profile/:userId" element={<PublicProfile />} />

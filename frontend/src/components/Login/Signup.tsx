@@ -28,7 +28,7 @@ export default function Signup() {
             const user = await client.signup(credentials);
             console.log("Signed in!");
             dispatch(setCurrentUser(user));
-            navigate(`/myProfile/${user._id}`);
+            navigate('/home');
         }
         catch (err: any) {
             console.log(err.response.data.message);
