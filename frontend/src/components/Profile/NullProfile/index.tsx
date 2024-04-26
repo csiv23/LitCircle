@@ -5,11 +5,13 @@ export default function NoProfileFound() {
     return (
         <div>
             <Header/>
-            <h1>User Not Found</h1>
-            <p>The user you are looking for does not exist or may have been deleted.</p>
-            <Link to="/home">
-                Return to Home
-            </Link>
+            <div className="profile-bg profile-font">
+                <h1>User Not Found</h1>
+                <p>The user you are looking for does not exist or may have been deleted.</p>
+                <Link to="/home">
+                    Return to Home
+                </Link>
+            </div>
         </div>
 
     );
