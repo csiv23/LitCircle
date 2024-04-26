@@ -178,6 +178,10 @@ function BookClubs() {
             if (userSession) {
                 const currentClub = await mongooseClient.getBookClubById(clubId);
                 setClub(currentClub);
+
+                if (!currentClub || !currentClub._id) {
+                    navigate('/club');
+                }
     
                 const currentMembers = await mongooseClient.getMembersByClub(clubId);
                 setClubMembers(currentMembers);
@@ -202,9 +206,7 @@ function BookClubs() {
             }
         } catch (error : any) {
             console.error('Setup failed:', error);
-            if (error.message === 'Resource not found') {
-                navigate('/club-not-found');
-            }
+            navigate('/bookclub');
         }
     }
     
