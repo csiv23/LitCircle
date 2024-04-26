@@ -1,4 +1,3 @@
-import { useParams } from "react-router";
 import { Club, User } from "../../types";
 import '../index.css';
 
@@ -12,7 +11,6 @@ export default function About(
         setClub : (club : Club) => void;
     }) {
 
-    const {clubId} = useParams();
     
     return (
         <div>
@@ -54,7 +52,7 @@ export default function About(
                 <>
                 <label htmlFor="clubDescInput">Change Club Description:</label>
                 <input placeholder={club.description} 
-                    id="changeDescInput"
+                    id="clubDescInput"
                     className="form-control inline"
                     onChange={(e) => {setClub({...club, description: e.target.value})}}/>
                 <button onClick={updateClub} className="btn">Save</button>
