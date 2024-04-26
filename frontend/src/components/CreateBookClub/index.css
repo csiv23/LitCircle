@@ -1,0 +1,51 @@
+.create-club-bg {
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    background-color: rgb(214, 207, 192);
+    height: 100vh;
+}
+
+.border-container {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto; 
+    padding: 20px;
+}
+
+.create-club-container {
+    background-color: rgba(244, 228, 210, 0.697);
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 30px;
+    width: 500px;
+}
+
+.create-club-container input{
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.create-club-container textarea{
+    width: 100%;
+    padding: 5px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.create-club-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(126, 135, 96);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.create-club-container button:hover {
+    background-color: rgb(94, 101, 71);
+}
