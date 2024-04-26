@@ -46,9 +46,14 @@ export default function MongooseBookSearch(
     
      return (
     <div>
-      <input type="text" value={search}
-        onChange={(e) =>
-            setSearch(e.target.value)}/>
+      <label htmlFor="searchInput">
+        <input type="text" 
+          className="search-bar"
+          id="searchInput"
+          placeholder="Search for books"
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)} /></label>
       <button className="btn"
         onClick={() => fullTextSearch(search)}>
         Search

@@ -19,6 +19,7 @@
     border-radius: 10px;
     margin: 10px;
     padding: 10px;
+    margin-right: 0px;
 }
 
 .profile-name {
@@ -87,7 +88,10 @@
 }
 
 .edit-profile {
-    margin-bottom: 10px;;
+    margin-bottom: 10px;
+}
+.edit-profile input{
+    border: solid;
 }
 
 .btn-align {

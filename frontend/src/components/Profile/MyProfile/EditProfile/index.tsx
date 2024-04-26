@@ -52,12 +52,19 @@ export default function EditProfile() {
                 <div>
                     <div className="edit-profile">
                         Username:
-                        <input value={currentUser.username} onChange={(e) =>
+                        <label htmlFor="usernameInput"></label>
+                        <input
+                            id="usernameInput"
+                            placeholder={currentUser.username} 
+                            onChange={(e) =>
                             setCurrentUser({...currentUser, username: e.target.value})} />
                     </div>
                     <div className="edit-profile">
                         Password:
-                        <input value={currentUser.password} onChange={(e) =>
+                        <label htmlFor="passwordInput"></label>
+                        <input placeholder={currentUser.password} 
+                            id="passwordInput"
+                            onChange={(e) =>
                             setCurrentUser({...currentUser, password: e.target.value})} />
                     </div>
                     <button onClick={updateProfile} className="btn"> Save Changes </button>

@@ -38,10 +38,14 @@ export default function BookclubSearch() {
   return (
     <div>
       <div className="club-container">
-        <h2>Search Bookclubs</h2>
-        <input type="text" value={search}
+        <label htmlFor="searchInput"><h2>Search Bookclubs</h2>
+        <input type="text" 
+          className="search-bar"
+          id="searchInput"
+          placeholder="Search for bookclubs"
+          value={search}
           onChange={(e) =>
-            setSearch(e.target.value)} />
+            setSearch(e.target.value)} /></label>
         <Link to={`/search-clubs/${search}`}>
           <button className="btn"
             onClick={() => fullTextSearch(search)}>

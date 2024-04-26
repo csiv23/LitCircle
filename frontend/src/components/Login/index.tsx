@@ -31,15 +31,17 @@ function Login() {
     }
 
     return (
-        <div className='login'>
+        <div >
             <Header />
-            <div>
+            <div className='login'>
                 <Signin />
+                <Signup />
+                <Link to="/home">
+                    <div className='signin-container'>
+                        <button>Continue as Guest (this will bring you back to the Home page!)</button>
+                    </div>
+                </Link>
             </div>
-            <Signup />
-            <Link to="/home">
-            <p>Continue as Guest (this will bring you back to the Home page!)</p>
-            </Link>
         </div>
     )
 }

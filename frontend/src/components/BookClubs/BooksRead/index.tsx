@@ -122,7 +122,7 @@ export default function BooksRead(
                 <h5 className="book-title">{book.title}</h5>
                 <p className="book-author">{book.author}</p>
             </Link>
-            {isAdmin && <button onClick={() => {removeBookFromList(book._id)}}>
+            {isAdmin && <button onClick={() => {removeBookFromList(book._id)}} className="btn">
                 Remove Book
             </button>}
         </div>
@@ -131,7 +131,7 @@ export default function BooksRead(
 
     const renderBooksRead = (books : Book[]) => {
         return (
-            <div>
+            <div className="books-list-container">
                 {books && books.map(renderBooksReadBook)}
             </div>)
     }
@@ -186,31 +186,28 @@ export default function BooksRead(
 
 return (
     <div className="d-flex flex-wrap">
-    <div>
-    {(club.imageUrl && club.imageUrl !== "") ? 
-                <img src={club.imageUrl} alt={club.imageUrl} className="book-cover" /> 
-                : <img src={require("../../../images/BookclubDefault.jpeg")} alt={club.name} />}
-    </div>
-    <div className="col-md-11 club-container">
-            <h4>Books We've Read</h4>
-            <h6>{booksRead.length} Books</h6>
-        </div>
-
-    {isAdmin && <GoogleBooksSearch renderBooks={renderBooks} searchPath={false} />}
-    <div>
-      <input type="text" value={search}
-        onChange={(e) =>
-            setSearch(e.target.value)}/>
-      <button
-        onClick={() => {fullTextSearch(search)}}>
-        Search
-      </button>
+      <div className="col-md-11 club-container">
+        <h4>Books We've Read ({booksRead.length})</h4>
+        {isAdmin && <GoogleBooksSearch renderBooks={renderBooks} searchPath={false} />}
       <div>
-      {(results &&
-        (results.length > 0 || search !== "")) ? renderBooksRead(results)  : renderBooksRead(booksRead)}
+        <label htmlFor="searchBookInput"></label>
+        <input type="text" 
+          className="search-bar"
+          id="searchBookInput"
+          placeholder="Add book to wishlist"
+          value={search}
+          onChange={(e) =>
+              setSearch(e.target.value)}/>
+        <button className="btn"
+          onClick={() => {fullTextSearch(search)}}>
+          Search
+        </button>
+        <div>
+        {(results &&
+          (results.length > 0 || search !== "")) ? renderBooksRead(results)  : renderBooksRead(booksRead)}
+        </div>
+        </div>
       </div>
-
-    </div>
     </div>
     )
 }

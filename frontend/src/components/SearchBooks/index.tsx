@@ -42,8 +42,7 @@ export default function GoogleAPI() {
       <div>
           <Header/>
           <div className="search-font club-bg">
-            <div className="col-md-11 club-container">
-              <h2>Search Books</h2>
+            <div className="club-container">
               <Routes>
                 <Route path="/" element={<GoogleBooksSearch renderBooks={renderBooks} searchPath={true}/>} />
                 <Route path="/:title" element={<GoogleBooksSearch renderBooks={renderBooks} searchPath={true}/>} />

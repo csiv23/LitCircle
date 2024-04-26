@@ -34,9 +34,14 @@ export default function GoogleBooksSearch(
 
  return (
     <div>
-      <input type="text" value={search}
-        onChange={(e) =>
-            setSearch(e.target.value)}/>
+      <label htmlFor="searchInput"><h2>Search Books</h2>
+        <input type="text" 
+          className="search-bar"
+          id="searchInput"
+          placeholder="Search for books"
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)} /></label>
       {
         searchPath 
         ? (<Link to={`/search-books/${search}`}>
