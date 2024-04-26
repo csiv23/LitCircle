@@ -17,7 +17,7 @@ function getURL( book: Book  ) {
 
 function MyProfile() {
     const navigate = useNavigate();
-    const { userId } = useParams();
+    // const { userId } = useParams();
     const [currentUser, setCurrentUser] = useState<User>();
     const [currentUserClubs, setCurrentUserClubs] = useState<Club[]>([]);
     const [currentUserBooksRead, setCurrentUserBooksRead] = useState<Book[]>([]);
@@ -118,9 +118,8 @@ function MyProfile() {
     }
 
     console.log("MyProfile currentUser: " + JSON.stringify(currentUser));
-    if (!currentUser || currentUser?._id !== userId) {
-        // Display the public profile
-        navigate(`/profile/${userId}`);
+    if (!currentUser) {
+        navigate('/login');
     }
 
     return (
@@ -136,7 +135,7 @@ function MyProfile() {
                             <h3>{currentUser?.firstName} {currentUser?.lastName}</h3>
                         </div>
                         <div className="col-md-4 text-right">
-                            <Link to={`/myProfile/${userId}/Edit`}>
+                            <Link to={`/profile/${currentUser?._id}/Edit`}>
                                 <button className="btn">Edit</button>
                             </Link>
                         </div>

@@ -49,7 +49,7 @@ function PublicProfile() {
             }
         }
         catch (e) {
-            navigate('/profile')
+            navigate('/noProfile')
         }
 
 
@@ -150,7 +150,7 @@ function PublicProfile() {
     }
 
     if (currentUser?._id == userId) {
-        navigate(`/myProfile/${currentUser?._id}`);
+        navigate(`/profile`);
     }
 
     return (

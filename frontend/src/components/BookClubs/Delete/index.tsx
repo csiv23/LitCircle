@@ -42,7 +42,7 @@ export default function Delete() {
     const deleteClub = async () => {
         if (clubId && currentUser && currentUser._id) {        
             await mongooseClient.deleteClub(clubId);
-            navigate(`/myProfile/${currentUser._id}`)
+            navigate(`/profile`)
         }
     }
 

@@ -39,7 +39,7 @@ export default function EditProfile() {
     // Updates the user's username and password
     const updateProfile = async () => {
         await client.updateUserProfile(userId, currentUser.username, currentUser.password);
-        navigate(`/myProfile/${userId}`);
+        navigate(`/profile`);
     }
 
 
@@ -55,15 +55,17 @@ export default function EditProfile() {
                         <label htmlFor="usernameInput"></label>
                         <input
                             id="usernameInput"
-                            placeholder={currentUser.username} 
+                            // placeholder={currentUser.username} 
+                            value={currentUser.username}
                             onChange={(e) =>
                             setCurrentUser({...currentUser, username: e.target.value})} />
                     </div>
                     <div className="edit-profile">
                         Password:
                         <label htmlFor="passwordInput"></label>
-                        <input placeholder={currentUser.password} 
+                        <input
                             id="passwordInput"
+                            value={currentUser.password} 
                             onChange={(e) =>
                             setCurrentUser({...currentUser, password: e.target.value})} />
                     </div>

@@ -33,9 +33,9 @@ function App() {
           <Route path="/" element={<Navigate to="home" />} />
           <Route path="home" element={<Home />} />
           <Route path='login' element={<Login />} />
+          <Route path="profile" element={<MyProfile />} />
           <Route path="profile/:userId" element={<PublicProfile />} />
-          <Route path="myProfile/:userId" element={<MyProfile />} />
-          <Route path="myProfile/:userId/Edit" element={<EditProfile />} />
+          <Route path="profile/:userId/Edit" element={<EditProfile />} />
           <Route path="bookclub/:clubId/*" element={<BookClubs />} />
           <Route path="search-books/*" element={<GoogleAPI />} />
           <Route path="search-clubs/*" element={<SearchBookclubs />} />
@@ -43,7 +43,7 @@ function App() {
           <Route path="book" element={<NoBookFound />} />
           <Route path="create-club" element={<CreateBookClub />} />
           <Route path="/bookclub" element={<ClubNotFound />} />
-          <Route path="/profile" element={<NoProfileFound />} />
+          <Route path="noProfile" element={<NoProfileFound />} />
         </Routes>
       </HashRouter>
     </div>
