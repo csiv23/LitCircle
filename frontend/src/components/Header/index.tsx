@@ -23,7 +23,7 @@ function Header() {
         { label: "Homepage", url: "home", icon: "litcircle-logo.png" },
         { label: "Search Bookclubs", url: "search-clubs" },
         { label: "Search Books", url: "search-books" },
-        { label: currentUser ? currentUser.username : "Sign in", url: currentUser ? `profile/${currentUser._id}` : "login", desc: "Profile" }
+        { label: currentUser ? currentUser.username : "Sign in", url: currentUser ? `profile` : "login", desc: "Profile" }
     ];
     
     return(
