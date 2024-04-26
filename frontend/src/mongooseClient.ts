@@ -628,8 +628,12 @@ export const getUserNextMeetings = async (userId: string) => {
   return response;
 };
 
-export const leaveClub = async (clubId : string, userId : string) => {
-  const response = await mongoosePost(`clubs/${clubId}/leave`, {userId : userId});
+export const leaveClub = async (clubId : string, userId : string, organizerId="") => {
+
+  const response = await mongoosePost(`clubs/${clubId}/leave`, {
+    userId : userId,
+    newOrganizerId : organizerId
+  });
   return cleanClub(response); 
 }
 

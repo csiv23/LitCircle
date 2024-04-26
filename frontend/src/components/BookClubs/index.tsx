@@ -98,8 +98,7 @@ function BookClubs() {
 
     const appointAsOrganizer = async (userId : string) => {
         if (clubId && currentUser && currentUser._id) {
-            await mongooseClient.updateClub({...club, organizer: userId});
-            await mongooseClient.leaveClub(clubId, currentUser._id);
+            await mongooseClient.leaveClub(clubId, currentUser._id, userId);
             setUserInClub(false);
 
             navigate(`/profile/${currentUser._id}`);
