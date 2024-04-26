@@ -89,11 +89,8 @@ function Home() {
                         <Link
                             to={`/bookclub/${meeting.clubId}/next-meeting`}
                             className="card-link">
-                          <img
-                            src={meeting.imageUrl || "path/to/default/image.jpg"}
-                            className="card-img-top"
-                            alt="Club Image"
-                          />
+                          {( meeting.imageUrl && meeting.imageUrl !== "" ) ? <img src={meeting.imageUrl} alt={meeting.name} /> 
+                    : <img src={require("../../images/BookclubDefault.jpeg")} alt={meeting.name} />}
                           <div className="card-body">
                             <h5 className="card-title">
                               {meeting.name || "Club Name"}
