@@ -177,14 +177,41 @@ exports.joinClub = async (req, res) => {
 };
 
 
-/**
- * Removes a user from a club's member list based on the user ID provided in the request body.
- * If the user is the organizer, they must appoint a new organizer and update leadership status before leaving.
- */
 exports.leaveClub = async (req, res) => {
+    const { clubId } = req.params;
+    const { userId } = req.body;
+    try {
+        const club = await validateClubExists(clubId, res);
+        const user = await validateUserExists(userId, res);
+        if (!club || !user) return; // Validation handlers take care of responses
+        // Remove the user from the club's members list
+        club.Members = club.Members.filter(member => member.toString() !== userId);
+        await club.save();
+        // Remove the club from the user's BookClubs list and update IsLeader if needed
+        user.BookClubs = user.BookClubs.filter(bookclub => bookclub.ClubId !== clubId);
+        // user.BookClubs = user.BookClubs.filter(bookclub => {
+        //     console.log("filtering bookclub: " + JSON.stringify(bookclub))
+        //     if (bookclub.ClubId.toString() === clubId) {
+        //         // If the leaving user is the organizer, clear the IsLeader flag
+        //         bookclub.IsLeader = false;
+        //     }
+        //     return bookclub.ClubId.toString() !== clubId;
+        // });
+        console.log("leaveClub user: " + JSON.stringify(user));
+        await user.save();
+        res.json(club);
+    } catch (error) {
+        console.error("Error removing user from club:", error);
+        res.status(500).json({ error: 'Internal server error while removing a user from the club.' });
+    }
+};
+
+// Handles if the Admin of a club is leaving
+exports.leaveClubAdmin = async (req, res) => {
     const { clubId } = req.params; // Extract the clubId from the URL parameter
     const { userId, newOrganizerId } = req.body; // Include newOrganizerId if the organizer is leaving
 
+    console.log("newOrganizerId: " + JSON.stringify(newOrganizerId))
     try {
         const club = await validateClubExists(clubId, res);
         const user = await validateUserExists(userId, res);
@@ -224,6 +251,7 @@ exports.leaveClub = async (req, res) => {
             return bookclub.ClubId.toString() !== clubId;
         });
         await user.save();
+        console.log("leaveClubAdmin user: " + JSON.stringify(user));
 
         req.session["currentUser"] = user;
         res.json(club);
@@ -232,7 +260,6 @@ exports.leaveClub = async (req, res) => {
         res.status(500).json({ error: 'Internal server error while removing a user from the club.' });
     }
 };
-
 
 /**
  * A specialized function for fetching members of a club with detailed user information.

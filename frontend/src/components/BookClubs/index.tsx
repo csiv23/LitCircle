@@ -84,11 +84,13 @@ function BookClubs() {
     const [removedItem, setRemovedItem] = useState(true);
 
     const leaveClub = async () => {
+        console.log("BookClubs leaveClub()")
         if (clubId && currentUser && currentUser._id) {
             if (isAdmin) {
                 navigate(`/bookclub/${clubId}/leave`);
             }
             else {
+                console.log("BookClubs leaveClub not admin")
                 await mongooseClient.leaveClub(clubId, currentUser._id);
                 setUserInClub(false);
                 navigate(`/profile/${currentUser._id}`);
@@ -99,21 +101,21 @@ function BookClubs() {
     const appointAsOrganizer = async (userId : string) => {
         if (clubId && currentUser && currentUser._id) {
             await mongooseClient.updateClub({...club, organizer: userId});
-            await mongooseClient.leaveClub(clubId, currentUser._id);
+            await mongooseClient.leaveClubAdmin(clubId, currentUser._id, userId);
             setUserInClub(false);
 
             navigate(`/profile/${currentUser._id}`);
         }
     }
 
-    const removeUser = async (userId : string) => {
-        if (clubId) {
-            await mongooseClient.leaveClub(clubId, userId);
-            setClubMembers(clubMembers.filter(user => user._id !== userId));
-            setRemovedItem(true);
-            console.log(removedItem);
-        }   
-    }
+    // const removeUser = async (userId : string) => {
+    //     if (clubId) {
+    //         await mongooseClient.leaveClub(clubId, userId);
+    //         setClubMembers(clubMembers.filter(user => user._id !== userId));
+    //         setRemovedItem(true);
+    //         console.log(removedItem);
+    //     }   
+    // }
 
     const addToWishlist = async (book : Book) => {
         if (clubId) {
