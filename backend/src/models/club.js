@@ -24,7 +24,8 @@ const clubSchema = new Schema({
     }],
     CurrentBook: {
         type: Schema.Types.ObjectId,
-        ref: 'Book'
+        ref: 'Book',
+        default: null
     },
     NextMeeting: {
         Date: {

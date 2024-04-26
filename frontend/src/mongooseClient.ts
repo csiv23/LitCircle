@@ -13,7 +13,7 @@ const axiosWithCredentials = axios.create({
 });
 
 type MongooseClub = {
-  _id: string;
+  clubId: string;
   Name: string;
   Description: string;
   Members: string[];
@@ -209,9 +209,8 @@ function cleanClub(clubData: any): Club {
 }
 
 function cleanClubMongoose(clubData: Club): MongooseClub {
-  let currentDate = new Date();
   let clubClean: MongooseClub = {
-    _id: "",
+    clubId: "",
     Name: "",
     Description: "",
     Members: [],
@@ -227,7 +226,7 @@ function cleanClubMongoose(clubData: Club): MongooseClub {
   };
 
   if (clubData._id) {
-    clubClean._id = clubData._id;
+    clubClean.clubId = clubData._id;
   }
 
   if (clubData.name) {
@@ -632,7 +631,7 @@ export const leaveClub = async (clubId : string, userId : string, organizerId=""
 
   const response = await mongoosePost(`clubs/${clubId}/leave`, {
     userId : userId,
-    newOrganizerId : organizerId
+    organizerId : organizerId
   });
   return cleanClub(response); 
 }
