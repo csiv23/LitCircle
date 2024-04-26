@@ -115,6 +115,8 @@ exports.updateClubInfo = async (req, res) => {
         const updateData = (clubData && clubData.NextMeeting && clubData.NextMeeting.Date)
         ? {
             ...clubData,
+            Organizer: (clubData.Organizer && clubData.Organizer !== "") ? clubData.Organizer : null,
+            CurrentBook: (clubData.CurrentBook && clubData.CurrentBook !== "") ? clubData.CurrentBook : null,
             NextMeeting : {
                 ...clubData.NextMeeting,
                 Date : new Date(clubData.NextMeeting.Date)
