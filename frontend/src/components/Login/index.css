@@ -1,5 +1,6 @@
 .login {
     font-family:Georgia, 'Times New Roman', Times, serif;
+    background-color: rgb(214, 207, 192);;
 }
 
 .login-align {
@@ -8,13 +9,13 @@
 
 .signin-container {
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     margin: 0 auto; 
     padding: 20px;
 }
 
 .signin-container h2 {
-    text-align: left; /* Align the heading to the left */
+    text-align: left;
 }
 
 .signin-container input {
@@ -37,4 +38,10 @@
 
 .signin-container button:hover {
     background-color: rgb(94, 101, 71);
+}
+
+.signin-border-container {
+    background-color: rgba(244, 228, 210, 0.697);
+    border-radius: 10px;
+    padding: 10px;
 }

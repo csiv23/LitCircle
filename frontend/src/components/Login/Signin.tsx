@@ -28,6 +28,7 @@ export default function Signin() {
 
     return (
         <div className='signin-container'>
+            <div className='signin-border-container'>
             <h2>Sign In</h2>
             {error && <div style={{ color: 'red' }}>{error}</div>}
             <input value={credentials.email} placeholder="Email" type="email" onChange={(e) =>
@@ -35,6 +36,7 @@ export default function Signin() {
             <input value={credentials.password} placeholder="Password" type="password" onChange={(e) =>
                 setCredentials({ ...credentials, password: e.target.value })} />
             <button onClick={signin}>Sign In</button>
+            </div>
         </div>
     )
 }
