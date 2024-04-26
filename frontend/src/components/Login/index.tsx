@@ -31,7 +31,10 @@ function Login() {
 
     return (
         <div className='login'>
-            <Signin />
+            <Header />
+            <div>
+                <Signin />
+            </div>
             <Signup />
         </div>
     )
