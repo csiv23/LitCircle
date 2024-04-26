@@ -15,7 +15,7 @@ import GoogleAPI from './components/SearchBooks';
 import Home from './components/Home';
 import SearchBookclubs from './components/SearchBookclubs';
 import CreateBookClub from './components/CreateBookClub';
-
+import ClubNotFound from './components/BookClubs/ClubNotFound/ClubNotFound.js';
 /**
  * The main component of the application.
  *
@@ -37,6 +37,7 @@ function App() {
           <Route path="search-clubs/*" element={<SearchBookclubs />} />
           <Route path="book/:bookId" element={<Books />} />
           <Route path="create-club" element={<CreateBookClub />} />
+          <Route path="club-not-found" element={<ClubNotFound />} />
         </Routes>
       </HashRouter>
     </div>
