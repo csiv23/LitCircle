@@ -8,6 +8,7 @@ import ClubsReadingList from "./ClubsReading";
 import MongooseBook from "./MongooseBook";
 import Header from "../Header";
 import { useSelector } from "react-redux";
+import NoBookFound from "./NoBookFound";
 
 export default function Books() {
     const { bookId } = useParams<string>();
@@ -108,17 +109,25 @@ export default function Books() {
 
     return (
         <div>
+            
+            { book 
+            ? 
+            <>
             <Header/>
             <MongooseBook book={book} 
-                          currentUser={currentUser}
-                          clubsReading={clubsReading}
-                          bookInBooksRead={bookInBooksRead}
-                          bookInWishlist={bookInWishlist}
-                          userClubsWithoutRecs={userClubsWithoutRecs}
-                          recommendBookToClub={recommendBookToClub}
-                          toggleBookInBooksRead={toggleBookInBooksRead}
-                          toggleBookInWishlist={toggleBookInWishlist}
+            currentUser={currentUser}
+            clubsReading={clubsReading}
+            bookInBooksRead={bookInBooksRead}
+            bookInWishlist={bookInWishlist}
+            userClubsWithoutRecs={userClubsWithoutRecs}
+            recommendBookToClub={recommendBookToClub}
+            toggleBookInBooksRead={toggleBookInBooksRead}
+            toggleBookInWishlist={toggleBookInWishlist}
             />
+            </>
+            : 
+            <NoBookFound/>
+            }
         </div>
 
     );
