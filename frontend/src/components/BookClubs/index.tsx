@@ -18,7 +18,6 @@ import { current } from '@reduxjs/toolkit';
 import AdminLeave from '../AdminLeave/adminleave';
 import Delete from './Delete';
 import ClubNotFound from './ClubNotFound/ClubNotFound';
-import ImageValidator from '../ImageValidator';
 
 function BookClubs() {
     const navigate = useNavigate();
